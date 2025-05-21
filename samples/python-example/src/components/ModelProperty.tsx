@@ -3,6 +3,7 @@ import * as py from "@alloy-js/python";
 import { useApi } from "../context/api.js";
 import { RestApiModelProperty } from "../schema.js";
 import { Model } from "./Model.jsx";
+import { castOpenAPITypeToPython } from "../utils.js";
 
 interface ModelPropertyProps {
   property: RestApiModelProperty;
@@ -29,13 +30,3 @@ export function ModelProperty(props: ModelPropertyProps) {
   return <py.Variable name={props.property.name} type={memberType} omitNone />;
 }
 
-export function castOpenAPITypeToPython(type: Children) {
-  switch (type) {
-    case "string":
-      return "str";
-    case "number":
-      return "int";
-    default:
-      return type;
-  }
-}

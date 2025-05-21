@@ -1,4 +1,4 @@
-import { Block, Children, Scope } from "@alloy-js/core";
+import { Block, Children, Scope, Show, code } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { Declaration } from "./Declaration.jsx";
 import { Parameters, ParametersProps } from "./Parameters.jsx";
@@ -8,6 +8,7 @@ export interface MethodProps extends ParametersProps {
   isInstanceMethod?: boolean; // true if this is an instance method
   isClassMethod?: boolean; // true if this is a class method
   children?: Children; // method body
+  returnType?: Children;
 }
 
 export function Method(props: MethodProps) {
@@ -35,6 +36,9 @@ export function Method(props: MethodProps) {
     <Declaration {...props} name={name}>
       <group>
         def {name}({params})
+        <Show when={props.returnType !== undefined}>
+          {code` -> ${props.returnType}`}
+        </Show>
         <Scope name={name} kind="method">
           <Block opener=":" closer="">
             {props.children ?? "pass"}

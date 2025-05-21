@@ -9,7 +9,12 @@ export interface RestApiOperation {
   endpoint: string;
   verb: "get" | "post";
   requestBody?: RestApiModelReference;
-  responseBody?: RestApiModelReference;
+  responseBody?: RestApiModelReference | RestApiNonModelReference;
+}
+
+export interface RestApiNonModelReference {
+  type: "string" | "number" | "boolean";
+  array?: boolean;
 }
 
 export interface RestApiModelReference {
@@ -48,6 +53,14 @@ export const api: RestApi = {
       responseBody: {
         ref: "Pet",
         array: true,
+      },
+    },
+    {
+      name: "get_amt_pets",
+      verb: "get",
+      endpoint: "/pets_amt",
+      responseBody: {
+        type: "number",
       },
     },
     {
