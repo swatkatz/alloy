@@ -17,7 +17,6 @@ const output = render(
         <br />
         <Client />
       </py.SourceFile>
-      <py.BarrelFile path="index.py" />
     </ApiContext.Provider>
   </Output>,
 );

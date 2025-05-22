@@ -25,7 +25,7 @@
   },
   "scripts": {
     "build": "alloy build",
-    "clean": "rimraf dist/ .temp/",
+    "clean": "rimraf dist/ .temp/ alloy-output/",
     "test": "vitest run",
     "test:watch": "vitest -w",
     "watch": "alloy build --watch"
