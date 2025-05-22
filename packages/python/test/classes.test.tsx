@@ -1,4 +1,5 @@
 import { List, Output, refkey, render } from "@alloy-js/core";
+import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
 import { assertFileContents, toSourceText } from "./utils.jsx";
@@ -12,7 +13,10 @@ describe("Python Class", () => {
         </py.SourceFile>
       </Output>,
     );
-    expect(result).toRenderTo(`class Foo:\n  pass\n\n`);
+    expect(result).toRenderTo(d`
+      class Foo:
+        pass
+    `);
   });
 
   it("renders a class with a body", () => {
@@ -23,7 +27,10 @@ describe("Python Class", () => {
         </py.SourceFile>
       </Output>,
     );
-    expect(result).toRenderTo(`class Bar:\n  print('hi')\n\n`);
+    expect(result).toRenderTo(d`
+      class Bar:
+        print('hi')
+    `);
   });
 
   it("renders a class with base classes", () => {
@@ -38,16 +45,14 @@ describe("Python Class", () => {
         </py.SourceFile>
       </Output>,
     );
-    const expected = [
-      "class Base1:",
-      "  pass",
-      "class Base2:",
-      "  pass",
-      "class Baz(Base1, Base2):",
-      "  pass",
-      "",
-      "",
-    ].join("\n");
+    const expected = d`
+      class Base1:
+        pass
+      class Base2:
+        pass
+      class Baz(Base1, Base2):
+        pass
+    `;
     assertFileContents(result, { "test.py": expected });
   });
 
@@ -61,7 +66,10 @@ describe("Python Class", () => {
         </py.SourceFile>
       </Output>,
     );
-    expect(result).toRenderTo(`class Qux(Base):\n  print('hello')\n\n`);
+    expect(result).toRenderTo(d`
+      class Qux(Base):
+        print('hello')
+    `);
   });
 
   it("renders classes across modules with inheritance", () => {
@@ -75,14 +83,15 @@ describe("Python Class", () => {
         </py.SourceFile>
       </Output>,
     );
-    const mod1Expected = ["class A:", "  pass", "", ""].join("\n");
-    const mod2Expected = [
-      "from mod1 import A",
-      "class B(A):",
-      "  pass",
-      "",
-      "",
-    ].join("\n");
+    const mod1Expected = d`
+      class A:
+        pass
+    `;
+    const mod2Expected = d`
+      from mod1 import A
+      class B(A):
+        pass
+    `;
     assertFileContents(result, { "mod1.py": mod1Expected });
     assertFileContents(result, { "mod2.py": mod2Expected });
   });
@@ -101,15 +110,13 @@ describe("Python Class", () => {
         </py.SourceFile>
       </Output>,
     );
-    const expected = [
-      "class A:",
-      "  pass",
-      "class B:",
-      "  bar: A",
-      "  foo: str",
-      "",
-      "",
-    ].join("\n");
+    const expected = d`
+      class A:
+        pass
+      class B:
+        bar: A
+        foo: str
+    `;
     assertFileContents(result, { "test.py": expected });
   });
 });
