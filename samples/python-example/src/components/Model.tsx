@@ -1,4 +1,4 @@
-import { For, refkey } from "@alloy-js/core";
+import { code, For, refkey } from "@alloy-js/core";
 import * as py from "@alloy-js/python";
 import { RestApiModel } from "../schema.js";
 import { ModelProperty } from "./ModelProperty.jsx";

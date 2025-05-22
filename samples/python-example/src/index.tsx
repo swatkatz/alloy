@@ -12,6 +12,9 @@ const output = render(
         <For each={api.models}>{(model) => <Model model={model} />}</For>
       </py.SourceFile>
       <py.SourceFile path="client.py">
+        import requests
+        <br />
+        <br />
         <Client />
       </py.SourceFile>
       <py.BarrelFile path="index.py" />

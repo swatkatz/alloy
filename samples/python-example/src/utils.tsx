@@ -4,7 +4,7 @@ import { ApiContext } from "./context/api.js";
 import * as py from "@alloy-js/python";
 
 
-export function resolveRestAPIReference(reference: RestApiModelReference | RestApiNonModelReference | undefined, apiContext: ApiContext) {
+export function resolveRestAPIReference(reference: RestApiModelReference | RestApiNonModelReference | undefined, apiContext: ApiContext, handleArray = true): Children {  
    let returnType: Children;
   if (reference === undefined) {
     returnType = null;
@@ -17,8 +17,8 @@ export function resolveRestAPIReference(reference: RestApiModelReference | RestA
     else if ("type" in reference && reference.type) {
       returnType = code`${castOpenAPITypeToPython(reference.type)}`;
     }
-    if (reference.array) {
-      returnType = code`[${returnType}]`;
+    if (reference.array && handleArray) {
+      returnType = code`list[${returnType}]`;
     }
   }
   return returnType;

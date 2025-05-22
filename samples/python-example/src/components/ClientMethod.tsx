@@ -24,8 +24,9 @@ export function ClientMethod(props: ClientMethodProps) {
     });
   }
 
+  let requestReturnType: Children;
   if (op.requestBody) {
-    let requestReturnType: Children = resolveRestAPIReference(op.requestBody, apiContext);
+    requestReturnType = resolveRestAPIReference(op.requestBody, apiContext);
     parameters.push({
       name: "body",
       type: requestReturnType,
@@ -42,11 +43,18 @@ export function ClientMethod(props: ClientMethodProps) {
     endpoint = (
       <>
         "{op.endpoint.slice(0, -endpointParam.length - 1)}" +{" "}
-        {refkey(op, endpointParam)}
+        {endpointParam}
       </>
     );
   } else {
     endpoint = <>"{op.endpoint}"</>;
+  }
+
+  let jsonBody = op.verb == "post" ? ", json=body" : "";
+  let returnCode = code`response.json()`
+  if (op.responseBody?.array) {
+    const responseType = resolveRestAPIReference(op.responseBody, apiContext, false);
+    returnCode = code`[${responseType}(**data) for data in response]`
   }
 
   return (
@@ -55,6 +63,11 @@ export function ClientMethod(props: ClientMethodProps) {
       parameters={parameters}
       returnType={responseReturnType}
       isInstanceMethod={true}
-    ></py.Method>
+    >
+      {code`
+        response = requests.${op.verb}(${endpoint}${jsonBody})
+        return ${returnCode}
+      `}
+    </py.Method>
   );
 }
