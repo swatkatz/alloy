@@ -1,9 +1,8 @@
 import { Children, code, refkey } from "@alloy-js/core";
-import * as ts from "@alloy-js/typescript";
 import * as py from "@alloy-js/python";
 import { useApi } from "../context/api.js";
 import { RestApiOperation } from "../schema.js";
-import { castOpenAPITypeToPython } from "../utils.js";
+import { castOpenAPITypeToPython, resolveRestAPIReference } from "../utils.js";
 
 export interface ClientMethodProps {
   operation: RestApiOperation;
@@ -20,37 +19,22 @@ export function ClientMethod(props: ClientMethodProps) {
   if (endpointParam) {
     parameters.push({
       name: endpointParam,
-      type: "string",
+      type: castOpenAPITypeToPython("string"),
       refkey: refkey(op, endpointParam),
     });
   }
 
   if (op.requestBody) {
+    let requestReturnType: Children = resolveRestAPIReference(op.requestBody, apiContext);
     parameters.push({
       name: "body",
-      type: refkey(apiContext.resolveReference(op.requestBody)),
+      type: requestReturnType,
       refkey: refkey(op, "requestBody"),
     });
   }
 
   // get the return type based on the spec's responseBody.
-  let returnType: Children;
-  if (op.responseBody === undefined) {
-    returnType = null;
-  } else {
-    if ("ref" in op.responseBody && op.responseBody.ref) {
-      const responseModel = apiContext.resolveReference(op.responseBody);
-      const ref = refkey(responseModel?.name);
-      returnType = <py.Reference refkey={ref} />;
-    }
-    else if ("type" in op.responseBody && op.responseBody.type) {
-      returnType = code`${castOpenAPITypeToPython(op.responseBody.type)}`;
-    }
-    
-    if (op.responseBody.array) {
-      returnType = code`[${returnType}]`;
-    }
-  }
+  let responseReturnType: Children = resolveRestAPIReference(op.responseBody, apiContext);
 
   // get the url endpoint, constructed from possible path parameters
   let endpoint: Children;
@@ -65,12 +49,11 @@ export function ClientMethod(props: ClientMethodProps) {
     endpoint = <>"{op.endpoint}"</>;
   }
 
-  console.log("Parameters", parameters);
   return (
     <py.Method
       name={op.name}
       parameters={parameters}
-      returnType={returnType}
+      returnType={responseReturnType}
       isInstanceMethod={true}
     ></py.Method>
   );

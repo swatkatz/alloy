@@ -2,7 +2,7 @@ import { createContext, ComponentContext, useContext } from "@alloy-js/core";
 import { RestApi, RestApiModel, RestApiModelReference } from "../schema.js";
 
 // context interface
-interface ApiContext {
+export interface ApiContext {
   schema: RestApi;
   resolveReference: (ref: RestApiModelReference) => RestApiModel | undefined;
 }

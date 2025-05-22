@@ -1,6 +1,6 @@
 from models import Pet
 class PetstoreClient:
-  def create_pet(self, body: <Unresolved Symbol>) -> Pet:
+  def create_pet(self, body: Pet) -> Pet:
     pass
 
 
@@ -12,6 +12,6 @@ class PetstoreClient:
     pass
 
 
-  def get_pet(self, id: string) -> Pet:
+  def get_pet(self, id: str) -> Pet:
     pass
 
