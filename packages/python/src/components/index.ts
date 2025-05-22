@@ -1,4 +1,3 @@
-export * from "./BarrelFile.js";
 export * from "./Class.js";
 export * from "./Declaration.js";
 export * from "./Enum.js";
