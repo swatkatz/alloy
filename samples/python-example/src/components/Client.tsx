@@ -7,9 +7,9 @@ export function Client() {
   const schema = useApi().schema;
   const name = `${schema.name}Client`;
 
-  return <py.Class name={name} refkey={refkey(schema)}>
+  return <py.ClassDeclaration name={name} refkey={refkey(schema)}>
     <For each={schema.operations} doubleHardline>
       {(op) => <ClientMethod operation={op} />}
     </For>
-  </py.Class>;
+  </py.ClassDeclaration>;
 }

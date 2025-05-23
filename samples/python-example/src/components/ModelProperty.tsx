@@ -27,6 +27,6 @@ export function ModelProperty(props: ModelPropertyProps) {
     memberType = castOpenAPITypeToPython(apiType);
   }
 
-  return <py.Variable name={props.property.name} type={memberType} omitNone />;
+  return <py.VariableDeclaration name={props.property.name} type={memberType} omitNone />;
 }
 

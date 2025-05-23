@@ -9,10 +9,10 @@ interface ModelProps {
 
 export function Model(props: ModelProps) {
   return (
-    <py.Class name={props.model.name} refkey={refkey(props.model)}>
+    <py.ClassDeclaration name={props.model.name} refkey={refkey(props.model)}>
         <For each={props.model.properties} hardline enderPunctuation>
             {(prop) => <ModelProperty property={prop} />}
         </For>
-    </py.Class>
+    </py.ClassDeclaration>
   );
 }

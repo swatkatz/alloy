@@ -62,7 +62,7 @@ export function ClientMethod(props: ClientMethodProps) {
       name={op.name}
       parameters={parameters}
       returnType={responseReturnType}
-      isInstanceMethod={true}
+      instanceMethod={true}
     >
       {code`
         response = requests.${op.verb}(${endpoint}${jsonBody})
