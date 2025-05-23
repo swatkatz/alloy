@@ -103,8 +103,8 @@ describe("Python Class", () => {
           <py.ClassDeclaration name="A" />
           <py.ClassDeclaration name="B">
             <List hardline>
-              <py.Variable name="bar" type={refkey("A")} omitNone />
-              <py.Variable name="foo" type="str" omitNone />
+              <py.VariableDeclaration name="bar" type={refkey("A")} omitNone />
+              <py.VariableDeclaration name="foo" type="str" omitNone />
             </List>
           </py.ClassDeclaration>
         </py.SourceFile>
