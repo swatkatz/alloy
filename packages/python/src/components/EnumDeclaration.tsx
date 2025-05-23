@@ -5,6 +5,7 @@ import { ClassDeclaration } from "./ClassDeclaration.js";
 import { DeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
 import { useSourceFileContext } from "./SourceFile.js";
+import { ImportStatement } from "./ImportStatement.jsx";
 
 export interface EnumProps extends DeclarationProps {
   /**
@@ -39,14 +40,8 @@ export interface EnumProps extends DeclarationProps {
  */
 export function EnumDeclaration(props: EnumProps) {
   const baseType = props.baseType || "Enum";
-  const sfContext = useSourceFileContext();
-  sfContext.addImport(
-    createPythonSymbol({
-      name: baseType,
-      module: "enum",
-    }),
-  );
 
+  const importStatement = <ImportStatement module="enum" names={[baseType]} />;
   // Handle enum styles
   if (props.style === "functional") {
     const name = usePythonNamePolicy().getName(props.name, "enum");
@@ -74,6 +69,7 @@ export function EnumDeclaration(props: EnumProps) {
     );
     return (
       <>
+        {importStatement}
         {name} = {baseType}('{name}', {memberExpr})
       </>
     );
@@ -82,17 +78,20 @@ export function EnumDeclaration(props: EnumProps) {
   let memberList: Array<{ name: string; value?: string | number }> =
     props.members ?? [];
   if (props.style === "auto") {
-    sfContext.addImport(createPythonSymbol({ name: "auto", module: "enum" }));
+    const importStatement = <ImportStatement module="enum" names={["auto",]} />;
     memberList = memberList.map((m) =>
       m.value === undefined ? { name: m.name, value: "auto()" } : m,
     );
   }
   return (
+    <>
+    {importStatement}
     <ClassDeclaration name={props.name} bases={[baseType]}>
       <For each={memberList} hardline>
         {(member) => <EnumMember name={member.name} value={member.value} />}
       </For>
       {props.children}
     </ClassDeclaration>
+    </>
   );
 }
