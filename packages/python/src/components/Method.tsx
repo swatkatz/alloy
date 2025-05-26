@@ -1,7 +1,8 @@
-import { Children, Indent, Scope, Show, code } from "@alloy-js/core";
+import { Children, Indent, Prose, Scope, Show, code } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { Declaration } from "./Declaration.jsx";
 import { Parameters, ParametersProps } from "./Parameters.jsx";
+import { PyDoc } from "./PyDoc.jsx";
 
 export interface MethodProps extends ParametersProps {
   name: string; // e.g. "__init__" or "foo"
@@ -9,6 +10,7 @@ export interface MethodProps extends ParametersProps {
   classMethod?: boolean; // true if this is a class method
   children?: Children; // method body
   returnType?: Children; // return type annotation
+  doc?: Children; // docstring
 }
 
 export function Method(props: MethodProps) {
@@ -32,10 +34,18 @@ export function Method(props: MethodProps) {
       kwargs={props.kwargs}
     />
   );
+  // TODO: Add parameters to docstring
   return (
     <Declaration {...props} name={name}>
       <group>
         def {name}({params})<Show when={props.returnType !== undefined}>{code` -> ${props.returnType}`}</Show>:
+        <Show when={Boolean(props.doc)}>
+          <Indent>
+            <PyDoc>
+              {props.doc && <Prose children={props.doc} />}
+            </PyDoc>
+          </Indent>
+        </Show>
         <Scope name={name} kind="method">
           <Indent>{props.children ?? "pass"}</Indent>
         </Scope>

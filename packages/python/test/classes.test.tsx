@@ -19,6 +19,23 @@ describe("Python Class", () => {
     `);
   });
 
+  it("renders a class with no body as 'pass' and with docs", () => {
+    const result = toSourceText(
+      <Output>
+        <py.SourceFile path="test.py">
+          <py.ClassDeclaration name="Foo" doc="This is a class." />
+        </py.SourceFile>
+      </Output>,
+    );
+    expect(result).toRenderTo(d`
+      class Foo:
+        """
+        This is a class.
+        """
+        pass
+    `);
+  });
+
   it("renders a class with a body", () => {
     const result = toSourceText(
       <Output>

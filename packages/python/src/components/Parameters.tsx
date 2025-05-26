@@ -5,6 +5,7 @@ import { VariableDeclaration } from "./VariableDeclaration.js";
 export interface NamedParameter {
   name: string;
   type?: Children;
+  doc?: Children;
   defaultValue?: Children;
 }
 

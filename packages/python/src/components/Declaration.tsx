@@ -9,6 +9,7 @@ export interface DeclarationProps {
   name: string;
   refkey?: Refkey;
   children?: Children;
+  doc?: Children;
 }
 
 /**
