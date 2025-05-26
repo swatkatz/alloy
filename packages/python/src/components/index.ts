@@ -2,6 +2,7 @@ export * from "./ClassDeclaration.js";
 export * from "./Declaration.js";
 export * from "./EnumDeclaration.js";
 export * from "./EnumMember.js";
+export * from "./GoogleStyleDocParam.jsx";
 export * from "./ImportStatement.js";
 export * from "./Method.js";
 export * from "./Parameters.js";
