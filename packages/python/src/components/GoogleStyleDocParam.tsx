@@ -8,7 +8,7 @@ export interface GoogleStyleDocParamsProps {
 }
 
 /**
- * A component that creates a GoogleStyleDoc block with `@param` tags for each parameter.
+ * A component that creates a GoogleStyleDoc block for parameters.
  */
 export function GoogleStyleDocParams(props: GoogleStyleDocParamsProps) {
   const parameters = normalizeParametersForDoc(props.parameters);
@@ -46,7 +46,7 @@ export interface GoogleStyleDocParamProps {
 }
 
 /**
- * Create a GoogleStyleDoc parameter set off with `@param`.
+ * Create a GoogleStyleDoc parameter.
  */
 export function GoogleStyleDocParam(props: GoogleStyleDocParamProps) {
   return (
