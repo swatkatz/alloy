@@ -106,4 +106,33 @@ describe("Python Method", () => {
         pass
     `);
   });
+
+  it("renders a method with parameter with docs", () => {
+    const res = toSourceText(
+      <py.ClassDeclaration name="Foo">
+        <py.Method
+          name="bar"
+          doc="Method documentation"
+          parameters={[
+            { name: "a", type: "int", doc: "Parameter a doc" },
+            {
+              name: "b",
+              type: "str",
+              doc: "Line 1 for b. This is a long description that should continue in the next line.",
+            },
+          ]}
+        />
+      </py.ClassDeclaration>,
+      undefined,
+      { printWidth: 40 },
+    );
+    expect(res).toEqual(d`
+      class Foo:
+        def bar(a: int, b: str):
+          """
+          Method documentation
+          """
+          pass
+    `);
+  });
 });
