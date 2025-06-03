@@ -1,4 +1,7 @@
 import { computed, JSX, mapJoin, memo } from "@alloy-js/core";
+import { useSourceFileContext } from "./SourceFile.js";
+import { createPythonSymbol } from "../symbols/index.js";
+
 
 export interface ImportSymbol {
   module: string; // The module to import from
@@ -27,14 +30,27 @@ export function ImportStatements(props: ImportStatementsProps): JSX.Element {
 }
 
 export function ImportStatement(props: ImportSymbol) {
+  const sfContext = useSourceFileContext();
   return memo(() => {
     const { module, names, alias, wildcard } = props;
 
     const parts: any[] = [];
 
     if (wildcard) {
+      sfContext.addImport(
+        createPythonSymbol({
+          name: '*',
+          module: module,
+        }),
+      );
       parts.push(`from ${module} import *`);
     } else if (!names || names.length === 0) {
+      sfContext.addImport(
+        createPythonSymbol({
+          name: '',
+          module: module,
+        }),
+      );
       parts.push(`import ${module}`);
     } else {
       const formattedNames = names
@@ -46,12 +62,23 @@ export function ImportStatement(props: ImportSymbol) {
         .join(", ");
 
       if (alias) {
+        sfContext.addImport(
+          createPythonSymbol({
+            name: formattedNames,
+            module: module,
+          }),
+        );
         parts.push(`from ${module} import ${formattedNames} as ${alias}`);
       } else {
+        sfContext.addImport(
+          createPythonSymbol({
+            name: formattedNames,
+            module: module,
+          }),
+        );
         parts.push(`from ${module} import ${formattedNames}`);
       }
     }
-
     return parts;
   });
 }
