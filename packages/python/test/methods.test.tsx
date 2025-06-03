@@ -124,13 +124,18 @@ describe("Python Method", () => {
         />
       </py.ClassDeclaration>,
       undefined,
-      { printWidth: 40 },
+      { printWidth: 80 },
     );
     expect(res).toEqual(d`
       class Foo:
         def bar(a: int, b: str):
           """
           Method documentation
+
+          Parameters:
+              a (int): Parameter a doc
+              b (str): Line 1 for b. This is a long description that should continue
+              in the next line.
           """
           pass
     `);

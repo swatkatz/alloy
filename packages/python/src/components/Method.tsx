@@ -3,6 +3,7 @@ import { usePythonNamePolicy } from "../name-policy.js";
 import { Declaration } from "./Declaration.jsx";
 import { Parameters, ParametersProps } from "./Parameters.jsx";
 import { PyDoc } from "./PyDoc.jsx";
+import { GoogleStyleDocParams } from "./GoogleStyleDocParam.jsx";
 
 export interface MethodProps extends ParametersProps {
   name: string; // e.g. "__init__" or "foo"
@@ -34,7 +35,8 @@ export function Method(props: MethodProps) {
       kwargs={props.kwargs}
     />
   );
-  // TODO: Add parameters to docstring
+  const docParams = [...(props.parameters ?? [])];
+
   return (
     <Declaration {...props} name={name}>
       <group>
@@ -43,6 +45,10 @@ export function Method(props: MethodProps) {
           <Indent>
             <PyDoc>
               {props.doc && <Prose children={props.doc} />}
+              <Show when={(props.parameters && props.parameters.length > 0)}>
+                <Prose>Parameters:</Prose><hbr />
+                <GoogleStyleDocParams parameters={docParams} />
+              </Show>
             </PyDoc>
           </Indent>
         </Show>
