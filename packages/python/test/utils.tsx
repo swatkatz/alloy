@@ -4,6 +4,7 @@ import {
   Output,
   OutputDirectory,
   OutputFile,
+  PrintTreeOptions,
   render,
 } from "@alloy-js/core";
 import { dedent } from "@alloy-js/core/testing";
@@ -49,11 +50,12 @@ export function assertFileContents(
   }
 }
 
-export function toSourceText(c: Children, policy?: NamePolicy<string>): string {
+export function toSourceText(c: Children, policy?: NamePolicy<string>, options?: PrintTreeOptions): string {
   const res = render(
     <Output namePolicy={policy}>
       <py.SourceFile path="test.py">{c}</py.SourceFile>
     </Output>,
+    options,
   );
   const file = findFile(res, "test.py");
   return file.contents;

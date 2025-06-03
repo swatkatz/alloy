@@ -1,6 +1,7 @@
 import { childrenArray, Children, Indent, List, Scope, Show } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { Declaration, DeclarationProps } from "./Declaration.js";
+import { PyDoc } from "./PyDoc.jsx";
 
 export interface ClassDeclarationProps extends DeclarationProps {
   name: string;
@@ -20,6 +21,9 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
           (<List children={props.bases} comma space />)
         </Show>
         :
+      <Show when={Boolean(props.doc)}>
+        <Indent><PyDoc children={props.doc} /></Indent>
+      </Show>
         <Scope name={name} kind="class">
           <Indent>{hasChildren ? props.children : "pass"}</Indent>
         </Scope>
