@@ -1,8 +1,15 @@
-import { childrenArray, Children, Indent, List, Scope, Show, OutputSymbolFlags, Name, Block, BlockProps, computed } from "@alloy-js/core";
+import {
+  childrenArray,
+  Children,
+  Indent,
+  List,
+  OutputSymbolFlags,
+  BlockProps,
+  computed
+} from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
-import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/python-output-symbol.js";
+import { PythonOutputSymbol,  } from "../symbols/python-output-symbol.js";
 import { Declaration, BaseDeclarationProps } from "./Declaration.js";
-import { usePythonScope } from "../symbols/scopes.js";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   name: string;
@@ -54,22 +61,4 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
       </Declaration>
     </>
   );
-
-  // // Determine if children are present
-  // const hasChildren =
-  //   childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
-  // return (
-  //   <Declaration {...props} name={name}>
-  //     <group>
-  //       class {name}
-  //       <Show when={props.bases !== undefined && props.bases.length > 0}>
-  //         {basesPart}
-  //       </Show>
-  //       :
-  //       <Scope name={name} kind="class">
-  //         <Indent>{hasChildren ? props.children : "pass"}</Indent>
-  //       </Scope>
-  //     </group>
-  //   </Declaration>
-  // );
 }

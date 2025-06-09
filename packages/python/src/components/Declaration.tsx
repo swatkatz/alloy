@@ -4,6 +4,10 @@ import {
   MemberScope,
   OutputSymbolFlags,
   Refkey,
+  SourceFileContext,
+  useBinder,
+  useContext,
+  useScope,
 } from "@alloy-js/core";
 import { PythonElements, usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
@@ -61,6 +65,10 @@ export interface DeclarationProps extends Omit<BaseDeclarationProps, "name"> {
  */
 export function Declaration(props: DeclarationProps) {
   let sym: PythonOutputSymbol;
+  const binder = useBinder();
+  const scope = useScope();
+  const fileContext = useContext(SourceFileContext);
+  const module = props.name ?? (fileContext ? fileContext.path : "");
 
   if (props.symbol) {
     sym = props.symbol;
@@ -70,6 +78,9 @@ export function Declaration(props: DeclarationProps) {
     let pythonFlags: PythonSymbolFlags = PythonSymbolFlags.None;
 
     sym = new PythonOutputSymbol(namePolicy.getName(props.name!, props.nameKind!), {
+      binder: binder,
+      scope: scope,
+      module: module,
       refkeys: props.refkey,
       flags: props.flags,
       pythonFlags,
