@@ -3,17 +3,11 @@ import {
   OutputScopeFlags,
   OutputSymbol,
   OutputSymbolOptions,
-  refkey,
-  Refkey,
   track,
   TrackOpTypes,
   trigger,
   TriggerOpTypes,
-  useBinder,
-  useContext,
-  useScope,
 } from "@alloy-js/core";
-import { SourceFileContext } from "../components/SourceFile.js";''
 import { PythonMemberScope } from "./python-member-scope.js";
 
 // prettier-ignore

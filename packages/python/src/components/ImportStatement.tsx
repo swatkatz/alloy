@@ -70,11 +70,6 @@ export function ImportStatement(props: ImportStatementProps) {
         namedImportSymbols.push(sym);
       }
     }
-    console.log("ImportStatement");
-    console.log("path", path);
-    console.log("symbols", symbols);
-    console.log("pathAlias", pathAlias);
-    console.log("wildcard", wildcard);
 
     const parts: any[] = [];
     

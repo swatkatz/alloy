@@ -8,6 +8,7 @@ import { enumModule } from "../builtins/python.js";
 import { useSourceFile } from "./SourceFile.js";
 
 export interface EnumProps extends DeclarationProps {
+  name: string;
   /**
    * The base type of the enum. One of: 'Enum', 'IntEnum', 'StrEnum', 'Flag', 'IntFlag'.
    * Defaults to 'Enum'.

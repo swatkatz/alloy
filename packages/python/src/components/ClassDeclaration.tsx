@@ -1,29 +1,74 @@
-import { childrenArray, Children, Indent, List, Scope, Show } from "@alloy-js/core";
+import { childrenArray, Children, Indent, List, Scope, Show, OutputSymbolFlags, Name, Block, BlockProps, computed } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
-import { Declaration, DeclarationProps } from "./Declaration.js";
+import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/python-output-symbol.js";
+import { Declaration, BaseDeclarationProps } from "./Declaration.js";
 
-export interface ClassDeclarationProps extends DeclarationProps {
+export interface ClassDeclarationProps extends BaseDeclarationProps {
   name: string;
   bases?: Children[];
 }
 
+/** For some reason, when rendering a Block in the Python implementation,
+ * it renders a newline after the last line. That doesn't seems to happen
+ * in the other language implementations. We are adding this class so we can
+ * remove the newline when rendering a ClassDeclaration, and we do that by
+ * basically copying the original class and removing the trailingBreak in the
+ * Indent component. With that, we are also to be able to test it properly,
+ * as we aren't able to assert for the newline correctly.
+ */
+export function PythonBlock(props: BlockProps) {
+  const childCount = computed(() => childrenArray(() => props.children).length);
+  return (
+    <group>
+      {props.newline && <br />}
+      {props.opener ?? "{"}
+      <Indent softline={childCount.value === 0}>
+        {props.children}
+      </Indent>
+      {props.closer ?? "}"}
+    </group>
+  );
+}
+
+
 export function ClassDeclaration(props: ClassDeclarationProps) {
-  const name = usePythonNamePolicy().getName(props.name, "class");
-  // Determine if children are present
+  const namePolicy = usePythonNamePolicy();
+  const basesPart = props.bases && <>(<List children={props.bases} comma space />)</>;
+
+  const sym = new PythonOutputSymbol(namePolicy.getName(props.name!, "class"), {
+    refkeys: props.refkey,
+    flags:
+      (props.flags ?? OutputSymbolFlags.None) |
+      (OutputSymbolFlags.MemberContainer |
+        OutputSymbolFlags.StaticMemberContainer),
+    metadata: props.metadata,
+  });
   const hasChildren =
     childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
   return (
-    <Declaration {...props} name={name}>
-      <group>
-        class {name}
-        <Show when={props.bases !== undefined && props.bases.length > 0}>
-          (<List children={props.bases} comma space />)
-        </Show>
-        :
-        <Scope name={name} kind="class">
-          <Indent>{hasChildren ? props.children : "pass"}</Indent>
-        </Scope>
-      </group>
-    </Declaration>
+    <>
+      <Declaration symbol={sym}>
+        class {props.name}{basesPart}
+        <PythonBlock opener=":" closer="" newline={false}>{hasChildren ? props.children : "pass"}</PythonBlock>
+      </Declaration>
+    </>
   );
+
+  // // Determine if children are present
+  // const hasChildren =
+  //   childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
+  // return (
+  //   <Declaration {...props} name={name}>
+  //     <group>
+  //       class {name}
+  //       <Show when={props.bases !== undefined && props.bases.length > 0}>
+  //         {basesPart}
+  //       </Show>
+  //       :
+  //       <Scope name={name} kind="class">
+  //         <Indent>{hasChildren ? props.children : "pass"}</Indent>
+  //       </Scope>
+  //     </group>
+  //   </Declaration>
+  // );
 }
