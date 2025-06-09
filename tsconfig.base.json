@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "lib": ["es2023", "DOM"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
