@@ -76,9 +76,6 @@ export function Declaration(props: DeclarationProps) {
       metadata: props.metadata,
     });
   }
-  console.log("Registering symbol:", sym.name);
-  console.log("Scope:", sym.scope);
-  console.log("Current scope symbols:", Array.from(sym.scope.symbols.keys()));
 
   function withMemberScope(children: Children) {
     return <MemberScope owner={sym}>{children}</MemberScope>;

@@ -10,7 +10,5 @@ export function Reference(props: ReferenceProps) {
   const symbolRef = computed(() => reference()[1]);
 
   emitSymbol(symbolRef);
-  console.log("Reference refkey:", props.refkey);
-  console.log("reference()[0]", reference()[0]);
   return <>{reference()[0]}</>;
 }
