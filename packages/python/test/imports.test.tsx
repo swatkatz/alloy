@@ -87,7 +87,7 @@ describe("ImportStatements", () => {
     const symbols = new Set<ImportedSymbol>([new ImportedSymbol(sqrtSymbol), new ImportedSymbol(piSymbol)]);
     const osModuleScope = createPythonModuleScope("os", undefined);
     const sysModuleScope = createPythonModuleScope("sys", undefined);
-    const records = new ImportRecords([[pythonModuleScope, {symbols: symbols}], [osModuleScope, {wildcard: true}], [sysModuleScope, {}]]);
+    const records = new ImportRecords([[pythonModuleScope, {symbols: symbols}], [osModuleScope, {symbols: new Set<ImportedSymbol>(), wildcard: true}], [sysModuleScope, {symbols: new Set<ImportedSymbol>()}]]);
 
     const result = render(
       <Output>

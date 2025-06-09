@@ -1,7 +1,6 @@
 import {
   ComponentContext,
   SourceFile as CoreSourceFile,
-  SourceFileContext as CoreSourceFileContext,
   createContext,
   createNamedContext,
   OutputSymbol,
@@ -140,7 +139,7 @@ export function SourceFile(props: SourceFileProps) {
   return (
     <CoreSourceFile
       path={props.path}
-      filetype="python"
+      filetype="py"
       reference={Reference}
       header={header}
     >
@@ -150,7 +149,9 @@ export function SourceFile(props: SourceFileProps) {
         <hbr />
       </Show>
       <SourceFileContext.Provider value={sfContext}>
-        <Scope value={scope}>{props.children}</Scope>
+        <Scope value={scope} kind="source-file">
+          {props.children}
+        </Scope>
       </SourceFileContext.Provider>
     </CoreSourceFile>
   );

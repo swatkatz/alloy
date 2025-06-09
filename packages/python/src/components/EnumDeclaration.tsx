@@ -39,12 +39,6 @@ export interface EnumProps extends DeclarationProps {
  */
 export function EnumDeclaration(props: EnumProps) {
   const baseType = props.baseType || "Enum";
-  const sfContext = useSourceFile();
-  // sfContext.addImport(
-  //   new PythonOutputSymbol(baseType, {
-  //     module: "enum",
-  //   })
-  // );
 
   // Handle enum styles
   if (props.style === "functional") {
@@ -81,11 +75,6 @@ export function EnumDeclaration(props: EnumProps) {
   let memberList: Array<{ name: string; value?: string | number }> =
     props.members ?? [];
   if (props.style === "auto") {
-    // sfContext.addImport(
-    //   new PythonOutputSymbol("auto", {
-    //     module: "enum",
-    //   })
-    // );
     memberList = memberList.map((m) =>
       m.value === undefined ? { name: m.name, value: "auto()" } : m,
     );

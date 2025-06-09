@@ -16,7 +16,7 @@ export class ImportedSymbol {
 }
 
 export interface ImportRecordProps {
-  symbols?: Set<ImportedSymbol>;
+  symbols: Set<ImportedSymbol>;
   pathAlias?: string; // Alias for the module itself (if importing the whole module)
   wildcard?: boolean; // If true, use '*'
 }
@@ -60,7 +60,7 @@ export class PythonModuleScope extends OutputScope {
     }
 
     if (!this.importedModules.has(targetModule)) {
-      this.importedModules.set(targetModule, new Set());
+      this.importedModules.set(targetModule, { symbols: new Set<ImportedSymbol>() });
     }
 
     const localSymbol = new PythonOutputSymbol(targetSymbol.name, {
@@ -73,7 +73,7 @@ export class PythonModuleScope extends OutputScope {
     targetSymbol.copyTo(localSymbol);
 
     this.importedSymbols.set(targetSymbol, localSymbol);
-    this.importedModules.get(targetModule)!.add({
+    this.importedModules.get(targetModule)!.symbols?.add({
       local: localSymbol,
       target: targetSymbol,
     });

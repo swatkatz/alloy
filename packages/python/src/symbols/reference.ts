@@ -33,6 +33,10 @@ export function ref(
     }
 
     const { targetDeclaration, pathDown, memberPath } = resolveResult.value;
+
+    // For Python, you may want to add an import if the symbol is from another module
+    // return untrack(() => sourceFile!.addImport(targetDeclaration));
+
     // if we resolved a instance member, check if we should be able to access
     // it.
     if (targetDeclaration.flags & OutputSymbolFlags.InstanceMember) {
@@ -60,9 +64,7 @@ export function ref(
     const targetLocation = pathDown[0]?.kind ?? "local";
     let localSymbol: PythonOutputSymbol | undefined;
 
-    if (targetLocation === "package") {
-      // Do nothing, we will handle package imports later.
-    } else if (targetLocation === "module") {
+    if (targetLocation === "module") {
       const symbolPath = [
         ...(pathDown.slice(1) as PythonMemberScope[]).map((s) => s.owner),
         targetDeclaration,
@@ -148,26 +150,3 @@ function validateSymbolReachable(
     }
   }
 }
-
-// /**
-//  * Resolve reference to symbol reference, and handle dependency management
-//  *
-//  * @param refkey - Reference key to symbol
-//  */
-// export function ref(refkey: Refkey) {
-//   const sourceFile = useContext(SourceFileContext);
-//   const result = resolve<PythonOutputScope, PythonOutputSymbol>(
-//     refkey as Refkey,
-//   );
-
-//   return memo(() => {
-//     if (result.value === undefined) {
-//       return "<Unresolved Symbol>";
-//     }
-
-//     const { targetDeclaration } = result.value;
-
-//     // For Python, you may want to add an import if the symbol is from another module
-//     return untrack(() => sourceFile!.addImport(targetDeclaration));
-//   });
-// }

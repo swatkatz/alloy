@@ -1,4 +1,4 @@
-import { Refkey } from "@alloy-js/core";
+import { computed, emitSymbol, Refkey } from "@alloy-js/core";
 import { ref } from "../symbols/index.js";
 
 export interface ReferenceProps {
@@ -7,6 +7,8 @@ export interface ReferenceProps {
 
 export function Reference(props: ReferenceProps) {
   const reference = ref(props.refkey);
+  const symbolRef = computed(() => reference()[1]);
 
-  return <>{reference}</>;
+  emitSymbol(symbolRef);
+  return <>{reference()[0]}</>;
 }

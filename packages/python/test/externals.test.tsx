@@ -1,7 +1,6 @@
 import { Output, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { expect, it } from "vitest";
-import { enumModule } from "../src/builtins/python.js";
 import * as py from "../src/components/index.js";
 import { createModule } from "../src/index.js";
 import { findFile } from "./utils.js";
@@ -38,8 +37,7 @@ it("uses import from external library", () => {
   );
 
   expect(findFile(res, "test.py").contents).toBe(d`
-    from requests.models import Request
-    from requests.models import Response
+    from requests.models import Request, Response
 
     request: Request = Request()
     response: Response = Response()

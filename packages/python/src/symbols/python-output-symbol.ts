@@ -61,7 +61,7 @@ export class PythonOutputSymbol extends OutputSymbol {
       return;
     }
     this.#pythonFlags = value;
-    trigger(this, TriggerOpTypes.SET, "tsFlags", value, oldValue);
+    trigger(this, TriggerOpTypes.SET, "pythonFlags", value, oldValue);
   }
 
   #children: boolean;
@@ -87,6 +87,10 @@ export class PythonOutputSymbol extends OutputSymbol {
 
   set module(value: string | undefined) {
     this.#module = value;
+  }
+
+  get instanceMemberScope() {
+    return super.instanceMemberScope as PythonMemberScope | undefined;
   }
 
   protected createMemberScope(
