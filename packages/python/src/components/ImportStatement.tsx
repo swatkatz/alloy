@@ -40,7 +40,7 @@ export function ImportStatements(props: ImportStatementsProps) {
 
   return mapJoin(
     () => imports.value,
-    ([module, importedSymbols]) => {
+    ([module, properties]) => {
       let targetPath: string;
 
       // local package import, so need relative import
@@ -48,7 +48,7 @@ export function ImportStatements(props: ImportStatementsProps) {
       // todo: don't allow importing non-exported symbols
       targetPath = modulePath(relative(currentDir, module.name));
 
-      return <ImportStatement path={targetPath} symbols={importedSymbols} />;
+      return <ImportStatement path={targetPath} symbols={properties.symbols} pathAlias={properties.pathAlias} wildcard={properties.wildcard}/>;
     },
   );
 }
@@ -65,7 +65,7 @@ export function ImportStatement(props: ImportStatementProps) {
     const { path, symbols, pathAlias, wildcard } = props;
     const namedImportSymbols: ImportedSymbol[] = [];
 
-    if (symbols && symbols.size === 0) {
+    if (symbols && symbols.size > 0) {
       for (const sym of symbols) {
         namedImportSymbols.push(sym);
       }
@@ -74,7 +74,7 @@ export function ImportStatement(props: ImportStatementProps) {
     const parts: any[] = [];
     
     if (wildcard) {
-      parts.push(`"from ${path} import *"`);
+      parts.push(`from ${path} import *`);
     }
     else if (!symbols || symbols.size === 0) {
       if (pathAlias) {
@@ -87,21 +87,15 @@ export function ImportStatement(props: ImportStatementProps) {
       namedImportSymbols.sort((a, b) => {
         return a.target.name.localeCompare(b.target.name);
       });
-      const importBindings = namedImportSymbols.map(
-        (nis) => (
-          <ImportBinding
-            importedSymbol={nis}
-          />
-        )
+      const importBindingsArray: string[] = namedImportSymbols.map(
+        (nis) => {
+          const localName = nis.local ? nis.local.name : nis.target.name;
+          const targetName = nis.target.name;
+          return localName === targetName ? targetName : `${targetName} as ${localName}`;
+        }
       );
-
-      const formattedNames = mapJoin(
-        () => importBindings,
-        (ib) => (ib),
-        { joiner: ", " },
-      );
-
-      parts.push(`from ${module} import ${formattedNames}`);
+      const importBindings = importBindingsArray.join(", ");
+      parts.push(`from ${path} import ${importBindings}`);
     }
     return parts;
   });
@@ -124,7 +118,7 @@ function ImportBinding(props: Readonly<ImportBindingProps>) {
 
   return (
     <>
-      {text}
+      {text()}
     </>
   );
 }

@@ -15,12 +15,18 @@ export class ImportedSymbol {
   }
 }
 
-export type ImportRecords = Map<PythonModuleScope, Set<ImportedSymbol>>;
+export interface ImportRecordProps {
+  symbols?: Set<ImportedSymbol>;
+  pathAlias?: string; // Alias for the module itself (if importing the whole module)
+  wildcard?: boolean; // If true, use '*'
+}
+
+export type ImportRecords = Map<PythonModuleScope, ImportRecordProps>;
 
 export const ImportRecords = Map as {
   new (): ImportRecords;
-  new (entries?: readonly (readonly [PythonModuleScope, Set<ImportedSymbol>])[] | null): ImportRecords;
-  prototype: Map<PythonModuleScope, Set<ImportedSymbol>>;
+  new (entries?: readonly (readonly [PythonModuleScope, ImportRecordProps])[] | null): ImportRecords;
+  prototype: Map<PythonModuleScope, ImportRecordProps>;
 };
 
 export class PythonModuleScope extends OutputScope {
