@@ -5,8 +5,8 @@ import {
   OutputSymbolFlags,
   Refkey,
 } from "@alloy-js/core";
-import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { PythonElements, usePythonNamePolicy } from "../name-policy.js";
+import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { PrivateScopeContext } from "../context/private-scope.js";
 
 export interface BaseDeclarationProps {
@@ -76,9 +76,23 @@ export function Declaration(props: DeclarationProps) {
       metadata: props.metadata,
     });
   }
+  console.log("Registering symbol:", sym.name);
+  console.log("Scope:", sym.scope);
+  console.log("Current scope symbols:", Array.from(sym.scope.symbols.keys()));
 
   function withMemberScope(children: Children) {
     return <MemberScope owner={sym}>{children}</MemberScope>;
+  }
+
+  function withPrivateMemberScope(children: Children) {
+    const context: PrivateScopeContext = {
+      instanceMembers: sym.privateMemberScope!,
+    };
+    return (
+      <PrivateScopeContext.Provider value={context}>
+        {children}
+      </PrivateScopeContext.Provider>
+    );
   }
 
   let children: Children = () => props.children;
@@ -88,10 +102,4 @@ export function Declaration(props: DeclarationProps) {
   }
 
   return <CoreDeclaration symbol={sym}>{props.children}</CoreDeclaration>;
-
-  // const sym = new PythonOutputSymbol(props.name, {
-  //   refkeys: props.refkeys,
-  //   children: props.children,
-  // });
-  // return <CoreDeclaration symbol={sym}>{props.children}</CoreDeclaration>;
 }

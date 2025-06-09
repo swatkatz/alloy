@@ -1,21 +1,16 @@
 import {
   ComponentContext,
   SourceFile as CoreSourceFile,
-  createContext,
   createNamedContext,
-  OutputSymbol,
-  reactive,
   Scope,
   Show,
   SourceDirectoryContext,
   useContext,
+  type Children,
 } from "@alloy-js/core";
 import { join } from "pathe";
 import { getSourceDirectoryData } from "../source-directory-data.js";
 import { PythonModuleScope } from "../symbols/index.js";
-import { Children } from "@alloy-js/core/jsx-runtime";
-import { usePythonNamePolicy } from "../name-policy.js";
-import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
 import { ImportStatements } from "./ImportStatement.js";
 import { Reference } from "./Reference.js";
 

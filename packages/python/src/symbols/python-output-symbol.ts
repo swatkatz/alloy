@@ -20,7 +20,8 @@ export enum PythonSymbolFlags {
   Private      = 1 << 4, // Symbol name starts with '_' (conventionally private)
   ModuleLevel  = 1 << 5, // Symbol is defined at module global scope
   Dunder       = 1 << 6, // Symbol is a "dunder" (double-underscore) name
-  Nullish      = 1 << 7, // Symbol is 'None'
+  PrivateMemberContainer = 1 << 7, // Symbol is a container for private members
+  Nullish      = 1 << 8, // Symbol is 'None'
 }
 
 export interface CreatePythonSymbolOptions extends OutputSymbolOptions {
@@ -42,6 +43,15 @@ export class PythonOutputSymbol extends OutputSymbol {
     this.#children = !!options.children;
     this.#module = options.module ?? undefined;
     this.#pythonFlags = options.pythonFlags ?? PythonSymbolFlags.None;
+    this.#privateMemberScope = undefined;
+
+    if (this.#pythonFlags & PythonSymbolFlags.PrivateMemberContainer) {
+      this.#privateMemberScope = new PythonMemberScope("private members", {
+        binder: this.binder,
+        owner: this,
+        flags: OutputScopeFlags.InstanceMemberScope,
+      });
+    }
   }
 
   #pythonFlags: PythonSymbolFlags;
@@ -85,6 +95,11 @@ export class PythonOutputSymbol extends OutputSymbol {
 
   get instanceMemberScope() {
     return super.instanceMemberScope as PythonMemberScope | undefined;
+  }
+
+  #privateMemberScope: PythonMemberScope | undefined;
+  get privateMemberScope() {
+    return this.#privateMemberScope;
   }
 
   protected createMemberScope(

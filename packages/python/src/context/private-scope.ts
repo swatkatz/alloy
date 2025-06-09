@@ -3,10 +3,6 @@ import { PythonMemberScope } from "../symbols/python-member-scope.js";
 
 export interface PrivateScopeContext {
   /**
-   * Scope for private static members.
-   */
-  staticMembers: PythonMemberScope;
-  /**
    * Scope for private instance members.
    */
   instanceMembers: PythonMemberScope;

@@ -1,11 +1,9 @@
 import { Children, For, Refkey } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
-import { PythonOutputSymbol } from "../symbols/index.js";
 import { ClassDeclaration } from "./ClassDeclaration.js";
 import { DeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
 import { enumModule } from "../builtins/python.js";
-import { useSourceFile } from "./SourceFile.js";
 
 export interface EnumProps extends DeclarationProps {
   name: string;

@@ -2,6 +2,7 @@ import { childrenArray, Children, Indent, List, Scope, Show, OutputSymbolFlags, 
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/python-output-symbol.js";
 import { Declaration, BaseDeclarationProps } from "./Declaration.js";
+import { usePythonScope } from "../symbols/scopes.js";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   name: string;

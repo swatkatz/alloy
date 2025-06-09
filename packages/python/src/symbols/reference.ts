@@ -133,20 +133,4 @@ function validateSymbolReachable(
       );
     }
   }
-
-  if (memberPath) {
-    for (const sym of memberPath) {
-      // make sure we're not trying to access a static private from outside
-      // the static member scope.
-      if (
-        sym.flags & OutputSymbolFlags.StaticMember &&
-        sym.pythonFlags & PythonSymbolFlags.Private &&
-        currentPrivateScope?.staticMembers !== sym.scope
-      ) {
-        throw new Error(
-          "Cannot resolve private static member symbols from a different scope",
-        );
-      }
-    }
-  }
 }

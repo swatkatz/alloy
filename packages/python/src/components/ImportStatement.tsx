@@ -12,21 +12,6 @@ import {
 } from "../symbols/index.js";
 import { modulePath } from "../utils.js";
 
-// export interface ImportSymbol {
-//   module: string; // The module to import from
-//   names?: Array<string | { name: string; alias?: string }>; // Items to import
-//   alias?: string; // Alias for the module itself (if importing the whole module)
-//   wildcard?: boolean; // If true, use '*'
-// }
-
-// export interface ImportStatementsProps {
-//   imports: ImportSymbol[];
-// }
-
-/**
- * Represents a Python import statement.
- * Generates an import statement for the given module and names.
- */
 export interface ImportStatementsProps {
   records: ImportRecords;
 }
@@ -87,15 +72,18 @@ export function ImportStatement(props: ImportStatementProps) {
       namedImportSymbols.sort((a, b) => {
         return a.target.name.localeCompare(b.target.name);
       });
-      const importBindingsArray: string[] = namedImportSymbols.map(
-        (nis) => {
-          const localName = nis.local ? nis.local.name : nis.target.name;
-          const targetName = nis.target.name;
-          return localName === targetName ? targetName : `${targetName} as ${localName}`;
-        }
+      parts.push(`from ${path} import `);
+      parts.push(
+        mapJoin(
+          () => namedImportSymbols,
+          (nis) => (
+            <ImportBinding
+              importedSymbol={nis}
+            />
+          ),
+          { joiner: ", " },
+        ),
       );
-      const importBindings = importBindingsArray.join(", ");
-      parts.push(`from ${path} import ${importBindings}`);
     }
     return parts;
   });
