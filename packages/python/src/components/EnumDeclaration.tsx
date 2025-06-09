@@ -4,6 +4,7 @@ import { PythonOutputSymbol } from "../symbols/index.js";
 import { ClassDeclaration } from "./ClassDeclaration.js";
 import { DeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
+import { enumModule } from "../builtins/python.js";
 import { useSourceFile } from "./SourceFile.js";
 
 export interface EnumProps extends DeclarationProps {
@@ -28,10 +29,6 @@ export interface EnumProps extends DeclarationProps {
    * Children can be additional Enum components.
    */
   children?: Children;
-  /**
-   * Optional refkey for symbol referencing.
-   */
-  refkey?: Refkey;
 }
 
 /**
@@ -67,22 +64,24 @@ export function EnumDeclaration(props: EnumProps) {
     );
     return (
       <>
-        {name} = {baseType}('{name}', {memberExpr})
+        {name} = {enumModule['enum'].Enum}('{name}', {memberExpr})
       </>
     );
   }
 
-  let memberList: Array<{ name: string; value?: string | number }> =
-    props.members ?? [];
+  let memberList: Array<{ name: string; value?: string | number; auto?: boolean }> =
+    (props.members ?? []).map((m) =>
+      m.value === undefined ? { ...m, auto: false } : m,
+    );
   if (props.style === "auto") {
     memberList = memberList.map((m) =>
-      m.value === undefined ? { name: m.name, value: "auto()" } : m,
+      m.value === undefined ? { name: m.name, auto: true } : m,
     );
   }
   return (
-    <ClassDeclaration name={props.name} bases={[baseType]}>
+    <ClassDeclaration name={props.name} bases={[enumModule["enum"][baseType]]}>
       <For each={memberList} hardline>
-        {(member) => <EnumMember name={member.name} value={member.value} />}
+        {(member) => <EnumMember name={member.name} value={member.value} auto={member.auto} />}
       </For>
       {props.children}
     </ClassDeclaration>

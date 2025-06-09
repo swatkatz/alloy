@@ -10,7 +10,7 @@ it("uses import from external library", () => {
     name: "requests",
     version: "1.0.0",
     descriptor: {
-      ".": {
+      "requests": {
         named: ["get", "post"],
       },
       "requests.models": {

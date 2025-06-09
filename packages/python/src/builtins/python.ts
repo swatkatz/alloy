@@ -9,7 +9,7 @@ export const enumModule = createModule({
   version: "3.11",
   builtin: true,
   descriptor: {
-    ".": {
+    "enum": {
       named: [
         "auto",
         "Enum",

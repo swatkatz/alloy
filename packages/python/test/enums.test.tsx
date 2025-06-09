@@ -46,8 +46,7 @@ describe("Python Enum", () => {
       </Output>,
     );
     const expected = d`
-      from enum import Enum
-      from enum import auto
+      from enum import auto, Enum
 
       class Animal(Enum):
         DOG = auto()
@@ -75,8 +74,7 @@ describe("Python Enum", () => {
       </Output>,
     );
     const expected = d`
-      from enum import Flag
-      from enum import auto
+      from enum import auto, Flag
 
       class Permission(Flag):
         READ = 1
