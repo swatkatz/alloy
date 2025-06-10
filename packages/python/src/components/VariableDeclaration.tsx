@@ -13,7 +13,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   const name = usePythonNamePolicy().getName(props.name, "variable");
 
   // Handle optional type annotation
-  const typeAnnotation = props.type ? code`: ${props.type}` : "";
+  const typeAnnotation = props.type && !props.instanceVar ? code`: ${props.type}` : "";
 
   // If omitNone is true and value is undefined, omit assignment entirely
   if (props.omitNone && props.value === undefined) {

@@ -33,8 +33,8 @@ it("uses import from external library", () => {
             type={requestsLib["requests.models"].Response}
             name="response"
           />
-          <py.ObjectDeclaration type={refkey("A")} name="myModel" args={[
-            <py.VariableDeclaration name="name" value={<py.Value jsValue="initValue" />} />
+          <py.ObjectDeclaration type={refkey("A")} name="myModel" parameters={[
+            { name: "name", value: <py.Value jsValue="initValue" /> },
           ]} />
         </py.StatementList>
       </py.SourceFile>
@@ -50,6 +50,6 @@ it("uses import from external library", () => {
 
     request: Request = Request()
     response: Response = Response()
-    myModel: A = A(name = "initValue")
+    myModel: A = A(name="initValue")
   `);
 });

@@ -1,22 +1,27 @@
-import { Children, code } from "@alloy-js/core";
-import { ArgumentList } from "./ArgumentList.jsx";
-import { BaseDeclarationProps } from "./Declaration.js";
-import { ModifierProps } from "./Modifiers.jsx";
-import { VariableDeclaration } from "./VariableDeclaration.js";
+import { Children, Indent, Scope, Show, code } from "@alloy-js/core";
+import { usePythonNamePolicy } from "../name-policy.js";
+import { Declaration } from "./Declaration.jsx";
+import { InstanceParameters, InstanceParametersProps } from "./Parameters.jsx";
+import { VariableDeclaration } from "./VariableDeclaration.jsx";
 
-export interface ObjectDeclarationProps
-  extends BaseDeclarationProps,
-    ModifierProps {
+export interface ObjectDeclarationProps extends InstanceParametersProps {
+  name: string; // e.g. "foo"
   type: Children;
-  args?: Children[];
 }
 
-/**
- * Shorthand to instantiate a new object.
- * Declares it with 'new' and passes arguments to the constructor of the object, if any
- */
 export function ObjectDeclaration(props: ObjectDeclarationProps) {
-  const args = <ArgumentList args={props.args} />;
-  const value = code` ${props.type}${args}`;
-  return <VariableDeclaration {...props} value={value} />;
+  const name = usePythonNamePolicy().getName(props.name, "method");
+  const params = (
+    <InstanceParameters
+      parameters={props.parameters}
+      args={props.args}
+      kwargs={props.kwargs}
+    />
+  );
+  const value = code` ${props.type}(${params})`; // Include params in the value
+  return (
+    <Declaration {...props} name={name}>
+      <VariableDeclaration {...props} value={value} />
+    </Declaration>
+  );
 }

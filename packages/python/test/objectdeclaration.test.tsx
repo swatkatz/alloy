@@ -11,11 +11,10 @@ it("declaration of class instance with variables", () => {
         <py.StatementList>
           <py.ClassDeclaration name="A" />
           <hbr />
-          <py.ObjectDeclaration type={refkey("A")} name="myModel" args={[
-            <py.VariableDeclaration name="myVar" value={<py.Value jsValue={1} />} instanceVar={true} />,
-            <py.VariableDeclaration name="myOtherVar" value={<py.Value jsValue={true} />} instanceVar={true} />,
-            <py.Value jsValue={"test"} />
-          ]} />
+          <py.ObjectDeclaration type={refkey("A")} name="myModel" parameters={[
+              { name: "x", value: <py.Value jsValue={1} /> },
+              { name: "y", value: <py.Value jsValue={0} /> },
+            ]} />
         </py.StatementList>
       </py.SourceFile>
     </Output>,
@@ -26,6 +25,6 @@ it("declaration of class instance with variables", () => {
       pass
 
 
-    myModel: A = A(myVar=1, myOtherVar=True, "test")
+    myModel: A = A(x=1, y=0)
   `);
 });

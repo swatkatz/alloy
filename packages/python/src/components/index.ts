@@ -1,4 +1,3 @@
-export * from "./ArgumentList.js"
 export * from "./ClassDeclaration.js";
 export * from "./Declaration.js";
 export * from "./EnumDeclaration.js";
