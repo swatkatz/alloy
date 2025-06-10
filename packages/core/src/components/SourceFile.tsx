@@ -49,7 +49,7 @@ export function SourceFile(props: SourceFileProps) {
     tabWidth: props.tabWidth,
     useTabs: props.useTabs,
   };
-
+  
   return (
     <SourceFileContext.Provider value={context}>
       <Show when={props.header !== undefined}>

@@ -5,7 +5,12 @@ import {
   List,
   OutputSymbolFlags,
   BlockProps,
-  computed
+  computed,
+  useBinder,
+  useScope,
+  useContext,
+  SourceFileContext,
+  refkey
 } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol,  } from "../symbols/python-output-symbol.js";
@@ -39,11 +44,22 @@ export function PythonBlock(props: BlockProps) {
 
 
 export function ClassDeclaration(props: ClassDeclarationProps) {
+  const binder = useBinder();
+  const scope = useScope();
+  const fileContext = useContext(SourceFileContext);
+  const module = fileContext ?
+    usePythonNamePolicy().getName(fileContext.path.replace(/\.py$/, ""),
+    "class",
+  ) : "";
   const namePolicy = usePythonNamePolicy();
   const basesPart = props.bases && <>(<List children={props.bases} comma space />)</>;
+  const name = namePolicy.getName(props.name!, "class");
 
-  const sym = new PythonOutputSymbol(namePolicy.getName(props.name!, "class"), {
-    refkeys: props.refkey,
+  const sym = new PythonOutputSymbol(name, {
+    binder: binder,
+    scope: scope,
+    module: module,
+    refkeys: props.refkey ?? refkey(props.name!),
     flags:
       (props.flags ?? OutputSymbolFlags.None) |
       (OutputSymbolFlags.MemberContainer |

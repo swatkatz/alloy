@@ -118,6 +118,7 @@ describe("Python Class", () => {
     const expected = d`
       class A:
         pass
+
       class B:
         bar: A
         foo: str

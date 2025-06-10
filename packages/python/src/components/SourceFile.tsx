@@ -2,6 +2,8 @@ import {
   ComponentContext,
   SourceFile as CoreSourceFile,
   createNamedContext,
+  OutputSymbol,
+  reactive,
   Scope,
   Show,
   SourceDirectoryContext,
@@ -10,12 +12,16 @@ import {
 } from "@alloy-js/core";
 import { join } from "pathe";
 import { getSourceDirectoryData } from "../source-directory-data.js";
-import { PythonModuleScope } from "../symbols/index.js";
-import { ImportStatements } from "./ImportStatement.js";
+import { PythonModuleScope, PythonOutputSymbol } from "../symbols/index.js";
+import { ImportStatements, ImportSymbol } from "./ImportStatement.js";
 import { Reference } from "./Reference.js";
+import { usePythonNamePolicy } from "../name-policy.js";
 
 export interface SourceFileContext {
   scope: PythonModuleScope;
+  addImport(symbol: OutputSymbol): string;
+  /** The module name for this file, e.g. 'test' for test.py */
+  module: string;
 }
 
 export const SourceFileContext: ComponentContext<SourceFileContext> =
@@ -36,11 +42,43 @@ export function SourceFile(props: SourceFileProps) {
   const directoryContext = useContext(SourceDirectoryContext)!;
   const sdData = getSourceDirectoryData(directoryContext);
   const currentDir = directoryContext.path;
-  const path: string = join(currentDir, props.path);
+  // Name of the scope is derived from the file path, minus the .py extension
+  const path: string = join(currentDir, props.path).replace(/\.py$/, "")
   const scope = new PythonModuleScope(path);
   sdData.modules.add(scope);
+  // Collection of import symbols
+  const importRecords: ImportSymbol[] = reactive([]);
+  // Map a symbol to import name, keep track of already imported symbols
+  const importedSymbols = new Map<OutputSymbol, string>();
+
+  function addImport(symbol: PythonOutputSymbol): string {
+    if (importedSymbols.has(symbol)) {
+      return importedSymbols.get(symbol)!;
+    }
+
+    // Only add import if the symbol is from a different module
+    if (symbol.module && symbol.module !== module) {
+      importRecords.push({
+        module: symbol.module,
+        names: [symbol.name],
+        wildcard: false, // TODO: Handle wildcard imports if needed
+      });
+    }
+
+    importedSymbols.set(symbol, symbol.name);
+    return symbol.name;
+  }
+
+  // Derive module name from file path (strip .py extension)
+  const module = usePythonNamePolicy().getName(
+    props.path.replace(/\.py$/, ""),
+    "class",
+  );
+
   const sfContext: SourceFileContext = {
     scope,
+    addImport,
+    module,
   };
 
   const header =
@@ -50,7 +88,6 @@ export function SourceFile(props: SourceFileProps) {
         headerComment={props.headerComment}
       />
     : undefined;
-
   return (
     <CoreSourceFile
       path={props.path}

@@ -35,7 +35,6 @@ export function ref(
     const { targetDeclaration, pathDown, memberPath } = resolveResult.value;
 
     // For Python, you may want to add an import if the symbol is from another module
-    // return untrack(() => sourceFile!.addImport(targetDeclaration));
 
     // if we resolved a instance member, check if we should be able to access
     // it.

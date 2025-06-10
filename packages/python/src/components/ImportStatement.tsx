@@ -12,6 +12,13 @@ import {
 } from "../symbols/index.js";
 import { modulePath } from "../utils.js";
 
+export interface ImportSymbol {
+  module: string; // The module to import from
+  names?: Array<string | { name: string; alias?: string }>; // Items to import
+  alias?: string; // Alias for the module itself (if importing the whole module)
+  wildcard?: boolean; // If true, use '*'
+}
+
 export interface ImportStatementsProps {
   records: ImportRecords;
 }
