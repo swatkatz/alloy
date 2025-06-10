@@ -1,4 +1,4 @@
-import { Output, render } from "@alloy-js/core";
+import { Output, refkey, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { expect, it } from "vitest";
 import * as py from "../src/components/index.js";
@@ -23,6 +23,8 @@ it("uses import from external library", () => {
     <Output externals={[requestsLib]}>
       <py.SourceFile path="test.py">
         <py.StatementList>
+          <py.ClassDeclaration name="A" />
+          <hbr />
           <py.ObjectDeclaration
             type={requestsLib["requests.models"].Request}
             name="request"
@@ -31,6 +33,9 @@ it("uses import from external library", () => {
             type={requestsLib["requests.models"].Response}
             name="response"
           />
+          <py.ObjectDeclaration type={refkey("A")} name="myModel" args={[
+            <py.VariableDeclaration name="name" value={<py.Value jsValue="initValue" />} />
+          ]} />
         </py.StatementList>
       </py.SourceFile>
     </Output>,
@@ -39,7 +44,12 @@ it("uses import from external library", () => {
   expect(findFile(res, "test.py").contents).toBe(d`
     from requests.models import Request, Response
 
+    class A:
+      pass
+
+
     request: Request = Request()
     response: Response = Response()
+    myModel: A = A(name = "initValue")
   `);
 });

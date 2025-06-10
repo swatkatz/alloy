@@ -2,7 +2,6 @@ import { Children, For, Indent } from "@alloy-js/core";
 
 export interface ArgumentListProps {
   args?: Children[];
-  omitParensWhenEmpty?: boolean;
 }
 
 /**
@@ -11,10 +10,6 @@ export interface ArgumentListProps {
  * empty string.
  */
 export function ArgumentList(props: ArgumentListProps) {
-  if (props.omitParensWhenEmpty && (!props.args || props.args.length === 0)) {
-    return "";
-  }
-
   return (
     <group>
       (
