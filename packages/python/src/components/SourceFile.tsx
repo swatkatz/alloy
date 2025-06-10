@@ -11,7 +11,6 @@ import {
   type Children,
 } from "@alloy-js/core";
 import { join } from "pathe";
-import { getSourceDirectoryData } from "../source-directory-data.js";
 import { PythonModuleScope, PythonOutputSymbol } from "../symbols/index.js";
 import { ImportStatements, ImportSymbol } from "./ImportStatement.js";
 import { Reference } from "./Reference.js";
@@ -40,12 +39,10 @@ export interface SourceFileProps {
 
 export function SourceFile(props: SourceFileProps) {
   const directoryContext = useContext(SourceDirectoryContext)!;
-  const sdData = getSourceDirectoryData(directoryContext);
   const currentDir = directoryContext.path;
   // Name of the scope is derived from the file path, minus the .py extension
   const path: string = join(currentDir, props.path).replace(/\.py$/, "")
   const scope = new PythonModuleScope(path);
-  sdData.modules.add(scope);
   // Collection of import symbols
   const importRecords: ImportSymbol[] = reactive([]);
   // Map a symbol to import name, keep track of already imported symbols
