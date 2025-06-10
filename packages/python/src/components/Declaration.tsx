@@ -11,7 +11,6 @@ import {
 } from "@alloy-js/core";
 import { PythonElements, usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
-import { PrivateScopeContext } from "../context/private-scope.js";
 
 export interface BaseDeclarationProps {
   /**
@@ -90,17 +89,6 @@ export function Declaration(props: DeclarationProps) {
 
   function withMemberScope(children: Children) {
     return <MemberScope owner={sym}>{children}</MemberScope>;
-  }
-
-  function withPrivateMemberScope(children: Children) {
-    const context: PrivateScopeContext = {
-      instanceMembers: sym.privateMemberScope!,
-    };
-    return (
-      <PrivateScopeContext.Provider value={context}>
-        {children}
-      </PrivateScopeContext.Provider>
-    );
   }
 
   let children: Children = () => props.children;

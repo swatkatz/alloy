@@ -8,10 +8,6 @@ import {
   useMemberScope,
 } from "@alloy-js/core";
 import { SourceFileContext } from "../components/SourceFile.jsx";
-import {
-  PrivateScopeContext,
-  usePrivateScope,
-} from "../context/private-scope.js";
 import { PythonOutputScope } from "./scopes.js";
 import { PythonMemberScope } from "./python-member-scope.js";
 import { PythonModuleScope } from "./python-module-scope.js";
@@ -25,7 +21,6 @@ export function ref(
     refkey as Refkey,
   );
   const currentScope = useMemberScope();
-  const currentPrivateScope = usePrivateScope();
 
   return memo(() => {
     if (resolveResult.value === undefined) {
@@ -40,12 +35,6 @@ export function ref(
     // it.
     if (targetDeclaration.flags & OutputSymbolFlags.InstanceMember) {
       if (targetDeclaration.pythonFlags & PythonSymbolFlags.Private) {
-        if (currentPrivateScope?.instanceMembers !== targetDeclaration.scope) {
-          throw new Error(
-            "Cannot resolve private member symbols from a different scope",
-          );
-        }
-      } else {
         if (currentScope?.instanceMembers !== targetDeclaration.scope) {
           throw new Error(
             "Cannot resolve member symbols from a different member scope",
@@ -53,8 +42,6 @@ export function ref(
         }
       }
     }
-
-    validateSymbolReachable(pathDown, memberPath, currentPrivateScope);
 
     // Where the target declaration is relative to the referencing scope.
     // * package: target symbol is in a different package
@@ -118,18 +105,4 @@ function buildMemberExpression(path: PythonOutputSymbol[]) {
   }
 
   return memberExpr;
-}
-
-function validateSymbolReachable(
-  path: PythonOutputScope[],
-  memberPath: PythonOutputSymbol[] | undefined,
-  currentPrivateScope: PrivateScopeContext | undefined,
-) {
-  for (const scope of path) {
-    if (scope.kind === "function") {
-      throw new Error(
-        "Cannot reference a symbol inside a function from outside a function",
-      );
-    }
-  }
 }
