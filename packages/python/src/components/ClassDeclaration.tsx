@@ -12,7 +12,6 @@ import { PythonOutputSymbol,  } from "../symbols/python-output-symbol.js";
 import { Declaration, BaseDeclarationProps } from "./Declaration.js";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
-  name: string;
   bases?: Children[];
 }
 
