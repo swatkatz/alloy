@@ -1,12 +1,12 @@
 import { Children, For, Refkey } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
-import { createPythonSymbol } from "../symbols/index.js";
 import { ClassDeclaration } from "./ClassDeclaration.js";
 import { DeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
-import { useSourceFileContext } from "./SourceFile.js";
+import { enumModule } from "../builtins/python.js";
 
 export interface EnumProps extends DeclarationProps {
+  name: string;
   /**
    * The base type of the enum. One of: 'Enum', 'IntEnum', 'StrEnum', 'Flag', 'IntFlag'.
    * Defaults to 'Enum'.
@@ -28,10 +28,6 @@ export interface EnumProps extends DeclarationProps {
    * Children can be additional Enum components.
    */
   children?: Children;
-  /**
-   * Optional refkey for symbol referencing.
-   */
-  refkey?: Refkey;
 }
 
 /**
@@ -39,13 +35,6 @@ export interface EnumProps extends DeclarationProps {
  */
 export function EnumDeclaration(props: EnumProps) {
   const baseType = props.baseType || "Enum";
-  const sfContext = useSourceFileContext();
-  sfContext.addImport(
-    createPythonSymbol({
-      name: baseType,
-      module: "enum",
-    }),
-  );
 
   // Handle enum styles
   if (props.style === "functional") {
@@ -74,23 +63,24 @@ export function EnumDeclaration(props: EnumProps) {
     );
     return (
       <>
-        {name} = {baseType}('{name}', {memberExpr})
+        {name} = {enumModule['enum'].Enum}('{name}', {memberExpr})
       </>
     );
   }
 
-  let memberList: Array<{ name: string; value?: string | number }> =
-    props.members ?? [];
+  let memberList: Array<{ name: string; value?: string | number; auto?: boolean }> =
+    (props.members ?? []).map((m) =>
+      m.value === undefined ? { ...m, auto: false } : m,
+    );
   if (props.style === "auto") {
-    sfContext.addImport(createPythonSymbol({ name: "auto", module: "enum" }));
     memberList = memberList.map((m) =>
-      m.value === undefined ? { name: m.name, value: "auto()" } : m,
+      m.value === undefined ? { name: m.name, auto: true } : m,
     );
   }
   return (
-    <ClassDeclaration name={props.name} bases={[baseType]}>
+    <ClassDeclaration name={props.name} bases={[enumModule["enum"][baseType]]}>
       <For each={memberList} hardline>
-        {(member) => <EnumMember name={member.name} value={member.value} />}
+        {(member) => <EnumMember name={member.name} value={member.value} auto={member.auto} />}
       </For>
       {props.children}
     </ClassDeclaration>
