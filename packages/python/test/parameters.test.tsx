@@ -1,5 +1,8 @@
-import { Output } from "@alloy-js/core";
-import { describe, expect, it } from "vitest";
+import {
+  describe,
+  expect,
+  it
+} from "vitest";
 import * as py from "../src/components/index.js";
 import { toSourceText } from "./utils.jsx";
 
