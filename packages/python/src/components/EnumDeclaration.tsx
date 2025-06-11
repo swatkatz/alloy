@@ -6,7 +6,6 @@ import { EnumMember } from "./EnumMember.js";
 import { enumModule } from "../builtins/python.js";
 
 export interface EnumProps extends DeclarationProps {
-  name: string;
   /**
    * The base type of the enum. One of: 'Enum', 'IntEnum', 'StrEnum', 'Flag', 'IntFlag'.
    * Defaults to 'Enum'.
@@ -24,10 +23,6 @@ export interface EnumProps extends DeclarationProps {
    * Optional docstring for the enum.
    */
   doc?: Children;
-  /**
-   * Children can be additional Enum components.
-   */
-  children?: Children;
 }
 
 /**
