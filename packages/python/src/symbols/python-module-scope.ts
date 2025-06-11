@@ -80,14 +80,3 @@ export class PythonModuleScope extends OutputScope {
     return localSymbol;
   }
 }
-
-export function createPythonModuleScope(
-  name: string,
-  parent: OutputScope | undefined,
-  binder: Binder | undefined = undefined,
-): PythonModuleScope {
-  return new PythonModuleScope(name, {
-    parent: parent,
-    binder: binder,
-  });
-}
