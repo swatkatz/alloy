@@ -10,7 +10,6 @@ import {
   SymbolCreator,
 } from "@alloy-js/core";
 import { PythonModuleScope, PythonOutputSymbol, PythonOutputScope, ref } from "./symbols/index.js";
-import { createPythonModuleScope } from "./symbols/python-module-scope.js";
 
 export interface ModuleDescriptor {
   [path: string]: ModuleSymbolsDescriptor;
