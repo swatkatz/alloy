@@ -91,6 +91,7 @@ describe("Python Class", () => {
     `;
     const mod2Expected = d`
       from mod1 import A
+
       class B(A):
         pass
     `;
@@ -103,7 +104,8 @@ describe("Python Class", () => {
       <Output>
         <py.SourceFile path="test.py">
           <py.ClassDeclaration name="A" />
-          <br />
+          <hbr />
+          <hbr />
           <py.ClassDeclaration name="B">
             <List hardline>
               <py.VariableDeclaration name="bar" type={refkey("A")} omitNone />
@@ -116,6 +118,7 @@ describe("Python Class", () => {
     const expected = d`
       class A:
         pass
+
       class B:
         bar: A
         foo: str
