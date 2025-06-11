@@ -1,11 +1,14 @@
-import { Children, For, Refkey } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js";
+import {
+  Children,
+  For
+} from "@alloy-js/core";
 import { ClassDeclaration } from "./ClassDeclaration.js";
-import { DeclarationProps } from "./Declaration.js";
+import { BaseDeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
 import { enumModule } from "../builtins/python.js";
+import { getFormattedName } from "../utils.js";
 
-export interface EnumProps extends DeclarationProps {
+export interface EnumProps extends BaseDeclarationProps {
   /**
    * The base type of the enum. One of: 'Enum', 'IntEnum', 'StrEnum', 'Flag', 'IntFlag'.
    * Defaults to 'Enum'.
@@ -14,7 +17,7 @@ export interface EnumProps extends DeclarationProps {
   /**
    * Members of the enum as an array of objects.
    */
-  members?: Array<{ name: string; value?: string | number }>;
+  members?: Array<{ name: string; value?: Children; jsValue?: string | number }>;
   /**
    * The enum style: 'classic' (default), 'auto', or 'functional'.
    */
@@ -33,7 +36,7 @@ export function EnumDeclaration(props: EnumProps) {
 
   // Handle enum styles
   if (props.style === "functional") {
-    const name = usePythonNamePolicy().getName(props.name, "enum");
+    const name = getFormattedName(props.name, "enum");
     const members = props.members ?? [];
     let opener, ender;
     if (members.length && members.every((m) => m.value === undefined)) {
@@ -63,7 +66,7 @@ export function EnumDeclaration(props: EnumProps) {
     );
   }
 
-  let memberList: Array<{ name: string; value?: string | number; auto?: boolean }> =
+  let memberList: Array<{ name: string; value?: Children; jsValue?: string | number; auto?: boolean }> =
     (props.members ?? []).map((m) =>
       m.value === undefined ? { ...m, auto: false } : m,
     );
@@ -73,9 +76,10 @@ export function EnumDeclaration(props: EnumProps) {
     );
   }
   return (
+    // ClassDeclaration creates a symbol, so we don't need to create one here.
     <ClassDeclaration name={props.name} bases={[enumModule["."][baseType]]}>
       <For each={memberList} hardline>
-        {(member) => <EnumMember name={member.name} value={member.value} auto={member.auto} />}
+        {(member) => <EnumMember name={member.name} value={member.value} jsValue={member.jsValue} auto={member.auto} />}
       </For>
       {props.children}
     </ClassDeclaration>
