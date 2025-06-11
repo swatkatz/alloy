@@ -45,14 +45,15 @@ function createSymbols(
   props: CreateModuleProps<ModuleDescriptor>,
   refkeys: Record<string, any>,
 ) {
+  // Create a module scope each of the names in the descriptor
   for (const [path, symbols] of Object.entries(props.descriptor)) {
     const keys = path === "." ? refkeys : refkeys[path];
-    console.log(path);
     const moduleScope = new PythonModuleScope(path, {
       parent: undefined,
       binder: binder,
     });
 
+    // Creates a symbol for each element in the named array
     for (const exportedName of symbols.named ?? []) {
       const key = keys[exportedName];
 
@@ -66,6 +67,7 @@ function createSymbols(
   }
 }
 
+// Creates a map of refkeys for each path in the descriptor
 export function createModule<const T extends ModuleDescriptor>(
   props: CreateModuleProps<T>,
 ): ModuleRefkeys<T> & SymbolCreator {
