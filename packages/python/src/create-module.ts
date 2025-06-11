@@ -76,7 +76,7 @@ export function createModule<const T extends ModuleDescriptor>(
   };
 
   for (const [path, symbols] of Object.entries(props.descriptor)) {
-    const keys = path === "." ? refkeys : (refkeys[path] = {});
+    const keys: Record<string, Refkey> = (refkeys[path] = {});
     for (const named of symbols.named ?? []) {
       keys[named] = refkey(props.descriptor, path, named);
     }
