@@ -11,6 +11,7 @@ it("uses import from external library", () => {
     descriptor: {
       ".": ["get", "post"],
       "models": ["Response", "Request"],
+      "models.anothermodule": ["something"],
     },
   });
 
@@ -24,6 +25,8 @@ it("uses import from external library", () => {
         {requestsLib["models"].Request}
         <hbr />
         {requestsLib["models"].Response}
+        <hbr />
+        {requestsLib["models.anothermodule"].something}
       </py.SourceFile>
     </Output>,
   );
@@ -33,9 +36,11 @@ it("uses import from external library", () => {
     from requests import post
     from requests.models import Request
     from requests.models import Response
+    from requests.models.anothermodule import something
     get
     post
     Request
     Response
+    something
   `);
 });

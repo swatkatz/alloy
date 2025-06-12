@@ -35,7 +35,6 @@ function createSymbols(
     // Otherwise, we append the path to the module name
     const fullModuleScopeName = props.name + (path === "." ? "" : `.${path}`);
     const keys = refkeys[path];
-    console.log(path);
     const moduleScope = new PythonModuleScope(fullModuleScopeName, {
       parent: undefined,
       binder: binder,
