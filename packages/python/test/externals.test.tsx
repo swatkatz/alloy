@@ -1,4 +1,4 @@
-import { Output, refkey, render } from "@alloy-js/core";
+import { Output, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { expect, it } from "vitest";
 import * as py from "../src/components/index.js";
