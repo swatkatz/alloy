@@ -8,27 +8,22 @@ import { findFile } from "./utils.js";
 it("uses import from external library", () => {
   const requestsLib = createModule({
     name: "requests",
-    version: "1.0.0",
     descriptor: {
-      "requests": {
-        named: ["get", "post"],
-      },
-      "requests.models": {
-        named: ["Response", "Request"],
-      },
+      ".": ["get", "post"],
+      "models": ["Response", "Request"],
     },
   });
 
   const res = render(
     <Output externals={[requestsLib]}>
       <py.SourceFile path="test.py">
-        {requestsLib["requests"].get}
+        {requestsLib["."].get}
         <hbr />
-        {requestsLib["requests"].post}
+        {requestsLib["."].post}
         <hbr />
-        {requestsLib["requests.models"].Request}
+        {requestsLib["models"].Request}
         <hbr />
-        {requestsLib["requests.models"].Response}
+        {requestsLib["models"].Response}
       </py.SourceFile>
     </Output>,
   );

@@ -7,37 +7,22 @@ import {
 } from "@alloy-js/core";
 import { PythonModuleScope, PythonOutputSymbol } from "./symbols/index.js";
 
+// Now each module is just a string[] of names
 export interface ModuleDescriptor {
-  [path: string]: ModuleSymbolsDescriptor;
-}
-
-export type NamedModuleDescriptor = string;
-
-export interface ModuleSymbolsDescriptor {
-  named?: NamedModuleDescriptor[];
+  [path: string]: string[];
 }
 
 export interface CreateModuleProps<T extends ModuleDescriptor> {
   name: string;
-  version: string;
   descriptor: T;
 }
 
-export type ModuleExports<
-  D extends { named?: NamedModuleDescriptor[] },
-> = D["named"] extends NamedModuleDescriptor[] ? NamedMap<D["named"]> : {};
-
-export type ModuleRefkeys<
-  PD extends Record<
-    string,
-    { named?: NamedModuleDescriptor[] }
-  >,
-> = {
-  [P in keyof PD]: ModuleExports<PD[P]>;
+export type NamedMap<TDescriptor extends readonly string[]> = {
+  [S in TDescriptor[number]]: Refkey;
 };
 
-export type NamedMap<TDescriptor extends readonly NamedModuleDescriptor[]> = {
-  [S in TDescriptor[number]]: Refkey;
+export type ModuleRefkeys<PD extends Record<string, string[]>> = {
+  [P in keyof PD]: NamedMap<PD[P]>;
 };
 
 function createSymbols(
@@ -45,16 +30,20 @@ function createSymbols(
   props: CreateModuleProps<ModuleDescriptor>,
   refkeys: Record<string, any>,
 ) {
-  // Create a module scope each of the names in the descriptor
+  // Create a module scope for each path in the descriptor
   for (const [path, symbols] of Object.entries(props.descriptor)) {
-    const keys = path === "." ? refkeys : refkeys[path];
-    const moduleScope = new PythonModuleScope(path, {
+    // If the path is ".", we use the module name directly
+    // Otherwise, we append the path to the module name
+    const fullModuleScopeName = props.name + (path === "." ? "" : `.${path}`);
+    const keys = refkeys[path];
+    console.log(path);
+    const moduleScope = new PythonModuleScope(fullModuleScopeName, {
       parent: undefined,
       binder: binder,
     });
 
-    // Creates a symbol for each element in the named array
-    for (const exportedName of symbols.named ?? []) {
+    // Create a symbol for each exported name
+    for (const exportedName of symbols ?? []) {
       const key = keys[exportedName];
 
       const _ = new PythonOutputSymbol(exportedName, {
@@ -79,7 +68,7 @@ export function createModule<const T extends ModuleDescriptor>(
 
   for (const [path, symbols] of Object.entries(props.descriptor)) {
     const keys: Record<string, Refkey> = (refkeys[path] = {});
-    for (const named of symbols.named ?? []) {
+    for (const named of symbols ?? []) {
       keys[named] = refkey(props.descriptor, path, named);
     }
   }
