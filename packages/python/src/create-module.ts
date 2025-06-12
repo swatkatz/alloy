@@ -54,7 +54,28 @@ function createSymbols(
   }
 }
 
-// Creates a map of refkeys for each path in the descriptor
+// A module is a map of refkeys for each path in the descriptor.
+// Each path maps to a set of named refkeys for the exported symbols.
+// When one of the symbols is used, the relevant import will be added
+// to the source file, and the symbol will be available in the output.
+//
+// Most of the use cases will be for templates and not for use in JSX,
+// so the symbols will not be normally used directly in the code, but
+// there may be cases where you want to use them directly.
+//
+// Example:
+// ```ts
+// const requestsLib = createModule({
+//   name: "requests",
+//   descriptor: {
+//     ".": ["get", "post"],
+//   },
+// });
+// ```
+//
+// For this scenario, if requestsLib["."].get is used, it will add
+// the import `from requests import get` and would render the symbol
+// as `get` in the output.
 export function createModule<const T extends ModuleDescriptor>(
   props: CreateModuleProps<T>,
 ): ModuleRefkeys<T> & SymbolCreator {
