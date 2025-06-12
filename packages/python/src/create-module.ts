@@ -7,7 +7,6 @@ import {
 } from "@alloy-js/core";
 import { PythonModuleScope, PythonOutputSymbol } from "./symbols/index.js";
 
-// Now each module is just a string[] of names
 export interface ModuleDescriptor {
   [path: string]: string[];
 }
