@@ -39,7 +39,7 @@ export function ImportStatements(props: ImportStatementsProps) {
       // todo: don't allow importing non-exported symbols
       targetPath = relative(currentDir, module.name);
 
-      if (properties.symbols && properties.symbols.size > 1) {
+      if (properties.symbols && properties.symbols.size > 0) {
         const sortedSymbols = Array.from(properties.symbols).sort((a, b) =>
           a.target.name.localeCompare(b.target.name)
         );
@@ -55,6 +55,7 @@ export function ImportStatements(props: ImportStatementsProps) {
           </>
         ));
       } else {
+        // If no symbols are specified, it's either a wildcard import or a module import
         return (
           <ImportStatement
         path={targetPath}
