@@ -1,13 +1,14 @@
 import { Output, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, it } from "vitest";
+import { enumModule } from "../src/builtins/python.js";
 import * as py from "../src/components/index.js";
 import { assertFileContents } from "./utils.jsx";
 
 describe("Python Enum", () => {
   it("classic enum with explicit values", () => {
     const result = render(
-      <Output>
+      <Output externals={[enumModule]}>
         <py.SourceFile path="test.py">
           <py.EnumDeclaration
             name="Color"
@@ -33,7 +34,7 @@ describe("Python Enum", () => {
 
   it("enum with auto() values", () => {
     const result = render(
-      <Output>
+      <Output externals={[enumModule]}>
         <py.SourceFile path="test.py">
           <py.EnumDeclaration
             name="Animal"
@@ -56,7 +57,7 @@ describe("Python Enum", () => {
 
   it("enum with mixed manual and auto() values", () => {
     const result = render(
-      <Output>
+      <Output externals={[enumModule]}>
         <py.SourceFile path="test.py">
           <py.EnumDeclaration
             name="Permission"
@@ -84,7 +85,7 @@ describe("Python Enum", () => {
 
   it("functional enum with list", () => {
     const result = render(
-      <Output>
+      <Output externals={[enumModule]}>
         <py.SourceFile path="test.py">
           <py.EnumDeclaration
             name="Direction"
@@ -108,7 +109,7 @@ describe("Python Enum", () => {
 
   it("functional enum with mapping", () => {
     const result = render(
-      <Output>
+      <Output externals={[enumModule]}>
         <py.SourceFile path="test.py">
           <py.EnumDeclaration
             name="Priority"
