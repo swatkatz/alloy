@@ -1,4 +1,4 @@
-import { Output, refkey, render } from "@alloy-js/core";
+import { Output, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { expect, it } from "vitest";
 import * as py from "../src/components/index.js";
@@ -8,27 +8,25 @@ import { findFile } from "./utils.js";
 it("uses import from external library", () => {
   const requestsLib = createModule({
     name: "requests",
-    version: "1.0.0",
     descriptor: {
-      "requests": {
-        named: ["get", "post"],
-      },
-      "requests.models": {
-        named: ["Response", "Request"],
-      },
+      ".": ["get", "post"],
+      "models": ["Response", "Request"],
+      "models.anothermodule": ["something"],
     },
   });
 
   const res = render(
     <Output externals={[requestsLib]}>
       <py.SourceFile path="test.py">
-        {requestsLib["requests"].get}
+        {requestsLib["."].get}
         <hbr />
-        {requestsLib["requests"].post}
+        {requestsLib["."].post}
         <hbr />
-        {requestsLib["requests.models"].Request}
+        {requestsLib["models"].Request}
         <hbr />
-        {requestsLib["requests.models"].Response}
+        {requestsLib["models"].Response}
+        <hbr />
+        {requestsLib["models.anothermodule"].something}
       </py.SourceFile>
     </Output>,
   );
@@ -38,10 +36,12 @@ it("uses import from external library", () => {
     from requests import post
     from requests.models import Request
     from requests.models import Response
+    from requests.models.anothermodule import something
 
     get
     post
     Request
     Response
+    something
   `);
 });
