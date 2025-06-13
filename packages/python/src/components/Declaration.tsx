@@ -64,8 +64,6 @@ export interface DeclarationProps extends Omit<BaseDeclarationProps, "name"> {
  */
 export function Declaration(props: DeclarationProps) {
   let sym: PythonOutputSymbol;
-  const binder = useBinder();
-  const scope = useScope();
   const fileContext = useContext(SourceFileContext);
   const module = props.name ?? (fileContext ? fileContext.path : "");
 
@@ -75,23 +73,11 @@ export function Declaration(props: DeclarationProps) {
     const namePolicy = usePythonNamePolicy();
 
     sym = new PythonOutputSymbol(namePolicy.getName(props.name!, props.nameKind!), {
-      binder: binder,
-      scope: scope,
-      module: module,
       refkeys: props.refkey,
       flags: props.flags,
       metadata: props.metadata,
+      module: module,
     });
-  }
-
-  function withMemberScope(children: Children) {
-    return <MemberScope owner={sym}>{children}</MemberScope>;
-  }
-
-  let children: Children = () => props.children;
-
-  if (sym.flags & OutputSymbolFlags.MemberContainer) {
-    children = withMemberScope(children);
   }
 
   return <CoreDeclaration symbol={sym}>{props.children}</CoreDeclaration>;

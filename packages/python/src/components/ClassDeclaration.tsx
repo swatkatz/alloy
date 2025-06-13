@@ -43,8 +43,6 @@ export function PythonBlock(props: BlockProps) {
 }
 
 export function ClassDeclaration(props: ClassDeclarationProps) {
-  const binder = useBinder();
-  const scope = useScope();
   const fileContext = useContext(SourceFileContext);
   const module = fileContext ?
     usePythonNamePolicy().getName(fileContext.path.replace(/\.py$/, ""),
@@ -55,15 +53,13 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
   const name = namePolicy.getName(props.name!, "class");
 
   const sym = new PythonOutputSymbol(name, {
-    binder: binder,
-    scope: scope,
-    module: module,
     refkeys: props.refkey ?? refkey(props.name!),
     flags:
       (props.flags ?? OutputSymbolFlags.None) |
       (OutputSymbolFlags.MemberContainer |
         OutputSymbolFlags.StaticMemberContainer),
     metadata: props.metadata,
+    module: module,
   });
   const hasChildren =
     childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
