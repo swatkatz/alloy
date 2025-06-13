@@ -26,7 +26,7 @@ export interface EnumMemberProps {
  */
 export function EnumMember(props: EnumMemberProps) {
   const name = usePythonNamePolicy().getName(props.name, "class");
-  const autoReference = props.auto === true ? enumModule["enum"].auto : undefined;
+  const autoReference = props.auto === true ? enumModule["."].auto : undefined;
   const value = props.auto === true ? <>{autoReference}()</> : props.value;
   if (props.functional) {
     return (

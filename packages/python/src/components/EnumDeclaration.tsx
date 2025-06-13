@@ -58,7 +58,7 @@ export function EnumDeclaration(props: EnumProps) {
     );
     return (
       <>
-        {name} = {enumModule['enum'].Enum}('{name}', {memberExpr})
+        {name} = {enumModule['.'].Enum}('{name}', {memberExpr})
       </>
     );
   }
@@ -73,7 +73,7 @@ export function EnumDeclaration(props: EnumProps) {
     );
   }
   return (
-    <ClassDeclaration name={props.name} bases={[enumModule["enum"][baseType]]}>
+    <ClassDeclaration name={props.name} bases={[enumModule["."][baseType]]}>
       <For each={memberList} hardline>
         {(member) => <EnumMember name={member.name} value={member.value} auto={member.auto} />}
       </For>
