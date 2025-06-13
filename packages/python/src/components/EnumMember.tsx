@@ -25,7 +25,7 @@ export interface EnumMemberProps {
  * A Python enum member.
  */
 export function EnumMember(props: EnumMemberProps) {
-  const name = usePythonNamePolicy().getName(props.name, "class");
+  const name = usePythonNamePolicy().getName(props.name, "enum-member");
   const autoReference = props.auto === true ? enumModule["."].auto : undefined;
   const value = props.auto === true ? <>{autoReference}()</> : props.value;
   if (props.functional) {
@@ -37,7 +37,7 @@ export function EnumMember(props: EnumMemberProps) {
   }
   return (
     <>
-      {props.name}
+      {name}
       <Show when={value !== undefined}> = {value}</Show>
     </>
   );

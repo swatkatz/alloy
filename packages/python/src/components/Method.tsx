@@ -9,10 +9,11 @@ export interface MethodProps extends ParametersProps {
   classMethod?: boolean; // true if this is a class method
   children?: Children; // method body
   returnType?: Children; // return type annotation
+  forceName?: boolean; // if true, the name will not be transformed by the name policy
 }
 
 export function Method(props: MethodProps) {
-  const name = usePythonNamePolicy().getName(props.name, "method");
+  const name = !props.forceName ? usePythonNamePolicy().getName(props.name, "method") : props.name;
   // Validate that only one of instanceMethod or classMethod is true
   if (props.instanceMethod && props.classMethod) {
     throw new Error(
@@ -53,6 +54,7 @@ export function InitMethod(
       name="__init__"
       instanceMethod={true}
       classMethod={false}
+      forceName={true}
     />
   );
 }
