@@ -1,91 +1,66 @@
 import {
   ComponentContext,
   SourceFile as CoreSourceFile,
-  SourceFileContext as CoreSourceFileContext,
-  createContext,
+  createNamedContext,
   OutputSymbol,
   reactive,
   Scope,
+  Show,
+  SourceDirectoryContext,
   useContext,
+  type Children,
 } from "@alloy-js/core";
-import { Children } from "@alloy-js/core/jsx-runtime";
-import { usePythonNamePolicy } from "../name-policy.js";
-import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
+import { join } from "pathe";
+import { PythonModuleScope } from "../symbols/index.js";
 import { ImportStatements, ImportSymbol } from "./ImportStatement.js";
 import { Reference } from "./Reference.js";
 
-export interface SourceFileContext extends CoreSourceFileContext {
-  addImport(symbol: OutputSymbol): string;
-  /** The module name for this file, e.g. 'test' for test.py */
-  module: string;
+export interface SourceFileContext {
+  scope: PythonModuleScope;
 }
 
 export const SourceFileContext: ComponentContext<SourceFileContext> =
-  createContext();
+  createNamedContext("@alloy-js/python SourceFile");
 
-// Context accessor
-export function useSourceFileContext(): SourceFileContext {
+export function useSourceFile() {
   return useContext(SourceFileContext)!;
 }
-
 export interface SourceFileProps {
   path: string;
   children?: Children;
+  header?: Children;
+  headerComment?: string;
+  export?: boolean | string;
 }
 
-/**
- * Represents a Python source file.
- *
- * Handles imports and top-level declarations.
- */
 export function SourceFile(props: SourceFileProps) {
+  const directoryContext = useContext(SourceDirectoryContext)!;
+  const currentDir = directoryContext.path;
+  // Name of the scope is derived from the file path, minus the .py extension
+  const path: string = join(currentDir, props.path).replace(/\.py$/, "")
+  const scope = new PythonModuleScope(path);
   // Collection of import symbols
   const importRecords: ImportSymbol[] = reactive([]);
   // Map a symbol to import name, keep track of already imported symbols
   const importedSymbols = new Map<OutputSymbol, string>();
 
-  // Add import to file if not already, returns name of imported symbol
-  function addImport(symbol: PythonOutputSymbol): string {
-    if (importedSymbols.has(symbol)) {
-      return importedSymbols.get(symbol)!;
-    }
-
-    // Only add import if the symbol is from a different module
-    if (symbol.module && symbol.module !== module) {
-      importRecords.push({
-        module: symbol.module,
-        names: [symbol.name],
-        wildcard: false, // TODO: Handle wildcard imports if needed
-      });
-    }
-
-    importedSymbols.set(symbol, symbol.name);
-    return symbol.name;
-  }
-
-  // Derive module name from file path (strip .py extension)
-  const module = usePythonNamePolicy().getName(
-    props.path.replace(/\.py$/, ""),
-    "class",
-  );
-
   const sfContext: SourceFileContext = {
-    path: props.path,
-    filetype: "py",
-    addImport,
-    module,
+    scope,
   };
 
   return (
-    <CoreSourceFile path={props.path} filetype="py" reference={Reference}>
-      {importRecords.length > 0 ?
-        <>
-          <ImportStatements imports={importRecords} />
-          <hbr />
-        </>
-      : undefined}
+    <CoreSourceFile
+      path={props.path}
+      filetype="py"
+      reference={Reference}
+    >
+      <Show when={scope.importedModules.size > 0}>
+        <ImportStatements records={scope.importedModules} />
+        <hbr />
+        <hbr />
+      </Show>
       <SourceFileContext.Provider value={sfContext}>
-        <Scope name={props.path} kind="source-file">
+        <Scope value={scope} kind="source-file">
           {props.children}
         </Scope>
       </SourceFileContext.Provider>

@@ -37,6 +37,7 @@ it("uses import from external library", () => {
     from requests.models import Request
     from requests.models import Response
     from requests.models.anothermodule import something
+
     get
     post
     Request
