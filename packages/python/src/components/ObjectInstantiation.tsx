@@ -4,13 +4,13 @@ import { Declaration } from "./Declaration.jsx";
 import { InstanceParameters, InstanceParametersProps } from "./Parameters.jsx";
 import { VariableDeclaration } from "./VariableDeclaration.jsx";
 
-export interface ObjectDeclarationProps extends InstanceParametersProps {
+export interface ObjectInstantiationProps extends InstanceParametersProps {
   name: string; // e.g. "foo"
   type: Children;
 }
 
-export function ObjectDeclaration(props: ObjectDeclarationProps) {
-  const name = usePythonNamePolicy().getName(props.name, "method");
+export function ObjectInstantiation(props: ObjectInstantiationProps) {
+  const name = usePythonNamePolicy().getName(props.name, "class");
   const params = (
     <InstanceParameters
       parameters={props.parameters}
