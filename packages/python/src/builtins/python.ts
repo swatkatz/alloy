@@ -6,17 +6,14 @@ type dummy = SymbolCreator;
 
 export const enumModule = createModule({
   name: "enum",
-  version: "3.11",
   descriptor: {
-    "enum": {
-      named: [
-        "auto",
-        "Enum",
-        "Flag",
-        "IntEnum",
-        "IntFlag",
-        "StrEnum",
-      ],
-    },
+    ".": [
+      "auto",
+      "Enum",
+      "Flag",
+      "IntEnum",
+      "IntFlag",
+      "StrEnum",
+    ],
   },
 });
