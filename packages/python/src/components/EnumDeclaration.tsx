@@ -73,6 +73,7 @@ export function EnumDeclaration(props: EnumProps) {
     );
   }
   return (
+    // ClassDeclaration creates a symbol, so we don't need to create one here.
     <ClassDeclaration name={props.name} bases={[enumModule["."][baseType]]}>
       <For each={memberList} hardline>
         {(member) => <EnumMember name={member.name} value={member.value} auto={member.auto} />}
