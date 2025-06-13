@@ -8,36 +8,20 @@ import {
 import { PythonModuleScope, PythonOutputSymbol } from "./symbols/index.js";
 
 export interface ModuleDescriptor {
-  [path: string]: ModuleSymbolsDescriptor;
-}
-
-export type NamedModuleDescriptor = string;
-
-export interface ModuleSymbolsDescriptor {
-  named?: NamedModuleDescriptor[];
+  [path: string]: string[];
 }
 
 export interface CreateModuleProps<T extends ModuleDescriptor> {
   name: string;
-  version: string;
   descriptor: T;
 }
 
-export type ModuleExports<
-  D extends { named?: NamedModuleDescriptor[] },
-> = D["named"] extends NamedModuleDescriptor[] ? NamedMap<D["named"]> : {};
-
-export type ModuleRefkeys<
-  PD extends Record<
-    string,
-    { named?: NamedModuleDescriptor[] }
-  >,
-> = {
-  [P in keyof PD]: ModuleExports<PD[P]>;
+export type NamedMap<TDescriptor extends readonly string[]> = {
+  [S in TDescriptor[number]]: Refkey;
 };
 
-export type NamedMap<TDescriptor extends readonly NamedModuleDescriptor[]> = {
-  [S in TDescriptor[number]]: Refkey;
+export type ModuleRefkeys<PD extends Record<string, string[]>> = {
+  [P in keyof PD]: NamedMap<PD[P]>;
 };
 
 function createSymbols(
@@ -45,16 +29,19 @@ function createSymbols(
   props: CreateModuleProps<ModuleDescriptor>,
   refkeys: Record<string, any>,
 ) {
-  // Create a module scope each of the names in the descriptor
+  // Create a module scope for each path in the descriptor
   for (const [path, symbols] of Object.entries(props.descriptor)) {
-    const keys = path === "." ? refkeys : refkeys[path];
-    const moduleScope = new PythonModuleScope(path, {
+    // If the path is ".", we use the module name directly
+    // Otherwise, we append the path to the module name
+    const fullModuleScopeName = props.name + (path === "." ? "" : `.${path}`);
+    const keys = refkeys[path];
+    const moduleScope = new PythonModuleScope(fullModuleScopeName, {
       parent: undefined,
       binder: binder,
     });
 
-    // Creates a symbol for each element in the named array
-    for (const exportedName of symbols.named ?? []) {
+    // Create a symbol for each exported name
+    for (const exportedName of symbols ?? []) {
       const key = keys[exportedName];
 
       const _ = new PythonOutputSymbol(exportedName, {
@@ -67,7 +54,28 @@ function createSymbols(
   }
 }
 
-// Creates a map of refkeys for each path in the descriptor
+// A module is a map of refkeys for each path in the descriptor.
+// Each path maps to a set of named refkeys for the exported symbols.
+// When one of the symbols is used, the relevant import will be added
+// to the source file, and the symbol will be available in the output.
+//
+// Most of the use cases will be for templates and not for use in JSX,
+// so the symbols will not be normally used directly in the code, but
+// there may be cases where you want to use them directly.
+//
+// Example:
+// ```ts
+// const requestsLib = createModule({
+//   name: "requests",
+//   descriptor: {
+//     ".": ["get", "post"],
+//   },
+// });
+// ```
+//
+// For this scenario, if requestsLib["."].get is used, it will add
+// the import `from requests import get` and would render the symbol
+// as `get` in the output.
 export function createModule<const T extends ModuleDescriptor>(
   props: CreateModuleProps<T>,
 ): ModuleRefkeys<T> & SymbolCreator {
@@ -79,7 +87,7 @@ export function createModule<const T extends ModuleDescriptor>(
 
   for (const [path, symbols] of Object.entries(props.descriptor)) {
     const keys: Record<string, Refkey> = (refkeys[path] = {});
-    for (const named of symbols.named ?? []) {
+    for (const named of symbols ?? []) {
       keys[named] = refkey(props.descriptor, path, named);
     }
   }
