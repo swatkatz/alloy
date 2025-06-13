@@ -84,10 +84,18 @@ describe("ImportStatements", () => {
     const pythonModuleScope = createPythonModuleScope("math", undefined);
     const sqrtSymbol = new PythonOutputSymbol("sqrt", { binder: undefined, scope: undefined });
     const piSymbol = new PythonOutputSymbol("pi", { binder: undefined, scope: undefined });
-    const symbols = new Set<ImportedSymbol>([new ImportedSymbol(sqrtSymbol), new ImportedSymbol(piSymbol)]);
+    const mathSymbols = new Set<ImportedSymbol>([new ImportedSymbol(sqrtSymbol), new ImportedSymbol(piSymbol)]);
     const osModuleScope = createPythonModuleScope("os", undefined);
     const sysModuleScope = createPythonModuleScope("sys", undefined);
-    const records = new ImportRecords([[pythonModuleScope, {symbols: symbols}], [osModuleScope, {symbols: new Set<ImportedSymbol>(), wildcard: true}], [sysModuleScope, {symbols: new Set<ImportedSymbol>()}]]);
+    const requestsScope = createPythonModuleScope("requests", undefined);
+    const getSymbol = new PythonOutputSymbol("get", { binder: undefined, scope: undefined });
+    const requestsSymbols = new Set<ImportedSymbol>([new ImportedSymbol(getSymbol)]);
+    const records = new ImportRecords([
+      [pythonModuleScope, {symbols: mathSymbols}],
+      [requestsScope, {symbols: requestsSymbols}],
+      [osModuleScope, {symbols: new Set<ImportedSymbol>(), wildcard: true}],
+      [sysModuleScope, {symbols: new Set<ImportedSymbol>()}],
+    ]);
 
     const result = render(
       <Output>
@@ -99,7 +107,7 @@ describe("ImportStatements", () => {
     assertFileContents(result, {
       // When rendering multiple import statements, multiple import statements from a single module
       // are kept as separate import statements.
-      "test.py": `from math import pi\nfrom math import sqrt\nfrom os import *\nimport sys`,
+      "test.py": `from math import pi\nfrom math import sqrt\nfrom os import *\nfrom requests import get\nimport sys`,
     });
   });
 });
