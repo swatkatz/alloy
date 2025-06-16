@@ -6,8 +6,6 @@ import {
   OutputSymbolFlags,
   BlockProps,
   computed,
-  useBinder,
-  useScope,
   useContext,
   SourceFileContext,
   refkey

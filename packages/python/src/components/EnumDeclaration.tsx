@@ -1,4 +1,4 @@
-import { Children, For, Refkey } from "@alloy-js/core";
+import { Children, For } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { ClassDeclaration } from "./ClassDeclaration.js";
 import { BaseDeclarationProps } from "./Declaration.js";

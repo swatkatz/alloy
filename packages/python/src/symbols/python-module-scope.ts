@@ -1,4 +1,4 @@
-import { Binder, OutputScope, reactive, shallowReactive } from "@alloy-js/core";
+import { OutputScope, reactive, shallowReactive } from "@alloy-js/core";
 import { PythonOutputSymbol } from "./python-output-symbol.js";
 
 export class ImportedSymbol {

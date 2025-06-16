@@ -2,8 +2,6 @@ import {
   ComponentContext,
   SourceFile as CoreSourceFile,
   createNamedContext,
-  OutputSymbol,
-  reactive,
   Scope,
   Show,
   SourceDirectoryContext,
@@ -12,7 +10,7 @@ import {
 } from "@alloy-js/core";
 import { join } from "pathe";
 import { PythonModuleScope } from "../symbols/index.js";
-import { ImportStatements, ImportSymbol } from "./ImportStatement.js";
+import { ImportStatements } from "./ImportStatement.js";
 import { Reference } from "./Reference.js";
 
 export interface SourceFileContext {
@@ -39,11 +37,6 @@ export function SourceFile(props: SourceFileProps) {
   // Name of the scope is derived from the file path, minus the .py extension
   const path: string = join(currentDir, props.path).replace(/\.py$/, "")
   const scope = new PythonModuleScope(path);
-  // Collection of import symbols
-  const importRecords: ImportSymbol[] = reactive([]);
-  // Map a symbol to import name, keep track of already imported symbols
-  const importedSymbols = new Map<OutputSymbol, string>();
-
   const sfContext: SourceFileContext = {
     scope,
   };

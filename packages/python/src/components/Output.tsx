@@ -1,4 +1,4 @@
-import { Children, NamePolicy, Output, SymbolCreator } from "@alloy-js/core";
+import { Children, Output, SymbolCreator } from "@alloy-js/core";
 import { createPythonNamePolicy } from "../name-policy.js";
 
 export function createPythonOutput(children: Children, externals?: SymbolCreator[]): Children {
