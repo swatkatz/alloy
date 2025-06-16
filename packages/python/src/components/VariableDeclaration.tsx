@@ -1,4 +1,4 @@
-import { Children, code } from "@alloy-js/core";
+import { Children, code, useBinder } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js"; // assuming you have this
 
 export interface VariableDeclarationProps {

@@ -4,12 +4,12 @@ import { Declaration } from "./Declaration.jsx";
 import { InstanceParameters, InstanceParametersProps } from "./Parameters.jsx";
 import { VariableDeclaration } from "./VariableDeclaration.jsx";
 
-export interface ObjectDeclarationProps extends InstanceParametersProps {
+export interface CallStatementProps extends InstanceParametersProps {
   name: string; // e.g. "foo"
   type: Children;
 }
 
-export function ObjectDeclaration(props: ObjectDeclarationProps) {
+export function CallStatement(props: CallStatementProps) {
   const name = usePythonNamePolicy().getName(props.name, "method");
   const params = (
     <InstanceParameters
@@ -20,8 +20,8 @@ export function ObjectDeclaration(props: ObjectDeclarationProps) {
   );
   const value = code` ${props.type}(${params})`; // Include params in the value
   return (
-    <Declaration {...props} name={name}>
-      <VariableDeclaration {...props} value={value} />
-    </Declaration>
+    <>
+    {value}
+    </>
   );
 }
