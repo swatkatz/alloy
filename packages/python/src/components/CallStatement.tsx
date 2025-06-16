@@ -3,7 +3,7 @@ import { usePythonNamePolicy } from "../name-policy.js";
 import { CallStatementParameters, CallStatementParametersProps } from "./Parameters.jsx";
 
 export interface CallStatementProps extends CallStatementParametersProps {
-  name: string; // e.g. "foo"
+  name: string;
   type: Children;
 }
 
