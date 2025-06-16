@@ -1,14 +1,17 @@
 import {
+  Binder,
   Children,
   NamePolicy,
   Output,
   OutputDirectory,
   OutputFile,
+  OutputScope,
   render,
 } from "@alloy-js/core";
 import { dedent } from "@alloy-js/core/testing";
 import { expect } from "vitest";
 import * as py from "../src/components/index.js";
+import { PythonModuleScope } from "../src/symbols/index.js";
 
 export function findFile(res: OutputDirectory, path: string): OutputFile {
   const result = findFileWorker(res, path);
@@ -57,4 +60,16 @@ export function toSourceText(c: Children, policy?: NamePolicy<string>): string {
   );
   const file = findFile(res, "test.py");
   return file.contents;
+}
+
+// Helper function to create a PythonModuleScope to be used in tests
+export function createPythonModuleScope(
+  name: string,
+  parent: OutputScope | undefined,
+  binder: Binder | undefined = undefined,
+): PythonModuleScope {
+  return new PythonModuleScope(name, {
+    parent: parent,
+    binder: binder,
+  });
 }

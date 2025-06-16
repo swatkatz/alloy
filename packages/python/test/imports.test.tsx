@@ -1,9 +1,9 @@
 import { Output, render } from "@alloy-js/core";
 import { describe, it } from "vitest";
 import { ImportStatement } from "../src/components/ImportStatement.jsx";
-import { ImportRecords, createPythonModuleScope, PythonOutputSymbol } from "../src/symbols/index.js"
+import { ImportRecords, PythonOutputSymbol } from "../src/symbols/index.js"
 import * as py from "../src/components/index.js";
-import { assertFileContents } from "./utils.jsx";
+import { assertFileContents, createPythonModuleScope } from "./utils.jsx";
 import {
   ImportedSymbol,
 } from "../src/symbols/index.js";
