@@ -1,13 +1,10 @@
 import {
   Children,
   Declaration as CoreDeclaration,
-  MemberScope,
   OutputSymbolFlags,
   Refkey,
   SourceFileContext,
-  useBinder,
   useContext,
-  useScope,
 } from "@alloy-js/core";
 import { PythonElements, usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
