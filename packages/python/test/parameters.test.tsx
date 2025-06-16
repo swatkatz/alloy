@@ -88,7 +88,7 @@ describe("Parameters", () => {
   });
   it("creates parameters for an instantiation", () => {
     const result = toSourceText(
-      <py.InstanceParameters
+      <py.CallStatementParameters
         parameters={[
           { name: "name", value: <py.Value jsValue={"A name"} /> },
           { name: "number", value: <py.Value jsValue={42} /> },

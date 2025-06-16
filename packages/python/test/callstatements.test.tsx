@@ -10,7 +10,7 @@ it("declaration of class instance with variables", () => {
     <py.StatementList>
       <py.ClassDeclaration name="A" />
       <hbr />
-      <py.ObjectInstantiation type={refkey("A")} name="obj" parameters={[
+      <py.CallStatement type={refkey("A")} name="obj" parameters={[
           { name: "name", value: <py.Value jsValue={"A name"} /> },
           { name: "number", value: <py.Value jsValue={42} /> },
           { value: <py.Value jsValue={true} /> },
@@ -36,7 +36,7 @@ it("correct resolving of external module", () => {
   });
   const result = toSourceText(
     <py.StatementList>
-      <py.ObjectInstantiation type={requestsLib["models"].Request} name="name" />
+      <py.CallStatement type={requestsLib["models"].Request} name="name" />
     </py.StatementList>,
     { externals: [requestsLib] },
   );

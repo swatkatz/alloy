@@ -3,7 +3,7 @@ import { usePythonNamePolicy } from "../name-policy.js";
 import { Declaration } from "./Declaration.jsx";
 import { Parameters, ParametersProps } from "./Parameters.jsx";
 
-export interface MethodProps extends ParametersProps {
+export interface MethodDeclarationProps extends ParametersProps {
   name: string; // e.g. "__init__" or "foo"
   instanceMethod?: boolean; // true if this is an instance method
   classMethod?: boolean; // true if this is a class method
@@ -12,7 +12,7 @@ export interface MethodProps extends ParametersProps {
   forceName?: boolean; // if true, the name will not be transformed by the name policy
 }
 
-export function Method(props: MethodProps) {
+export function MethodDeclaration(props: MethodDeclarationProps) {
   const name = !props.forceName ? usePythonNamePolicy().getName(props.name, "method") : props.name;
   // Validate that only one of instanceMethod or classMethod is true
   if (props.instanceMethod && props.classMethod) {
@@ -46,10 +46,10 @@ export function Method(props: MethodProps) {
 }
 
 export function InitMethod(
-  props: Omit<MethodProps, "name" | "instanceMethod" | "classMethod">,
+  props: Omit<MethodDeclarationProps, "name" | "instanceMethod" | "classMethod">,
 ) {
   return (
-    <Method
+    <MethodDeclaration
       {...props}
       name="__init__"
       instanceMethod={true}
