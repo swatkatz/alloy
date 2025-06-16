@@ -6,11 +6,13 @@ import { findFile, toSourceText } from "./utils.jsx";
 import { createModule } from "../src/create-module.js";
 
 it("declaration of class instance with variables", () => {
+  // Creating the reference separately so the naming policy doesn't interfere
+  const classRef = refkey();
   const result = toSourceText(
     <py.StatementList>
-      <py.ClassDeclaration name="A" />
+      <py.ClassDeclaration name="one-class" refkey={classRef} />
       <hbr />
-      <py.CallStatement type={refkey("A")} parameters={[
+      <py.CallStatement type={classRef} parameters={[
           { name: "name", value: <py.Value jsValue={"A name"} /> },
           { name: "number", value: <py.Value jsValue={42} /> },
           { value: <py.Value jsValue={true} /> },
@@ -18,11 +20,11 @@ it("declaration of class instance with variables", () => {
     </py.StatementList>
   );
   const expected = d`
-    class A:
+    class OneClass:
       pass
 
 
-    A(name="A name", number=42, True)
+    OneClass(name="A name", number=42, True)
   `;
   expect(result).toRenderTo(expected);
 });
@@ -49,11 +51,13 @@ it("correct resolving of external module", () => {
 });
 
 it("function call with variables", () => {
+  // Creating the reference separately so the naming policy doesn't interfere
+  const methodRef = refkey();
   const result = toSourceText(
     <py.StatementList>
-      <py.MethodDeclaration name="run_func" />
+      <py.MethodDeclaration name="runFunc" refkey={methodRef} />
       <hbr />
-      <py.CallStatement type={refkey("run_func")} parameters={[
+      <py.CallStatement type={methodRef} parameters={[
           { name: "name", value: <py.Value jsValue={"A name"} /> },
           { name: "number", value: <py.Value jsValue={42} /> },
           { value: <py.Value jsValue={true} /> },
@@ -71,11 +75,14 @@ it("function call with variables", () => {
 });
 
 it("function call with variables and assignment", () => {
+  // Creating the reference separately so the naming policy doesn't interfere
+  const methodRef = refkey();
   const result = toSourceText(
     <py.StatementList>
       <py.MethodDeclaration
-      name="run_func"
+      name="runFunc"
       returnType="str"
+      refkey={methodRef}
       parameters={[
         { name: "name", type: "str" },
         { name: "number", type: "int" },
@@ -83,8 +90,8 @@ it("function call with variables and assignment", () => {
       ]}
       />
       <hbr />
-      <py.VariableDeclaration name="result" type={<py.Reference refkey={refkey("run_func")} />} value={
-        <py.CallStatement type={refkey("run_func")} parameters={[
+      <py.VariableDeclaration name="result" type={<py.Reference refkey={methodRef} />} value={
+        <py.CallStatement type={methodRef} parameters={[
           { name: "name", value: <py.Value jsValue={"A name"} /> },
           { name: "number", value: <py.Value jsValue={42} /> },
           { value: <py.Value jsValue={true} /> },
