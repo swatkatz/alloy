@@ -1,9 +1,31 @@
-import { Children, Indent, Scope, Show, code } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js";
-import { Declaration } from "./Declaration.jsx";
-import { Parameters, ParametersProps } from "./Parameters.jsx";
+import {
+  Children,
+  Indent,
+  OutputSymbolFlags,
+  Scope,
+  Show,
+  SourceFileContext,
+  code,
+  refkey,
+  useContext
+} from "@alloy-js/core";
+import {
+  BaseDeclarationProps,
+  Declaration
+} from "./Declaration.jsx";
+import {
+  Parameters,
+  ParametersProps
+} from "./Parameters.jsx";
+import { PythonOutputSymbol } from "../symbols/index.js";
+import {
+  getFormattedName,
+  getModuleName
+} from "../utils.js";
 
-export interface MethodDeclarationProps extends ParametersProps {
+export interface MethodDeclarationProps
+  extends BaseDeclarationProps,
+    ParametersProps {
   name: string; // e.g. "__init__" or "foo"
   instanceMethod?: boolean; // true if this is an instance method
   classMethod?: boolean; // true if this is a class method
@@ -13,7 +35,19 @@ export interface MethodDeclarationProps extends ParametersProps {
 }
 
 export function MethodDeclaration(props: MethodDeclarationProps) {
-  const name = !props.forceName ? usePythonNamePolicy().getName(props.name, "method") : props.name;
+  const fileContext = useContext(SourceFileContext);
+  // For classes, the module name is derived from the file context
+  const module = getModuleName(fileContext, undefined);
+  const name = !props.forceName ? getFormattedName(props.name, "method") : props.name;
+  const sym = new PythonOutputSymbol(name, {
+    refkeys: props.refkey ?? refkey(props.name!),
+    flags:
+      (props.flags ?? OutputSymbolFlags.None) |
+      (OutputSymbolFlags.MemberContainer |
+        OutputSymbolFlags.StaticMemberContainer),
+    metadata: props.metadata,
+    module: module,
+  });
   // Validate that only one of instanceMethod or classMethod is true
   if (props.instanceMethod && props.classMethod) {
     throw new Error(
@@ -34,7 +68,7 @@ export function MethodDeclaration(props: MethodDeclarationProps) {
     />
   );
   return (
-    <Declaration {...props} name={name}>
+    <Declaration {...props} name={name} symbol={sym}>
       <group>
         def {name}({params})<Show when={props.returnType !== undefined}>{code` -> ${props.returnType}`}</Show>:
         <Scope name={name} kind="method">
