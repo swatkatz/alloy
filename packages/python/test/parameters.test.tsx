@@ -114,7 +114,7 @@ describe("Parameters", () => {
     const result = toSourceText(
       <>
         <py.SourceFile path="test.py">
-          <py.InstanceParameters
+          <py.CallStatementParameters
             parameters={[
               { name: "name", value: <py.Value jsValue={"A name"} /> },
               { name: "number", value: <py.Value jsValue={42} /> },
