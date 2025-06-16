@@ -1,104 +1,92 @@
 import {
-  describe,
-  expect,
-  it
-} from "vitest";
-import { ImportStatement } from "../src/components/ImportStatement.jsx";
-import {
-  ImportRecords,
-  PythonOutputSymbol
-} from "../src/symbols/index.js"
+  Binder,
+  Children,
+  NamePolicy,
+  Output,
+  OutputDirectory,
+  OutputFile,
+  OutputScope,
+  SymbolCreator,
+  render,
+} from "@alloy-js/core";
+import { dedent } from "@alloy-js/core/testing";
+import { expect } from "vitest";
 import * as py from "../src/components/index.js";
-import {
-  createPythonModuleScope,
-  toSourceText
-} from "./utils.jsx";
-import {
-  ImportedSymbol,
-} from "../src/symbols/index.js";
+import { PythonModuleScope } from "../src/symbols/index.js";
+import { createPythonNamePolicy } from "../src/name-policy.js";
 
-describe("ImportStatement", () => {
-  it("renders module import", () => {
-    const result = toSourceText(
-      <ImportStatement path="sys"  />
-    );
-    const expected = `import sys`;
-    expect(result).toRenderTo(expected);
+export function findFile(res: OutputDirectory, path: string): OutputFile {
+  const result = findFileWorker(res, path);
+
+  if (!result) {
+    throw new Error("Expected to find file " + path);
+  }
+  return result;
+
+  function findFileWorker(
+    res: OutputDirectory,
+    path: string,
+  ): OutputFile | null {
+    for (const item of res.contents) {
+      if (item.kind === "file") {
+        if (item.path === path) {
+          return item;
+        }
+        continue;
+      } else {
+        const found = findFileWorker(item, path);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
+  }
+}
+
+export function assertFileContents(
+  res: OutputDirectory,
+  expectedFiles: Record<string, string>,
+) {
+  for (const [path, contents] of Object.entries(expectedFiles)) {
+    const file = findFile(res, path);
+    expect(file.contents).toBe(dedent(contents));
+  }
+}
+
+export function toSourceText(
+  c: Children,
+  {
+    policy,
+    externals,
+    options,
+  }: {
+    policy?: NamePolicy<string>;
+    externals?: SymbolCreator[];
+    options?: { externals?: SymbolCreator[] };
+  } = {}
+): string {
+  if (!policy) {
+    policy = createPythonNamePolicy();
+  }
+  const mergedExternals = options?.externals ?? externals;
+  const res = render(
+    <Output externals={mergedExternals} namePolicy={policy}>
+      <py.SourceFile path="test.py">{c}</py.SourceFile>
+    </Output>,
+  );
+  const file = findFile(res, "test.py");
+  return file.contents;
+}
+
+// Helper function to create a PythonModuleScope to be used in tests
+export function createPythonModuleScope(
+  name: string,
+  parent: OutputScope | undefined,
+  binder: Binder | undefined = undefined,
+): PythonModuleScope {
+  return new PythonModuleScope(name, {
+    parent: parent,
+    binder: binder,
   });
-
-  it("renders named imports", () => {
-    const sqrtSymbol = new PythonOutputSymbol("sqrt", { binder: undefined, scope: undefined });
-    const piSymbol = new PythonOutputSymbol("pi", { binder: undefined, scope: undefined });
-    const symbols = new Set<ImportedSymbol>([
-      new ImportedSymbol(sqrtSymbol), new ImportedSymbol(piSymbol),
-    ]);
-    const result = toSourceText(
-      <ImportStatement
-        path="math"
-        symbols={symbols}
-      />
-    );
-    const expected = `from math import pi, sqrt`;
-    expect(result).toRenderTo(expected);
-  });
-
-  it("renders named imports with aliases", () => {
-    const sqrtSymbol = new PythonOutputSymbol("sqrt", { binder: undefined, scope: undefined });
-    const sqrtSymbolAlias = new PythonOutputSymbol("square_root", { binder: undefined, scope: undefined });
-    const piSymbol = new PythonOutputSymbol("pi", { binder: undefined, scope: undefined });
-    const symbols = new Set<ImportedSymbol>([
-      new ImportedSymbol(sqrtSymbol, sqrtSymbolAlias), new ImportedSymbol(piSymbol),
-    ]);
-    const result = toSourceText(
-      <ImportStatement
-        path="math"
-        symbols={symbols}
-      />
-    );
-
-    const expected = `from math import pi, sqrt as square_root`;
-    expect(result).toRenderTo(expected);
-  });
-
-  it("renders wildcard import", () => {
-    const result = toSourceText(
-      <ImportStatement
-        path="os"
-        wildcard={true}
-      />
-    );
-    const expected = `from os import *`;
-    expect(result).toRenderTo(expected);
-  });
-});
-
-describe("ImportStatements", () => {
-  it("renders multiple import statements", () => {
-    const pythonModuleScope = createPythonModuleScope("math", undefined);
-    const sqrtSymbol = new PythonOutputSymbol("sqrt", { binder: undefined, scope: undefined });
-    const piSymbol = new PythonOutputSymbol("pi", { binder: undefined, scope: undefined });
-    const mathSymbols = new Set<ImportedSymbol>([new ImportedSymbol(sqrtSymbol), new ImportedSymbol(piSymbol)]);
-    const osModuleScope = createPythonModuleScope("os", undefined);
-    const sysModuleScope = createPythonModuleScope("sys", undefined);
-    const requestsScope = createPythonModuleScope("requests", undefined);
-    const getSymbol = new PythonOutputSymbol("get", { binder: undefined, scope: undefined });
-    const requestsSymbols = new Set<ImportedSymbol>([new ImportedSymbol(getSymbol)]);
-    const records = new ImportRecords([
-      [pythonModuleScope, {symbols: mathSymbols}],
-      [requestsScope, {symbols: requestsSymbols}],
-      [osModuleScope, {symbols: new Set<ImportedSymbol>(), wildcard: true}],
-      [sysModuleScope, {symbols: new Set<ImportedSymbol>()}],
-    ]);
-
-    const result = toSourceText(
-      <py.ImportStatements records={records} />
-    );
-    const expected = `
-    from math import pi
-    from math import sqrt
-    from os import *
-    from requests import get
-    import sys`;
-    expect(result).toRenderTo(expected);
-  });
-});
+}
