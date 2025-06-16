@@ -110,4 +110,20 @@ describe("Parameters", () => {
       "Non-default argument 'z' follows default argument in Python parameters.",
     );
   });
+  it("creates parameters for an instantiation", () => {
+    const result = toSourceText(
+      <>
+        <py.SourceFile path="test.py">
+          <py.CallStatementParameters
+            parameters={[
+              { name: "name", value: <py.Value jsValue={"A name"} /> },
+              { name: "number", value: <py.Value jsValue={42} /> },
+              { value: <py.Value jsValue={true} /> },
+            ]}
+          />
+        </py.SourceFile>
+      </>,
+    );
+    expect(result).toRenderTo(`name="A name", number=42, True`);
+  });
 });
