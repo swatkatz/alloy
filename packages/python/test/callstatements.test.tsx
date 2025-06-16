@@ -22,7 +22,7 @@ it("declaration of class instance with variables", () => {
       pass
 
 
-    obj: A = A(name="A name", number=42, True)
+    A(name="A name", number=42, True)
   `;
   expect(result).toRenderTo(expected);
 });
@@ -42,7 +42,7 @@ it("correct resolving of external module", () => {
   );
   const expected = d`
     from requests.models import Request
-    name: Request = Request()
+    Request()
   `;
   expect(result).toRenderTo(expected);
 });

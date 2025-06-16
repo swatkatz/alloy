@@ -38,7 +38,7 @@ it("correct formatting of Enum name and EnumMember names", () => {
 
 it("renders a function with parameters", () => {
   const result = toSourceText(
-    <py.Method
+    <py.MethodDeclaration
       name="quirklyNamed-Function"
       parameters={[
         { name: "a-parameter", type: "int" },
@@ -48,7 +48,7 @@ it("renders a function with parameters", () => {
       kwargs={true}
     >
       print(x, y)
-    </py.Method>
+    </py.MethodDeclaration>
   );
   expect(result).toRenderTo(
     d`
@@ -75,7 +75,7 @@ it("correct formatting of instance parameters names", () => {
 
 it("correct formatting of instance parameters names", () => {
   const result = toSourceText(
-    <py.InstanceParameters
+    <py.CallStatementParameters
       parameters={[
         { name: "this-is-a-long-name", value: <py.Value jsValue={"A name"} /> },
         { name: "andThisIsANumber", value: <py.Value jsValue={42} /> },
