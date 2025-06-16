@@ -7,11 +7,7 @@ import { assertFileContents, toSourceText } from "./utils.jsx";
 describe("Python Class", () => {
   it("renders a class with no body as 'pass'", () => {
     const result = toSourceText(
-      <>
-        <py.SourceFile path="test.py">
-          <py.ClassDeclaration name="Foo" />
-        </py.SourceFile>
-      </>
+      <py.ClassDeclaration name="Foo" />
     );
     expect(result).toRenderTo(d`
       class Foo:
@@ -21,11 +17,7 @@ describe("Python Class", () => {
 
   it("renders a class with a body", () => {
     const result = toSourceText(
-      <>
-        <py.SourceFile path="test.py">
-          <py.ClassDeclaration name="Bar">print('hi')</py.ClassDeclaration>
-        </py.SourceFile>
-      </>,
+      <py.ClassDeclaration name="Bar">print('hi')</py.ClassDeclaration>
     );
     expect(result).toRenderTo(d`
       class Bar:
@@ -53,18 +45,14 @@ describe("Python Class", () => {
       class Baz(Base1, Base2):
         pass
     `;
-    assertFileContents(result, { "test.py": expected });
+    expect(result).toRenderTo(expected);
   });
 
   it("renders a class with base classes and body", () => {
     const result = toSourceText(
-      <>
-        <py.SourceFile path="test.py">
-          <py.ClassDeclaration name="Qux" bases={["Base"]}>
-            print('hello')
-          </py.ClassDeclaration>
-        </py.SourceFile>
-      </>,
+      <py.ClassDeclaration name="Qux" bases={["Base"]}>
+        print('hello')
+      </py.ClassDeclaration>
     );
     expect(result).toRenderTo(d`
       class Qux(Base):
@@ -117,6 +105,6 @@ describe("Python Class", () => {
         bar: A
         foo: str
     `;
-    assertFileContents(result, { "test.py": expected });
+    expect(result).toRenderTo(expected);
   });
 });
