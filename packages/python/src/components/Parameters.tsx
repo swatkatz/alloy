@@ -63,13 +63,13 @@ export function Parameters(props: ParametersProps) {
   );
 }
 
-export interface InstanceParameter {
+export interface CallStatementParameter {
   name?: string;
   value?: Children;
 }
 
-export interface InstanceParametersProps {
-  parameters?: InstanceParameter[];
+export interface CallStatementParametersProps {
+  parameters?: CallStatementParameter[];
   args?: boolean;
   kwargs?: boolean;
 }
@@ -77,14 +77,14 @@ export interface InstanceParametersProps {
 /**
  * Render a single parameter as a Declaration (for symbol creation) or as *args/**kwargs.
  */
-function InstanceParameter(param: InstanceParameter) {
+function CallStatementParameter(param: CallStatementParameter) {
   if (!param.name) {
     // Create no symbol in case it's an unnamed parameter
     return (
       <VariableDeclaration
         name=''
         value={param.value}
-        instanceVar={true} // true if these parameters are for an instantiation
+        callStatementVar={true}
       />
     );
   }
@@ -95,19 +95,19 @@ function InstanceParameter(param: InstanceParameter) {
         <VariableDeclaration
           name={param.name? param.name : ''}
           value={param.value}
-          instanceVar={true} // true if these parameters are for an instantiation
+          callStatementVar={true}
         />
       </Declaration>
     );
   }
 }
 
-export function InstanceParameters(props: InstanceParametersProps) {
+export function CallStatementParameters(props: CallStatementParametersProps) {
   const { parameters = [], args, kwargs } = props;
   // Render
   // Build a flat array of all parameter elements (named, *args, **kwargs)
   const allParams = [
-    ...parameters.map((param) => <InstanceParameter {...param} />),
+    ...parameters.map((param) => <CallStatementParameter {...param} />),
     ...(args ? ["*args"] : []),
     ...(kwargs ? ["**kwargs"] : []),
   ];

@@ -1,23 +1,19 @@
-import { Output, render } from "@alloy-js/core";
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ImportStatement } from "../src/components/ImportStatement.jsx";
 import { ImportRecords, PythonOutputSymbol } from "../src/symbols/index.js"
 import * as py from "../src/components/index.js";
-import { assertFileContents, createPythonModuleScope } from "./utils.jsx";
+import { assertFileContents, createPythonModuleScope, toSourceText } from "./utils.jsx";
 import {
   ImportedSymbol,
 } from "../src/symbols/index.js";
 
 describe("ImportStatement", () => {
   it("renders module import", () => {
-    const result = render(
-      <Output>
-        <py.SourceFile path="test.py">
-          <ImportStatement path="sys"  />
-        </py.SourceFile>
-      </Output>,
+    const result = toSourceText(
+      <ImportStatement path="sys"  />
     );
-    assertFileContents(result, { "test.py": `import sys` });
+    const expected = `import sys`;
+    expect(result).toRenderTo(expected);
   });
 
   it("renders named imports", () => {
@@ -26,19 +22,14 @@ describe("ImportStatement", () => {
     const symbols = new Set<ImportedSymbol>([
       new ImportedSymbol(sqrtSymbol), new ImportedSymbol(piSymbol),
     ]);
-    const result = render(
-      <Output>
-        <py.SourceFile path="test.py">
-          <ImportStatement
-            path="math"
-            symbols={symbols}
-          />
-        </py.SourceFile>
-      </Output>,
+    const result = toSourceText(
+      <ImportStatement
+        path="math"
+        symbols={symbols}
+      />
     );
-    assertFileContents(result, {
-      "test.py": `from math import pi, sqrt`,
-    });
+    const expected = `from math import pi, sqrt`;
+    expect(result).toRenderTo(expected);
   });
 
   it("renders named imports with aliases", () => {
@@ -48,34 +39,26 @@ describe("ImportStatement", () => {
     const symbols = new Set<ImportedSymbol>([
       new ImportedSymbol(sqrtSymbol, sqrtSymbolAlias), new ImportedSymbol(piSymbol),
     ]);
-    const result = render(
-      <Output>
-        <py.SourceFile path="test.py">
-          <ImportStatement
-            path="math"
-            symbols={symbols}
-          />
-        </py.SourceFile>
-      </Output>,
+    const result = toSourceText(
+      <ImportStatement
+        path="math"
+        symbols={symbols}
+      />
     );
-    assertFileContents(result, {
-      "test.py": `from math import pi, sqrt as square_root`,
-    });
+
+    const expected = `from math import pi, sqrt as square_root`;
+    expect(result).toRenderTo(expected);
   });
+
   it("renders wildcard import", () => {
-    const result = render(
-      <Output>
-        <py.SourceFile path="test.py">
-          <ImportStatement
-            path="os"
-            wildcard={true}
-          />
-        </py.SourceFile>
-      </Output>,
+    const result = toSourceText(
+      <ImportStatement
+        path="os"
+        wildcard={true}
+      />
     );
-    assertFileContents(result, {
-      "test.py": `from os import *`,
-    });
+    const expected = `from os import *`;
+    expect(result).toRenderTo(expected);
   });
 });
 
@@ -97,17 +80,15 @@ describe("ImportStatements", () => {
       [sysModuleScope, {symbols: new Set<ImportedSymbol>()}],
     ]);
 
-    const result = render(
-      <Output>
-        <py.SourceFile path="test.py">
-          <py.ImportStatements records={records} />
-        </py.SourceFile>
-      </Output>,
+    const result = toSourceText(
+      <py.ImportStatements records={records} />
     );
-    assertFileContents(result, {
-      // When rendering multiple import statements, multiple import statements from a single module
-      // are kept as separate import statements.
-      "test.py": `from math import pi\nfrom math import sqrt\nfrom os import *\nfrom requests import get\nimport sys`,
-    });
+    const expected = `
+    from math import pi
+    from math import sqrt
+    from os import *
+    from requests import get
+    import sys`;
+    expect(result).toRenderTo(expected);
   });
 });

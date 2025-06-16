@@ -1,18 +1,37 @@
-import { Children, Indent, Scope, Show, code } from "@alloy-js/core";
+import { Children, Indent, OutputSymbolFlags, Scope, Show, SourceFileContext, code, refkey, useContext } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
-import { Declaration } from "./Declaration.jsx";
+import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
 import { Parameters, ParametersProps } from "./Parameters.jsx";
+import { PythonOutputSymbol } from "../symbols/index.js";
 
-export interface MethodProps extends ParametersProps {
+export interface MethodDeclarationProps
+  extends BaseDeclarationProps,
+    ParametersProps {
   name: string; // e.g. "__init__" or "foo"
   instanceMethod?: boolean; // true if this is an instance method
   classMethod?: boolean; // true if this is a class method
   children?: Children; // method body
   returnType?: Children; // return type annotation
+  forceName?: boolean; // if true, the name will not be transformed by the name policy
 }
 
-export function Method(props: MethodProps) {
-  const name = usePythonNamePolicy().getName(props.name, "method");
+export function MethodDeclaration(props: MethodDeclarationProps) {
+  const fileContext = useContext(SourceFileContext);
+  const module = fileContext ?
+    usePythonNamePolicy().getName(fileContext.path.replace(/\.py$/, ""),
+    "class",
+  ) : "";
+  const name = !props.forceName ? usePythonNamePolicy().getName(props.name, "method") : props.name;
+
+  const sym = new PythonOutputSymbol(name, {
+    refkeys: props.refkey ?? refkey(props.name!),
+    flags:
+      (props.flags ?? OutputSymbolFlags.None) |
+      (OutputSymbolFlags.MemberContainer |
+        OutputSymbolFlags.StaticMemberContainer),
+    metadata: props.metadata,
+    module: module,
+  });
   // Validate that only one of instanceMethod or classMethod is true
   if (props.instanceMethod && props.classMethod) {
     throw new Error(
@@ -33,7 +52,7 @@ export function Method(props: MethodProps) {
     />
   );
   return (
-    <Declaration {...props} name={name}>
+    <Declaration {...props} name={name} symbol={sym}>
       <group>
         def {name}({params})<Show when={props.returnType !== undefined}>{code` -> ${props.returnType}`}</Show>:
         <Scope name={name} kind="method">
@@ -45,14 +64,15 @@ export function Method(props: MethodProps) {
 }
 
 export function InitMethod(
-  props: Omit<MethodProps, "name" | "instanceMethod" | "classMethod">,
+  props: Omit<MethodDeclarationProps, "name" | "instanceMethod" | "classMethod">,
 ) {
   return (
-    <Method
+    <MethodDeclaration
       {...props}
       name="__init__"
       instanceMethod={true}
       classMethod={false}
+      forceName={true}
     />
   );
 }

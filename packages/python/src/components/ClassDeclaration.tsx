@@ -61,12 +61,15 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
   });
   const hasChildren =
     childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
+  
+  const updatedProps: ClassDeclarationProps = {
+    ...props,
+    name: name,
+  };
   return (
-    <>
-      <Declaration symbol={sym}>
-        class {props.name}{basesPart}
-        <PythonBlock opener=":" closer="" newline={false}>{hasChildren ? props.children : "pass"}</PythonBlock>
-      </Declaration>
-    </>
+    <Declaration {...updatedProps} name={updatedProps.name} symbol={sym}>
+      class {updatedProps.name}{basesPart}
+      <PythonBlock opener=":" closer="" newline={false}>{hasChildren ? props.children : "pass"}</PythonBlock>
+    </Declaration>
   );
 }
