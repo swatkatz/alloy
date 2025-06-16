@@ -42,16 +42,20 @@ export function PythonBlock(props: BlockProps) {
 
 export function ClassDeclaration(props: ClassDeclarationProps) {
   const fileContext = useContext(SourceFileContext);
+  const namePolicy = usePythonNamePolicy();
   const module = fileContext ?
-    usePythonNamePolicy().getName(fileContext.path.replace(/\.py$/, ""),
+    namePolicy.getName(fileContext.path.replace(/\.py$/, ""),
     "class",
   ) : "";
-  const namePolicy = usePythonNamePolicy();
-  const basesPart = props.bases && <>(<List children={props.bases} comma space />)</>;
-  const name = namePolicy.getName(props.name!, "class");
+  const name = namePolicy.getName(props.name!, "class");;
+  // Propagate the name after the name policy was applied
+  const updatedProps: ClassDeclarationProps = {
+    ...props,
+    name: name,
+  };
 
   const sym = new PythonOutputSymbol(name, {
-    refkeys: props.refkey ?? refkey(props.name!),
+    refkeys: props.refkey ?? refkey(name!),
     flags:
       (props.flags ?? OutputSymbolFlags.None) |
       (OutputSymbolFlags.MemberContainer |
@@ -59,13 +63,10 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
     metadata: props.metadata,
     module: module,
   });
+
   const hasChildren =
     childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
-  
-  const updatedProps: ClassDeclarationProps = {
-    ...props,
-    name: name,
-  };
+  const basesPart = props.bases && <>(<List children={props.bases} comma space />)</>;
   return (
     <Declaration {...updatedProps} name={updatedProps.name} symbol={sym}>
       class {updatedProps.name}{basesPart}
