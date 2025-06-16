@@ -1,11 +1,9 @@
 import {
   memo,
-  OutputSymbolFlags,
   Refkey,
   resolve,
   untrack,
   useContext,
-  useMemberScope,
 } from "@alloy-js/core";
 import { SourceFileContext } from "../components/SourceFile.jsx";
 import { PythonOutputScope } from "./scopes.js";
@@ -20,8 +18,6 @@ export function ref(
   const resolveResult = resolve<PythonOutputScope, PythonOutputSymbol>(
     refkey as Refkey,
   );
-  const currentScope = useMemberScope();
-
   return memo(() => {
     if (resolveResult.value === undefined) {
       return ["<Unresolved Symbol>", undefined];
@@ -36,6 +32,8 @@ export function ref(
     let localSymbol: PythonOutputSymbol | undefined;
 
     if (targetLocation === "module") {
+      // Handling of targets in other modules, either created with createModule()
+      // or from other files.
       const symbolPath = [
         ...(pathDown.slice(1) as PythonMemberScope[]).map((s) => s.owner),
         targetDeclaration,
@@ -51,31 +49,20 @@ export function ref(
       );
     }
 
-    if (memberPath && memberPath.length > 0) {
-      if (localSymbol) {
-        memberPath[0] = localSymbol;
-      }
-
-      return [buildMemberExpression(memberPath), memberPath.at(-1)];
-    } else {
-      return [
-        buildMemberExpression([localSymbol ?? targetDeclaration]),
-        localSymbol ?? targetDeclaration,
-      ];
-    }
+    return [
+      buildMemberExpression([localSymbol ?? targetDeclaration]),
+      localSymbol ?? targetDeclaration,
+    ];
   });
 }
 
 function buildMemberExpression(path: PythonOutputSymbol[]) {
   let memberExpr = "";
 
+  // Handling of class members and instance members will probably happen here
   const base = path[0];
-  if (base.flags & OutputSymbolFlags.InstanceMember) {
-    memberExpr += "this";
-  } else {
-    memberExpr += base.name;
-    path = path.slice(1);
-  }
+  memberExpr += base.name;
+  path = path.slice(1);
 
   return memberExpr;
 }
