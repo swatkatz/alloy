@@ -6,8 +6,9 @@ import {
   SourceFileContext,
   useContext,
 } from "@alloy-js/core";
-import { PythonElements, usePythonNamePolicy } from "../name-policy.js";
+import { PythonElements } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
+import { getFormattedName, getModuleName } from "../utils.js";
 
 export interface BaseDeclarationProps {
   /**
@@ -62,14 +63,13 @@ export interface DeclarationProps extends Omit<BaseDeclarationProps, "name"> {
 export function Declaration(props: DeclarationProps) {
   let sym: PythonOutputSymbol;
   const fileContext = useContext(SourceFileContext);
-  const module = props.name ?? (fileContext ? fileContext.path : "");
+  const module = getModuleName(fileContext, props.name);
 
   if (props.symbol) {
     sym = props.symbol;
   } else {
-    const namePolicy = usePythonNamePolicy();
-
-    sym = new PythonOutputSymbol(namePolicy.getName(props.name!, props.nameKind!), {
+    const name = getFormattedName(props.name!, props.nameKind!);
+    sym = new PythonOutputSymbol(name, {
       refkeys: props.refkey,
       flags: props.flags,
       metadata: props.metadata,
