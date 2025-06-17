@@ -1,8 +1,21 @@
-import { Children, code } from "@alloy-js/core";
-import { getFormattedName } from "../utils.js";
+import {
+  Children,
+  Declaration as CoreDeclaration,
+  SourceFileContext,
+  code,
+  memo,
+  refkey,
+  useContext
+} from "@alloy-js/core";
+import {
+  getFormattedName,
+  getModuleName
+} from "../utils.js";
+import { BaseDeclarationProps } from "./Declaration.jsx";
+import { Value } from "./Value.jsx";
+import { PythonOutputSymbol } from "../symbols/index.js";
 
-export interface VariableDeclarationProps {
-  name: string;
+export interface VariableDeclarationProps extends BaseDeclarationProps {
   value?: Children;
   type?: Children; // Optional, only for type annotation
   omitNone?: boolean; // Optional, to omit None assignment
@@ -10,19 +23,34 @@ export interface VariableDeclarationProps {
 }
 
 export function VariableDeclaration(props: VariableDeclarationProps) {
+  const fileContext = useContext(SourceFileContext);
   const name = getFormattedName(props.name, "variable");
-
+  const module = getModuleName(fileContext, undefined);
+  const sym = new PythonOutputSymbol(name, {
+    refkeys: props.refkey ?? refkey(name!),
+    metadata: props.metadata,
+    module: module,
+  });
   // Handle optional type annotation
   const typeAnnotation = props.type && !props.callStatementVar ? code`: ${props.type}` : "";
-
-  // If omitNone is true and value is undefined, omit assignment entirely
+  // If we receive a symbol, resolve it to a name
+  const value = typeof props.value === "object" ? memo(() => props.value) : props.value;
+  const assignment = props.callStatementVar ? "=" : " = ";
+  var rightSide;
   if (props.omitNone && props.value === undefined) {
-    return code`${name}${typeAnnotation}`;
+    rightSide = "";
+  } else if (value === null || value === undefined) {
+    rightSide = (<>{assignment}None</>);
+  } else if (props.callStatementVar && (props.name === undefined || props.name === "")) {
+    rightSide = (<><Value jsValue={value} /></>);
+  } else {
+    rightSide = (<>{assignment}<Value jsValue={value} /></>);
   }
-
-  // Determine assignment based on whether this is an instance variable
-  // Omit it if instanceVar is true and name is empty
-  const assignment = props.callStatementVar ? name ? "=" : "" : " = ";
-  // Always emit assignment; if value is undefined, can emit = None or leave blank per style
-  return code`${name}${typeAnnotation}${props.value !== undefined ? code`${assignment}${props.value}` : " = None"}`;
+  return (
+    <>
+      <CoreDeclaration symbol={sym}>
+        {name}{typeAnnotation}{rightSide}
+      </CoreDeclaration>
+    </>
+  );
 }
