@@ -1,4 +1,10 @@
-import { Children, OutputSymbolFlags, refkey, Refkey, Show } from "@alloy-js/core";
+import {
+  Children,
+  OutputSymbolFlags,
+  refkey,
+  Refkey,
+  Show
+} from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
 import { getFormattedName } from "../utils.js";
 import { PythonOutputSymbol } from "../symbols/index.js";

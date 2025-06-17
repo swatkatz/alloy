@@ -1,8 +1,27 @@
-import { Children, Indent, OutputSymbolFlags, Scope, Show, SourceFileContext, code, refkey, useContext } from "@alloy-js/core";
-import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
-import { Parameters, ParametersProps } from "./Parameters.jsx";
+import {
+  Children,
+  Indent,
+  OutputSymbolFlags,
+  Scope,
+  Show,
+  SourceFileContext,
+  code,
+  refkey,
+  useContext
+} from "@alloy-js/core";
+import {
+  BaseDeclarationProps,
+  Declaration
+} from "./Declaration.jsx";
+import {
+  Parameters,
+  ParametersProps
+} from "./Parameters.jsx";
 import { PythonOutputSymbol } from "../symbols/index.js";
-import { getFormattedName, getModuleName } from "../utils.js";
+import {
+  getFormattedName,
+  getModuleName
+} from "../utils.js";
 
 export interface MethodDeclarationProps
   extends BaseDeclarationProps,

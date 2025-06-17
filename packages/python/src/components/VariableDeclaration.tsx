@@ -7,7 +7,10 @@ import {
   refkey,
   useContext
 } from "@alloy-js/core";
-import { getFormattedName, getModuleName } from "../utils.js";
+import {
+  getFormattedName,
+  getModuleName
+} from "../utils.js";
 import { BaseDeclarationProps } from "./Declaration.jsx";
 import { Value } from "./Value.jsx";
 import { PythonOutputSymbol } from "../symbols/index.js";

@@ -5,7 +5,10 @@ import {
   refkey,
   SymbolCreator,
 } from "@alloy-js/core";
-import { PythonModuleScope, PythonOutputSymbol } from "./symbols/index.js";
+import {
+  PythonModuleScope,
+  PythonOutputSymbol
+} from "./symbols/index.js";
 
 export interface ModuleDescriptor {
   [path: string]: string[];

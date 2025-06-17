@@ -1,4 +1,7 @@
-import { Children, For } from "@alloy-js/core";
+import {
+  Children,
+  For
+} from "@alloy-js/core";
 import { ClassDeclaration } from "./ClassDeclaration.js";
 import { BaseDeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";

@@ -1,8 +1,18 @@
-import { describe, expect, it } from "vitest";
+import {
+  describe,
+  expect,
+  it
+} from "vitest";
 import { ImportStatement } from "../src/components/ImportStatement.jsx";
-import { ImportRecords, PythonOutputSymbol } from "../src/symbols/index.js"
+import {
+  ImportRecords,
+  PythonOutputSymbol
+} from "../src/symbols/index.js"
 import * as py from "../src/components/index.js";
-import { assertFileContents, createPythonModuleScope, toSourceText } from "./utils.jsx";
+import {
+  createPythonModuleScope,
+  toSourceText
+} from "./utils.jsx";
 import {
   ImportedSymbol,
 } from "../src/symbols/index.js";

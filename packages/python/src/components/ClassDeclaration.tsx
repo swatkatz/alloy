@@ -11,8 +11,14 @@ import {
   refkey
 } from "@alloy-js/core";
 import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
-import { Declaration, BaseDeclarationProps } from "./Declaration.js";
-import { getFormattedName, getModuleName } from "../utils.js";
+import {
+  Declaration,
+  BaseDeclarationProps
+} from "./Declaration.js";
+import {
+  getFormattedName,
+  getModuleName
+} from "../utils.js";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   bases?: Children[];

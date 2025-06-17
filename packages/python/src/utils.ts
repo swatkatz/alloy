@@ -1,5 +1,8 @@
 import { SourceFileContext } from "@alloy-js/core";
-import { PythonElements, usePythonNamePolicy } from "./name-policy.js";
+import {
+  PythonElements,
+  usePythonNamePolicy
+} from "./name-policy.js";
 
 
 export function getFormattedName(

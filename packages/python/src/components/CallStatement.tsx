@@ -1,5 +1,11 @@
-import { Children, code } from "@alloy-js/core";
-import { CallStatementParameters, CallStatementParametersProps } from "./Parameters.jsx";
+import {
+  Children,
+  code
+} from "@alloy-js/core";
+import {
+  CallStatementParameters,
+  CallStatementParametersProps
+} from "./Parameters.jsx";
 
 export interface CallStatementProps extends CallStatementParametersProps {
   type: Children;
