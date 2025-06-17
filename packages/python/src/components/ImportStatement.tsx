@@ -23,6 +23,7 @@ export interface ImportStatementsProps {
 }
 
 export function ImportStatements(props: ImportStatementsProps) {
+  // Sort the import records by module name
   const imports = computed(() =>
     [...props.records].sort(([a], [b]) => {
       return a.name.localeCompare(b.name);
@@ -36,10 +37,10 @@ export function ImportStatements(props: ImportStatementsProps) {
 
       // local package import, so need relative import
       const currentDir = useContext(SourceDirectoryContext)!.path;
-      // todo: don't allow importing non-exported symbols
       targetPath = relative(currentDir, module.name);
 
       if (properties.symbols && properties.symbols.size > 0) {
+        // Sort the symbols in a module by the imported name
         const sortedSymbols = Array.from(properties.symbols).sort((a, b) =>
           a.target.name.localeCompare(b.target.name)
         );
