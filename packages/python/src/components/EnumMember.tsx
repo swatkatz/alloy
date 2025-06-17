@@ -1,4 +1,4 @@
-import { Children, OutputSymbolFlags, Refkey, Show } from "@alloy-js/core";
+import { Children, OutputSymbolFlags, refkey, Refkey, Show } from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
 import { getFormattedName } from "../utils.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
@@ -52,7 +52,7 @@ export function EnumMember(props: EnumMemberProps) {
   let sym: PythonOutputSymbol | undefined = undefined;
   if (props.refkey) {
     sym = new PythonOutputSymbol(name, {
-      refkeys: props.refkey,
+      refkeys: props.refkey ?? refkey(name!),
       flags: OutputSymbolFlags.StaticMember,
     });
   }

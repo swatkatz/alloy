@@ -1,4 +1,4 @@
-import { Output } from "@alloy-js/core";
+import { Output, refkey } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
@@ -22,6 +22,27 @@ describe("Python MethodDeclaration", () => {
     expect(result).toRenderTo(d`
       def foo(self) -> int:
         pass
+    `);
+  });
+
+  it("renders a method that calls another method", () => {
+    const result = toSourceText(
+      <>
+        <py.MethodDeclaration name="foo" instanceMethod={true} returnType="int"/>
+        <hbr />
+        <py.MethodDeclaration name="bar" instanceMethod={true} returnType="int">
+          <py.VariableDeclaration name="result" type={<py.Reference refkey={refkey("foo")} />} value={
+            <py.CallStatement type={refkey("foo")} parameters={[]} />
+          } />
+        </py.MethodDeclaration>
+      </>
+    );
+    // TODO: Fix type once we handle types properly
+    expect(result).toRenderTo(d`
+      def foo(self) -> int:
+        pass
+      def bar(self) -> int:
+        result: foo = foo()
     `);
   });
 
