@@ -8,7 +8,10 @@ import {
 } from "@alloy-js/core";
 import { PythonElements } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
-import { getFormattedName, getModuleName } from "../utils.js";
+import { 
+  getFormattedName,
+  getModuleName
+} from "../utils.js";
 
 export interface BaseDeclarationProps {
   /**

@@ -1,8 +1,19 @@
-import { List, Output, refkey, render } from "@alloy-js/core";
+import {
+  Output,
+  refkey,
+  render
+} from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
-import { describe, expect, it } from "vitest";
+import {
+  describe,
+  expect,
+  it
+} from "vitest";
 import * as py from "../src/components/index.js";
-import { assertFileContents, toSourceText } from "./utils.jsx";
+import {
+  assertFileContents,
+  toSourceText
+} from "./utils.jsx";
 
 describe("Python Class", () => {
   it("renders a class with no body as 'pass'", () => {

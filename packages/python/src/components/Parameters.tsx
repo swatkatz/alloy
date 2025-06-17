@@ -1,4 +1,7 @@
-import { Children, List } from "@alloy-js/core";
+import {
+  Children,
+  List
+} from "@alloy-js/core";
 import { Declaration } from "./Declaration.js";
 import { VariableDeclaration } from "./VariableDeclaration.js";
 
