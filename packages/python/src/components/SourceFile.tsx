@@ -34,8 +34,8 @@ export interface SourceFileProps {
 export function SourceFile(props: SourceFileProps) {
   const directoryContext = useContext(SourceDirectoryContext)!;
   const currentDir = directoryContext.path;
-  // Name of the scope is derived from the file path, minus the .py extension
-  const path: string = join(currentDir, props.path).replace(/\.py$/, "").replace("/", ".");
+  // Name of the scope is derived from the file path, minus the .py extension, and with slashes replaced by dots
+  const path: string = join(currentDir, props.path).replace(/\.py$/, "").replace(/\//g, ".");
   const scope = new PythonModuleScope(path);
   const sfContext: SourceFileContext = {
     scope,
