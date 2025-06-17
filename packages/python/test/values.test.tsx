@@ -15,15 +15,12 @@ describe("Value", () => {
     expect(<py.Value jsValue={123} />).toRenderTo("123");
   });
 
-  it("renders boolean", () => {
+  it("renders boolean - True", () => {
     expect(<py.Value jsValue={true} />).toRenderTo("True");
   });
 
-  it("renders other objects", () => {
-    function Test() {
-      return <>Test</>;
-    }
-    expect(<py.Value jsValue={Test} />).toRenderTo("Test");
+  it("renders boolean - False", () => {
+    expect(<py.Value jsValue={false} />).toRenderTo("False");
   });
 
   it("renders array", () => {
@@ -32,6 +29,10 @@ describe("Value", () => {
 
   it("renders object", () => {
     expect(<py.Value jsValue={{ a: 1, b: 2 }} />).toRenderTo('{"a": 1, "b": 2}');
+  });
+
+  it("renders more complex object", () => {
+    expect(<py.Value jsValue={{ a: "1", b: 2, c: true }} />).toRenderTo('{"a": "1", "b": 2, "c": True}');
   });
 
   it("renders empty object", () => {

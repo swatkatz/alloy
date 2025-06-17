@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import * as py from "../src/index.js";
 import { toSourceText } from "./utils.jsx";
+import { refkey } from "@alloy-js/core";
 
 describe("Python Variable", () => {
   it("declares a python variable", () => {
@@ -46,5 +47,16 @@ describe("Python Variable", () => {
       />
     );
     expect(res).toBe(`name_id_pairs = {"John": 123, "Doe": 234}`);
+  });
+
+  it("declares a python variable receiving other variable as value", () => {
+    const res = toSourceText(
+      <>
+        <py.VariableDeclaration name="my_var" value={42} />
+        <hbr />
+        <py.VariableDeclaration name="my_other_var" value={refkey("my_var")} />
+      </>
+    );
+    expect(res).toBe(`my_var = 42\nmy_other_var = my_var`);
   });
 });

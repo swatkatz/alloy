@@ -5,58 +5,58 @@ import * as py from "../src/components/index.js";
 import { assertFileContents, toSourceText } from "./utils.jsx";
 
 describe("Python Class", () => {
-  // it("renders a class with no body as 'pass'", () => {
-  //   const result = toSourceText(
-  //     <py.ClassDeclaration name="Foo" />
-  //   );
-  //   expect(result).toRenderTo(d`
-  //     class Foo:
-  //       pass
-  //   `);
-  // });
+  it("renders a class with no body as 'pass'", () => {
+    const result = toSourceText(
+      <py.ClassDeclaration name="Foo" />
+    );
+    expect(result).toRenderTo(d`
+      class Foo:
+        pass
+    `);
+  });
 
-  // it("renders a class with a body", () => {
-  //   const result = toSourceText(
-  //     <py.ClassDeclaration name="Bar">print('hi')</py.ClassDeclaration>
-  //   );
-  //   expect(result).toRenderTo(d`
-  //     class Bar:
-  //       print('hi')
-  //   `);
-  // });
+  it("renders a class with a body", () => {
+    const result = toSourceText(
+      <py.ClassDeclaration name="Bar">print('hi')</py.ClassDeclaration>
+    );
+    expect(result).toRenderTo(d`
+      class Bar:
+        print('hi')
+    `);
+  });
 
-  // it("renders a class with base classes", () => {
-  //   const result = toSourceText(
-  //     <>
-  //       <py.ClassDeclaration name="Base1" />
-  //       <br />
-  //       <py.ClassDeclaration name="Base2" />
-  //       <br />
-  //       <py.ClassDeclaration name="Baz" bases={[refkey("Base1"), refkey("Base2")]} />
-  //     </>
-  //   );
-  //   const expected = d`
-  //     class Base1:
-  //       pass
-  //     class Base2:
-  //       pass
-  //     class Baz(Base1, Base2):
-  //       pass
-  //   `;
-  //   expect(result).toRenderTo(expected);
-  // });
+  it("renders a class with base classes", () => {
+    const result = toSourceText(
+      <>
+        <py.ClassDeclaration name="Base1" />
+        <br />
+        <py.ClassDeclaration name="Base2" />
+        <br />
+        <py.ClassDeclaration name="Baz" bases={[refkey("Base1"), refkey("Base2")]} />
+      </>
+    );
+    const expected = d`
+      class Base1:
+        pass
+      class Base2:
+        pass
+      class Baz(Base1, Base2):
+        pass
+    `;
+    expect(result).toRenderTo(expected);
+  });
 
-  // it("renders a class with base classes and body", () => {
-  //   const result = toSourceText(
-  //     <py.ClassDeclaration name="Qux" bases={["Base"]}>
-  //       print('hello')
-  //     </py.ClassDeclaration>
-  //   );
-  //   expect(result).toRenderTo(d`
-  //     class Qux(Base):
-  //       print('hello')
-  //   `);
-  // });
+  it("renders a class with base classes and body", () => {
+    const result = toSourceText(
+      <py.ClassDeclaration name="Qux" bases={["Base"]}>
+        print('hello')
+      </py.ClassDeclaration>
+    );
+    expect(result).toRenderTo(d`
+      class Qux(Base):
+        print('hello')
+    `);
+  });
 
   it("renders classes across modules with inheritance", () => {
     const result = render(

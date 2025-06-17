@@ -14,7 +14,7 @@ export interface EnumProps extends BaseDeclarationProps {
   /**
    * Members of the enum as an array of objects.
    */
-  members?: Array<{ name: string; value?: string | number }>;
+  members?: Array<{ name: string; value?: Children; jsValue?: string | number }>;
   /**
    * The enum style: 'classic' (default), 'auto', or 'functional'.
    */
@@ -63,7 +63,7 @@ export function EnumDeclaration(props: EnumProps) {
     );
   }
 
-  let memberList: Array<{ name: string; value?: string | number; auto?: boolean }> =
+  let memberList: Array<{ name: string; value?: Children; jsValue?: string | number; auto?: boolean }> =
     (props.members ?? []).map((m) =>
       m.value === undefined ? { ...m, auto: false } : m,
     );
@@ -76,7 +76,7 @@ export function EnumDeclaration(props: EnumProps) {
     // ClassDeclaration creates a symbol, so we don't need to create one here.
     <ClassDeclaration name={props.name} bases={[enumModule["."][baseType]]}>
       <For each={memberList} hardline>
-        {(member) => <EnumMember name={member.name} value={member.value} auto={member.auto} />}
+        {(member) => <EnumMember name={member.name} value={member.value} jsValue={member.jsValue} auto={member.auto} />}
       </For>
       {props.children}
     </ClassDeclaration>

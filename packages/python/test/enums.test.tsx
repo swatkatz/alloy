@@ -1,9 +1,10 @@
-import { Output, render } from "@alloy-js/core";
+import { Output, refkey, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import { enumModule } from "../src/builtins/python.js";
 import * as py from "../src/components/index.js";
 import { assertFileContents, toSourceText } from "./utils.jsx";
+import { ref } from "../src/symbols/reference.js";
 
 describe("Python Enum", () => {
   it("classic enum with explicit values", () => {
@@ -12,9 +13,9 @@ describe("Python Enum", () => {
         name="Color"
         baseType="IntEnum"
         members={[
-          { name: "RED", value: 1 },
-          { name: "GREEN", value: 2 },
-          { name: "BLUE", value: 3 },
+          { name: "RED", value: "1" },
+          { name: "GREEN", value: "2" },
+          { name: "BLUE", value: "3" },
         ]}
       />,
       { externals: [enumModule] },
@@ -26,6 +27,62 @@ describe("Python Enum", () => {
         RED = 1
         GREEN = 2
         BLUE = 3
+    `;
+    expect(result).toRenderTo(expected);
+  });
+
+  it("classic enum with jsValues", () => {
+    const result = toSourceText(
+      <py.EnumDeclaration
+        name="Color"
+        baseType="IntEnum"
+        members={[
+          { name: "RED", jsValue: "1" },
+          { name: "GREEN", jsValue: 2 },
+          { name: "BLUE", jsValue: "3" },
+        ]}
+      />,
+      { externals: [enumModule] },
+    );
+    const expected = d`
+      from enum import IntEnum
+
+      class Color(IntEnum):
+        RED = "1"
+        GREEN = 2
+        BLUE = "3"
+    `;
+    expect(result).toRenderTo(expected);
+  });
+
+  it("classic enum with a refkey as jsValue", () => {
+    const result = toSourceText(
+      <>
+        <py.ClassDeclaration name="Dog" />
+        <hbr />
+        <py.ClassDeclaration name="Cat" />
+        <hbr />
+        <py.EnumDeclaration
+          name="Animal"
+          baseType="Enum"
+          members={[
+            { name: "DOG", value: refkey("Dog") },
+            { name: "CAT", value: refkey("Cat") },
+          ]}
+        />
+      </>,
+      { externals: [enumModule] },
+    );
+    const expected = d`
+      from enum import Enum
+
+      class Dog:
+        pass
+      class Cat:
+        pass
+      class Animal(Enum):
+        DOG = Dog
+        CAT = Cat
     `;
     expect(result).toRenderTo(expected);
   });
