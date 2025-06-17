@@ -1,5 +1,4 @@
 import { Children, code } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js";
 import { CallStatementParameters, CallStatementParametersProps } from "./Parameters.jsx";
 
 export interface CallStatementProps extends CallStatementParametersProps {

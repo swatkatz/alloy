@@ -1,5 +1,5 @@
-import { Children, code, useBinder } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js"; // assuming you have this
+import { Children, code } from "@alloy-js/core";
+import { getFormattedName } from "../utils.js";
 
 export interface VariableDeclarationProps {
   name: string;
@@ -10,7 +10,7 @@ export interface VariableDeclarationProps {
 }
 
 export function VariableDeclaration(props: VariableDeclarationProps) {
-  const name = usePythonNamePolicy().getName(props.name, "variable");
+  const name = getFormattedName(props.name, "variable");
 
   // Handle optional type annotation
   const typeAnnotation = props.type && !props.callStatementVar ? code`: ${props.type}` : "";

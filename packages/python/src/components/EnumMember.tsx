@@ -1,6 +1,6 @@
 import { Children, Show } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js";
 import { enumModule } from "../builtins/python.js";
+import { getFormattedName } from "../utils.js";
 
 export interface EnumMemberProps {
   /**
@@ -25,7 +25,7 @@ export interface EnumMemberProps {
  * A Python enum member.
  */
 export function EnumMember(props: EnumMemberProps) {
-  const name = usePythonNamePolicy().getName(props.name, "enum-member");
+  const name = getFormattedName(props.name, "enum-member");
   const autoReference = props.auto === true ? enumModule["."].auto : undefined;
   const value = props.auto === true ? <>{autoReference}()</> : props.value;
   if (props.functional) {

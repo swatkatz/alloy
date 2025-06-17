@@ -1,8 +1,8 @@
 import { Children, Indent, OutputSymbolFlags, Scope, Show, SourceFileContext, code, refkey, useContext } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js";
 import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
 import { Parameters, ParametersProps } from "./Parameters.jsx";
 import { PythonOutputSymbol } from "../symbols/index.js";
+import { getFormattedName, getModuleName } from "../utils.js";
 
 export interface MethodDeclarationProps
   extends BaseDeclarationProps,
@@ -17,12 +17,9 @@ export interface MethodDeclarationProps
 
 export function MethodDeclaration(props: MethodDeclarationProps) {
   const fileContext = useContext(SourceFileContext);
-  const module = fileContext ?
-    usePythonNamePolicy().getName(fileContext.path.replace(/\.py$/, ""),
-    "class",
-  ) : "";
-  const name = !props.forceName ? usePythonNamePolicy().getName(props.name, "method") : props.name;
-
+  // For classes, the module name is derived from the file context
+  const module = getModuleName(fileContext, undefined);
+  const name = !props.forceName ? getFormattedName(props.name, "method") : props.name;
   const sym = new PythonOutputSymbol(name, {
     refkeys: props.refkey ?? refkey(props.name!),
     flags:

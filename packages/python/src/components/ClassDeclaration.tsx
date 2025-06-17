@@ -10,9 +10,9 @@ import {
   SourceFileContext,
   refkey
 } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
 import { Declaration, BaseDeclarationProps } from "./Declaration.js";
+import { getFormattedName, getModuleName } from "../utils.js";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   bases?: Children[];
@@ -42,12 +42,9 @@ export function PythonBlock(props: BlockProps) {
 
 export function ClassDeclaration(props: ClassDeclarationProps) {
   const fileContext = useContext(SourceFileContext);
-  const namePolicy = usePythonNamePolicy();
-  const module = fileContext ?
-    namePolicy.getName(fileContext.path.replace(/\.py$/, ""),
-    "class",
-  ) : "";
-  const name = namePolicy.getName(props.name!, "class");;
+  const name = getFormattedName(props.name!, "class");
+  // For classes, the module name is derived from the file context
+  const module = getModuleName(fileContext, undefined);
   // Propagate the name after the name policy was applied
   const updatedProps: ClassDeclarationProps = {
     ...props,
