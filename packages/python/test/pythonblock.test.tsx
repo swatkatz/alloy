@@ -5,7 +5,28 @@ import { toSourceText } from "./utils.jsx";
 import { d } from "@alloy-js/core/testing";
 
 describe("Top Level Python Block", () => {
-  it("Renders two spaces after class declaration", () => {
+  it("Renders two spaces after one class declaration", () => {
+    const result = toSourceText(
+      <>
+      class A
+      <py.TopLevelPythonBlock opener=":" closer="">
+        <List>
+          1
+        </List>
+      </py.TopLevelPythonBlock>
+      </>
+    );
+    const expected = d`
+    class A:
+      1
+
+
+
+
+    `;
+    expect(result).toRenderTo(expected);
+  });
+  it("Renders two spaces after multiple class declarations", () => {
     const result = toSourceText(
       <>
       class A
