@@ -1,6 +1,6 @@
 import {
   Children,
-  Declaration as CoreDeclaration,
+  Name,
   SourceFileContext,
   code,
   memo,
@@ -11,7 +11,7 @@ import {
   getFormattedName,
   getModuleName
 } from "../utils.js";
-import { BaseDeclarationProps } from "./Declaration.jsx";
+import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
 import { Value } from "./Value.jsx";
 import { PythonOutputSymbol } from "../symbols/index.js";
 
@@ -41,16 +41,16 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
     rightSide = "";
   } else if (value === null || value === undefined) {
     rightSide = (<>{assignment}None</>);
-  } else if (props.callStatementVar && (props.name === undefined || props.name === "")) {
+  } else if (props.callStatementVar && (name === undefined || name === "")) {
     rightSide = (<><Value jsValue={value} /></>);
   } else {
     rightSide = (<>{assignment}<Value jsValue={value} /></>);
   }
   return (
     <>
-      <CoreDeclaration symbol={sym}>
-        {name}{typeAnnotation}{rightSide}
-      </CoreDeclaration>
+      <Declaration symbol={sym}>
+        {<Name />}{typeAnnotation}{rightSide}
+      </Declaration>
     </>
   );
 }

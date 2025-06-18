@@ -1,6 +1,7 @@
 import {
   Children,
-  List
+  List,
+  Refkey
 } from "@alloy-js/core";
 import { Declaration } from "./Declaration.js";
 import { VariableDeclaration } from "./VariableDeclaration.js";
@@ -17,14 +18,12 @@ export interface NamedParameter {
 function Parameter(param: NamedParameter) {
   // Use VariableDeclaration to render the parameter, wrapped in Declaration for symbol creation
   return (
-    <Declaration name={param.name}>
-      <VariableDeclaration
-        name={param.name}
-        type={param.type}
-        value={param.defaultValue}
-        omitNone={true}
-      />
-    </Declaration>
+    <VariableDeclaration
+      name={param.name}
+      type={param.type}
+      value={param.defaultValue}
+      omitNone={true}
+    />
   );
 }
 
@@ -81,28 +80,13 @@ export interface CallStatementParametersProps {
  * Render a single parameter as a Declaration (for symbol creation) or as *args/**kwargs.
  */
 function CallStatementParameter(param: CallStatementParameter) {
-  if (!param.name) {
-    // Create no symbol in case it's an unnamed parameter
-    return (
-      <VariableDeclaration
-        name=''
-        value={param.value}
-        callStatementVar={true}
-      />
-    );
-  }
-  else {
-    // Use VariableDeclaration to render the parameter, wrapped in Declaration for symbol creation
-    return (
-      <Declaration name={param.name}>
-        <VariableDeclaration
-          name={param.name? param.name : ''}
-          value={param.value}
-          callStatementVar={true}
-        />
-      </Declaration>
-    );
-  }
+  return (
+    <VariableDeclaration
+      name={param.name? param.name : ''}
+      value={param.value}
+      callStatementVar={true}
+    />
+  );
 }
 
 export function CallStatementParameters(props: CallStatementParametersProps) {

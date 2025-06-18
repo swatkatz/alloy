@@ -8,7 +8,8 @@ import {
   computed,
   useContext,
   SourceFileContext,
-  refkey
+  refkey,
+  Name
 } from "@alloy-js/core";
 import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
 import {
@@ -72,7 +73,7 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
   const basesPart = props.bases && <>(<List children={props.bases} comma space />)</>;
   return (
     <Declaration {...updatedProps} name={updatedProps.name} symbol={sym}>
-      class {updatedProps.name}{basesPart}
+      class <Name />{basesPart}
       <PythonBlock opener=":" closer="" newline={false}>{hasChildren ? props.children : "pass"}</PythonBlock>
     </Declaration>
   );

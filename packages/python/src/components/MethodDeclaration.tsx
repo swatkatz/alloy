@@ -1,6 +1,7 @@
 import {
   Children,
   Indent,
+  Name,
   OutputSymbolFlags,
   Scope,
   Show,
@@ -40,7 +41,7 @@ export function MethodDeclaration(props: MethodDeclarationProps) {
   const module = getModuleName(fileContext, undefined);
   const name = !props.forceName ? getFormattedName(props.name, "method") : props.name;
   const sym = new PythonOutputSymbol(name, {
-    refkeys: props.refkey ?? refkey(props.name!),
+    refkeys: props.refkey ?? refkey(name),
     flags:
       (props.flags ?? OutputSymbolFlags.None) |
       (OutputSymbolFlags.MemberContainer |
@@ -70,8 +71,9 @@ export function MethodDeclaration(props: MethodDeclarationProps) {
   return (
     <Declaration {...props} name={name} symbol={sym}>
       <group>
-        def {name}({params})<Show when={props.returnType !== undefined}>{code` -> ${props.returnType}`}</Show>:
+        def <Name />
         <Scope name={name} kind="method">
+          ({params})<Show when={props.returnType !== undefined}>{code` -> ${props.returnType}`}</Show>:
           <Indent>{props.children ?? "pass"}</Indent>
         </Scope>
       </group>
