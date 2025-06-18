@@ -1,4 +1,5 @@
 import {
+  List,
   Output,
   refkey,
   render
@@ -104,26 +105,26 @@ describe("Python Class", () => {
     assertFileContents(result, { "mod3.py": mod3Expected });
   });
 
-  // it("renders a class with class variables like foo: str, and also bar: A where A is another class", () => {
-  //   const result = toSourceText(
-  //     <>
-  //       <py.ClassDeclaration name="A" />
-  //       <br />
-  //       <py.ClassDeclaration name="B">
-  //         <List hardline>
-  //           <py.VariableDeclaration name="bar" type={refkey("A")} omitNone />
-  //           <py.VariableDeclaration name="foo" type="str" omitNone />
-  //         </List>
-  //       </py.ClassDeclaration>
-  //     </>
-  //   );
-  //   const expected = d`
-  //     class A:
-  //       pass
-  //     class B:
-  //       bar: A
-  //       foo: str
-  //   `;
-  //   expect(result).toRenderTo(expected);
-  // });
+  it("renders a class with class variables like foo: str, and also bar: A where A is another class", () => {
+    const result = toSourceText(
+      <>
+        <py.ClassDeclaration name="A" />
+        <br />
+        <py.ClassDeclaration name="B">
+          <List hardline>
+            <py.VariableDeclaration name="bar" type={refkey("A")} omitNone />
+            <py.VariableDeclaration name="foo" type="str" omitNone />
+          </List>
+        </py.ClassDeclaration>
+      </>
+    );
+    const expected = d`
+      class A:
+        pass
+      class B:
+        bar: A
+        foo: str
+    `;
+    expect(result).toRenderTo(expected);
+  });
 });
