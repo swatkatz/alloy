@@ -1,12 +1,8 @@
-import {
-  OutputScope,
-  reactive,
-  shallowReactive
-} from "@alloy-js/core";
+import { OutputScope, reactive, shallowReactive } from "@alloy-js/core";
 import { PythonOutputSymbol } from "./python-output-symbol.js";
 
 export class ImportedSymbol {
-  local?: PythonOutputSymbol;  // The alias of the target symbol, if it exists
+  local?: PythonOutputSymbol; // The alias of the target symbol, if it exists
   target: PythonOutputSymbol;
 
   constructor(target: PythonOutputSymbol, local?: PythonOutputSymbol) {
@@ -29,7 +25,11 @@ export type ImportRecords = Map<PythonModuleScope, ImportRecordProps>;
 
 export const ImportRecords = Map as {
   new (): ImportRecords;
-  new (entries?: readonly (readonly [PythonModuleScope, ImportRecordProps])[] | null): ImportRecords;
+  new (
+    entries?:
+      | readonly (readonly [PythonModuleScope, ImportRecordProps])[]
+      | null,
+  ): ImportRecords;
   prototype: Map<PythonModuleScope, ImportRecordProps>;
 };
 
@@ -38,9 +38,8 @@ export class PythonModuleScope extends OutputScope {
     return "module" as const;
   }
 
-  #importedSymbols: Map<PythonOutputSymbol, PythonOutputSymbol> = shallowReactive(
-    new Map(),
-  );
+  #importedSymbols: Map<PythonOutputSymbol, PythonOutputSymbol> =
+    shallowReactive(new Map());
   get importedSymbols() {
     return this.#importedSymbols;
   }
@@ -50,10 +49,7 @@ export class PythonModuleScope extends OutputScope {
     return this.#importedModules;
   }
 
-  addImport(
-    targetSymbol: PythonOutputSymbol,
-    targetModule: PythonModuleScope,
-  ) {
+  addImport(targetSymbol: PythonOutputSymbol, targetModule: PythonModuleScope) {
     const existing = this.importedSymbols.get(targetSymbol);
     if (existing) {
       return existing;
@@ -64,7 +60,9 @@ export class PythonModuleScope extends OutputScope {
     }
 
     if (!this.importedModules.has(targetModule)) {
-      this.importedModules.set(targetModule, { symbols: new Set<ImportedSymbol>() });
+      this.importedModules.set(targetModule, {
+        symbols: new Set<ImportedSymbol>(),
+      });
     }
 
     const localSymbol = new PythonOutputSymbol(targetSymbol.name, {

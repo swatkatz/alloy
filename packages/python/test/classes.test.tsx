@@ -1,26 +1,12 @@
-import {
-  List,
-  Output,
-  refkey,
-  render
-} from "@alloy-js/core";
+import { List, Output, refkey, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
-import {
-  describe,
-  expect,
-  it
-} from "vitest";
+import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
-import {
-  assertFileContents,
-  toSourceText
-} from "./utils.jsx";
+import { assertFileContents, toSourceText } from "./utils.jsx";
 
 describe("Python Class", () => {
   it("renders a class with no body as 'pass'", () => {
-    const result = toSourceText(
-      <py.ClassDeclaration name="Foo" />
-    );
+    const result = toSourceText(<py.ClassDeclaration name="Foo" />);
     expect(result).toRenderTo(d`
       class Foo:
         pass
@@ -29,7 +15,7 @@ describe("Python Class", () => {
 
   it("renders a class with a body", () => {
     const result = toSourceText(
-      <py.ClassDeclaration name="Bar">print('hi')</py.ClassDeclaration>
+      <py.ClassDeclaration name="Bar">print('hi')</py.ClassDeclaration>,
     );
     expect(result).toRenderTo(d`
       class Bar:
@@ -44,8 +30,11 @@ describe("Python Class", () => {
         <br />
         <py.ClassDeclaration name="Base2" />
         <br />
-        <py.ClassDeclaration name="Baz" bases={[refkey("Base1"), refkey("Base2")]} />
-      </>
+        <py.ClassDeclaration
+          name="Baz"
+          bases={[refkey("Base1"), refkey("Base2")]}
+        />
+      </>,
     );
     const expected = d`
       class Base1:
@@ -62,7 +51,7 @@ describe("Python Class", () => {
     const result = toSourceText(
       <py.ClassDeclaration name="Qux" bases={["Base"]}>
         print('hello')
-      </py.ClassDeclaration>
+      </py.ClassDeclaration>,
     );
     expect(result).toRenderTo(d`
       class Qux(Base):
@@ -116,7 +105,7 @@ describe("Python Class", () => {
             <py.VariableDeclaration name="foo" type="str" omitNone />
           </List>
         </py.ClassDeclaration>
-      </>
+      </>,
     );
     const expected = d`
       class A:
@@ -142,7 +131,7 @@ describe("Python Class", () => {
             <py.VariableDeclaration name="foo" type="str" omitNone />
           </List>
         </py.ClassDeclaration>
-      </>
+      </>,
     );
     const expected = d`
       class A:

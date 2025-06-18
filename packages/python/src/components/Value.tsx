@@ -1,8 +1,4 @@
-import {
-  For,
-  Indent,
-  memo
-} from "@alloy-js/core";
+import { For, Indent, memo } from "@alloy-js/core";
 
 export interface ValueProps {
   jsValue?: unknown;

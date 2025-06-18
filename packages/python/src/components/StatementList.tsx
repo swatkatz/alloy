@@ -1,7 +1,4 @@
-import {
-  Children,
-  List
-} from "@alloy-js/core";
+import { Children, List } from "@alloy-js/core";
 
 export interface StatementListProps {
   children: Children;
@@ -11,9 +8,5 @@ export interface StatementListProps {
  * Join child elements with semicolons and hardlines.
  */
 export function StatementList(props: StatementListProps) {
-  return (
-    <List hardline>
-      {props.children}
-    </List>
-  );
+  return <List hardline>{props.children}</List>;
 }

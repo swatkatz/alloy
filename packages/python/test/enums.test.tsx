@@ -1,10 +1,6 @@
 import { refkey } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
-import {
-  describe,
-  expect,
-  it
-} from "vitest";
+import { describe, expect, it } from "vitest";
 import { enumModule } from "../src/builtins/python.js";
 import * as py from "../src/components/index.js";
 import { toSourceText } from "./utils.jsx";

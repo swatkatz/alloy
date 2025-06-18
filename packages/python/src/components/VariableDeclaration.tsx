@@ -5,15 +5,12 @@ import {
   code,
   memo,
   refkey,
-  useContext
+  useContext,
 } from "@alloy-js/core";
-import {
-  getFormattedName,
-  getModuleName
-} from "../utils.js";
+import { PythonOutputSymbol } from "../symbols/index.js";
+import { getFormattedName, getModuleName } from "../utils.js";
 import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
 import { Value } from "./Value.jsx";
-import { PythonOutputSymbol } from "../symbols/index.js";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
   value?: Children;
@@ -32,24 +29,37 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
     module: module,
   });
   // Handle optional type annotation
-  const typeAnnotation = props.type && !props.callStatementVar ? code`: ${props.type}` : "";
+  const typeAnnotation =
+    props.type && !props.callStatementVar ? code`: ${props.type}` : "";
   // If we receive a symbol, resolve it to a name
-  const value = typeof props.value === "object" ? memo(() => props.value) : props.value;
+  const value =
+    typeof props.value === "object" ? memo(() => props.value) : props.value;
   const assignment = props.callStatementVar ? "=" : " = ";
   var rightSide;
   if (props.omitNone && props.value === undefined) {
     rightSide = "";
   } else if (value === null || value === undefined) {
-    rightSide = (<>{assignment}None</>);
+    rightSide = <>{assignment}None</>;
   } else if (props.callStatementVar && (name === undefined || name === "")) {
-    rightSide = (<><Value jsValue={value} /></>);
+    rightSide = (
+      <>
+        <Value jsValue={value} />
+      </>
+    );
   } else {
-    rightSide = (<>{assignment}<Value jsValue={value} /></>);
+    rightSide = (
+      <>
+        {assignment}
+        <Value jsValue={value} />
+      </>
+    );
   }
   return (
     <>
       <Declaration symbol={sym}>
-        {<Name />}{typeAnnotation}{rightSide}
+        {<Name />}
+        {typeAnnotation}
+        {rightSide}
       </Declaration>
     </>
   );

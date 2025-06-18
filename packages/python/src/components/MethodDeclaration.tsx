@@ -8,21 +8,12 @@ import {
   SourceFileContext,
   code,
   refkey,
-  useContext
+  useContext,
 } from "@alloy-js/core";
-import {
-  BaseDeclarationProps,
-  Declaration
-} from "./Declaration.jsx";
-import {
-  Parameters,
-  ParametersProps
-} from "./Parameters.jsx";
 import { PythonOutputSymbol } from "../symbols/index.js";
-import {
-  getFormattedName,
-  getModuleName
-} from "../utils.js";
+import { getFormattedName, getModuleName } from "../utils.js";
+import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
+import { Parameters, ParametersProps } from "./Parameters.jsx";
 
 export interface MethodDeclarationProps
   extends BaseDeclarationProps,
@@ -39,7 +30,8 @@ export function MethodDeclaration(props: MethodDeclarationProps) {
   const fileContext = useContext(SourceFileContext);
   // For classes, the module name is derived from the file context
   const module = getModuleName(fileContext, undefined);
-  const name = !props.forceName ? getFormattedName(props.name, "method") : props.name;
+  const name =
+    !props.forceName ? getFormattedName(props.name, "method") : props.name;
   const sym = new PythonOutputSymbol(name, {
     refkeys: props.refkey ?? refkey(name),
     flags:
@@ -73,8 +65,11 @@ export function MethodDeclaration(props: MethodDeclarationProps) {
       <group>
         def <Name />
         <Scope name={name} kind="method">
-          ({params})<Show when={props.returnType !== undefined}>{code` -> ${props.returnType}`}</Show>:
-          <Indent>{props.children ?? "pass"}</Indent>
+          ({params})
+          <Show
+            when={props.returnType !== undefined}
+          >{code` -> ${props.returnType}`}</Show>
+          :<Indent>{props.children ?? "pass"}</Indent>
         </Scope>
       </group>
     </Declaration>
@@ -82,7 +77,10 @@ export function MethodDeclaration(props: MethodDeclarationProps) {
 }
 
 export function InitMethod(
-  props: Omit<MethodDeclarationProps, "name" | "instanceMethod" | "classMethod">,
+  props: Omit<
+    MethodDeclarationProps,
+    "name" | "instanceMethod" | "classMethod"
+  >,
 ) {
   return (
     <MethodDeclaration

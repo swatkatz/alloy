@@ -13,7 +13,8 @@ export interface CreatePythonSymbolOptions extends OutputSymbolOptions {
   children?: Children;
 }
 
-export interface CreatePythonSymbolFunctionOptions extends CreatePythonSymbolOptions {
+export interface CreatePythonSymbolFunctionOptions
+  extends CreatePythonSymbolOptions {
   name: string;
 }
 

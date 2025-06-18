@@ -3,11 +3,11 @@ import {
   OutputSymbolFlags,
   refkey,
   Refkey,
-  Show
+  Show,
 } from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
-import { getFormattedName } from "../utils.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
+import { getFormattedName } from "../utils.js";
 import { Value } from "./Value.jsx";
 
 export interface EnumMemberProps {
@@ -64,9 +64,7 @@ export function EnumMember(props: EnumMemberProps) {
   }
   const actualName = sym ? sym.name : name;
   const valueCode =
-    props.jsValue !== undefined ?
-      <Value jsValue={props.jsValue} />
-    : value;
+    props.jsValue !== undefined ? <Value jsValue={props.jsValue} /> : value;
 
   if (props.functional) {
     return (

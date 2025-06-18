@@ -1,15 +1,9 @@
-import {
-  memo,
-  Refkey,
-  resolve,
-  untrack,
-  useContext,
-} from "@alloy-js/core";
+import { memo, Refkey, resolve, untrack, useContext } from "@alloy-js/core";
 import { SourceFileContext } from "../components/SourceFile.jsx";
-import { PythonOutputScope } from "./scopes.js";
 import { PythonMemberScope } from "./python-member-scope.js";
 import { PythonModuleScope } from "./python-module-scope.js";
 import { PythonOutputSymbol } from "./python-output-symbol.js";
+import { PythonOutputScope } from "./scopes.js";
 
 export function ref(
   refkey: Refkey,

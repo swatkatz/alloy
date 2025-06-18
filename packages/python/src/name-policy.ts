@@ -1,13 +1,5 @@
-import {
-  createNamePolicy,
-  NamePolicy,
-  useNamePolicy
-} from "@alloy-js/core";
-import {
-  constantCase,
-  pascalCase,
-  snakeCase
-} from "change-case";
+import { createNamePolicy, NamePolicy, useNamePolicy } from "@alloy-js/core";
+import { constantCase, pascalCase, snakeCase } from "change-case";
 
 export type PythonElements =
   | "class"

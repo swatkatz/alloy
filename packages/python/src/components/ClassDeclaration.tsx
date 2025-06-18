@@ -1,26 +1,20 @@
 import {
-  childrenArray,
+  BlockProps,
   Children,
   Indent,
   List,
+  Name,
   OutputSymbolFlags,
   Scope,
-  BlockProps,
-  computed,
-  useContext,
   SourceFileContext,
+  childrenArray,
+  computed,
   refkey,
-  Name
+  useContext,
 } from "@alloy-js/core";
 import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
-import {
-  Declaration,
-  BaseDeclarationProps
-} from "./Declaration.js";
-import {
-  getFormattedName,
-  getModuleName
-} from "../utils.js";
+import { getFormattedName, getModuleName } from "../utils.js";
+import { BaseDeclarationProps, Declaration } from "./Declaration.js";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   bases?: Children[];
@@ -40,9 +34,7 @@ export function PythonBlock(props: BlockProps) {
     <group>
       {props.newline && <br />}
       {props.opener ?? "{"}
-      <Indent softline={childCount.value === 0}>
-        {props.children}
-      </Indent>
+      <Indent softline={childCount.value === 0}>{props.children}</Indent>
       {props.closer ?? "}"}
     </group>
   );
@@ -71,13 +63,19 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
 
   const hasChildren =
     childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
-  const basesPart = props.bases && <>(<List children={props.bases} comma space />)</>;
+  const basesPart = props.bases && (
+    <>
+      (<List children={props.bases} comma space />)
+    </>
+  );
   return (
     <Declaration {...updatedProps} name={updatedProps.name} symbol={sym}>
       class <Name />
       <Scope name={updatedProps.name} kind="class">
         {basesPart}
-        <PythonBlock opener=":" closer="" newline={false}>{hasChildren ? props.children : "pass"}</PythonBlock>
+        <PythonBlock opener=":" closer="" newline={false}>
+          {hasChildren ? props.children : "pass"}
+        </PythonBlock>
       </Scope>
     </Declaration>
   );

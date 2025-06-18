@@ -6,10 +6,7 @@ import {
   useContext,
 } from "@alloy-js/core";
 import { relative } from "pathe";
-import {
-  ImportedSymbol,
-  ImportRecords
-} from "../symbols/index.js";
+import { ImportedSymbol, ImportRecords } from "../symbols/index.js";
 
 export interface ImportSymbol {
   module: string; // The module to import from
@@ -42,7 +39,7 @@ export function ImportStatements(props: ImportStatementsProps) {
       if (properties.symbols && properties.symbols.size > 0) {
         // Sort the symbols in a module by the imported name
         const sortedSymbols = Array.from(properties.symbols).sort((a, b) =>
-          a.target.name.localeCompare(b.target.name)
+          a.target.name.localeCompare(b.target.name),
         );
         return sortedSymbols.map((symbol, idx, arr) => (
           <>
@@ -59,10 +56,10 @@ export function ImportStatements(props: ImportStatementsProps) {
         // If no symbols are specified, it's either a wildcard import or a module import
         return (
           <ImportStatement
-        path={targetPath}
-        symbols={properties.symbols}
-        pathAlias={properties.pathAlias}
-        wildcard={properties.wildcard}
+            path={targetPath}
+            symbols={properties.symbols}
+            pathAlias={properties.pathAlias}
+            wildcard={properties.wildcard}
           />
         );
       }
@@ -89,18 +86,16 @@ export function ImportStatement(props: ImportStatementProps) {
     }
 
     const parts: any[] = [];
-    
+
     if (wildcard) {
       parts.push(`from ${path} import *`);
-    }
-    else if (!symbols || symbols.size === 0) {
+    } else if (!symbols || symbols.size === 0) {
       if (pathAlias) {
         parts.push(`import ${path} as ${pathAlias}`);
       } else {
         parts.push(`import ${path}`);
       }
-    }
-    else {
+    } else {
       namedImportSymbols.sort((a, b) => {
         return a.target.name.localeCompare(b.target.name);
       });
@@ -108,11 +103,7 @@ export function ImportStatement(props: ImportStatementProps) {
       parts.push(
         mapJoin(
           () => namedImportSymbols,
-          (nis) => (
-            <ImportBinding
-              importedSymbol={nis}
-            />
-          ),
+          (nis) => <ImportBinding importedSymbol={nis} />,
           { joiner: ", " },
         ),
       );
@@ -127,7 +118,10 @@ interface ImportBindingProps {
 
 function ImportBinding(props: Readonly<ImportBindingProps>) {
   const text = memo(() => {
-    const localName = props.importedSymbol.local ? props.importedSymbol.local.name : props.importedSymbol.target.name;
+    const localName =
+      props.importedSymbol.local ?
+        props.importedSymbol.local.name
+      : props.importedSymbol.target.name;
     const targetName = props.importedSymbol.target.name;
     if (localName === targetName) {
       return targetName;
@@ -136,9 +130,5 @@ function ImportBinding(props: Readonly<ImportBindingProps>) {
     }
   });
 
-  return (
-    <>
-      {text()}
-    </>
-  );
+  return <>{text()}</>;
 }

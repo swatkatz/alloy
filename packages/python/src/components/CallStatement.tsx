@@ -1,10 +1,7 @@
-import {
-  Children,
-  code
-} from "@alloy-js/core";
+import { Children, code } from "@alloy-js/core";
 import {
   CallStatementParameters,
-  CallStatementParametersProps
+  CallStatementParametersProps,
 } from "./Parameters.jsx";
 
 export interface CallStatementProps extends CallStatementParametersProps {
@@ -20,9 +17,5 @@ export function CallStatement(props: CallStatementProps) {
     />
   );
   const value = code` ${props.type}(${params})`; // Include params in the value
-  return (
-    <>
-    {value}
-    </>
-  );
+  return <>{value}</>;
 }

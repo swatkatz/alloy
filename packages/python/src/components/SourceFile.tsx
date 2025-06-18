@@ -35,18 +35,16 @@ export function SourceFile(props: SourceFileProps) {
   const directoryContext = useContext(SourceDirectoryContext)!;
   const currentDir = directoryContext.path;
   // Name of the scope is derived from the file path, minus the .py extension, and with slashes replaced by dots
-  const path: string = join(currentDir, props.path).replace(/\.py$/, "").replace(/\//g, ".");
+  const path: string = join(currentDir, props.path)
+    .replace(/\.py$/, "")
+    .replace(/\//g, ".");
   const scope = new PythonModuleScope(path);
   const sfContext: SourceFileContext = {
     scope,
   };
 
   return (
-    <CoreSourceFile
-      path={props.path}
-      filetype="py"
-      reference={Reference}
-    >
+    <CoreSourceFile path={props.path} filetype="py" reference={Reference}>
       <Show when={scope.importedModules.size > 0}>
         <ImportStatements records={scope.importedModules} />
         <hbr />

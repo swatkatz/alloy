@@ -1,9 +1,4 @@
-import {
-  Children,
-  List,
-  Refkey
-} from "@alloy-js/core";
-import { Declaration } from "./Declaration.js";
+import { Children, List } from "@alloy-js/core";
 import { VariableDeclaration } from "./VariableDeclaration.js";
 
 export interface NamedParameter {
@@ -82,7 +77,7 @@ export interface CallStatementParametersProps {
 function CallStatementParameter(param: CallStatementParameter) {
   return (
     <VariableDeclaration
-      name={param.name? param.name : ''}
+      name={param.name ? param.name : ""}
       value={param.value}
       callStatementVar={true}
     />
@@ -105,4 +100,3 @@ export function CallStatementParameters(props: CallStatementParametersProps) {
     </List>
   );
 }
-

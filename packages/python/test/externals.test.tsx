@@ -1,8 +1,5 @@
 import { d } from "@alloy-js/core/testing";
-import {
-  expect,
-  it
-} from "vitest";
+import { expect, it } from "vitest";
 import { createModule } from "../src/index.js";
 import { toSourceText } from "./utils.js";
 
@@ -11,21 +8,21 @@ it("uses import from external library", () => {
     name: "requests",
     descriptor: {
       ".": ["get", "post"],
-      "models": ["Response", "Request"],
+      models: ["Response", "Request"],
       "models.anothermodule": ["something"],
     },
   });
   const result = toSourceText(
     <>
-    {requestsLib["."].get}
-    <hbr />
-    {requestsLib["."].post}
-    <hbr />
-    {requestsLib["models"].Request}
-    <hbr />
-    {requestsLib["models"].Response}
-    <hbr />
-    {requestsLib["models.anothermodule"].something}
+      {requestsLib["."].get}
+      <hbr />
+      {requestsLib["."].post}
+      <hbr />
+      {requestsLib["models"].Request}
+      <hbr />
+      {requestsLib["models"].Response}
+      <hbr />
+      {requestsLib["models.anothermodule"].something}
     </>,
     { externals: [requestsLib] },
   );
