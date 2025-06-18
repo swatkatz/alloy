@@ -1,5 +1,6 @@
 export * from "./CallStatement.js";
 export * from "./ClassDeclaration.js";
+export * from "./ClassScopePythonBlock.js";
 export * from "./Declaration.js";
 export * from "./EnumDeclaration.js";
 export * from "./EnumMember.js";
@@ -9,5 +10,6 @@ export * from "./Parameters.js";
 export * from "./Reference.js";
 export * from "./SourceFile.js";
 export * from "./StatementList.js";
+export * from "./TopLevelPythonBlock.js";
 export * from "./Value.js";
 export * from "./VariableDeclaration.js";
