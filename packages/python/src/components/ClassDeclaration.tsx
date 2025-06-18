@@ -4,6 +4,7 @@ import {
   Indent,
   List,
   OutputSymbolFlags,
+  Scope,
   BlockProps,
   computed,
   useContext,
@@ -73,8 +74,11 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
   const basesPart = props.bases && <>(<List children={props.bases} comma space />)</>;
   return (
     <Declaration {...updatedProps} name={updatedProps.name} symbol={sym}>
-      class <Name />{basesPart}
-      <PythonBlock opener=":" closer="" newline={false}>{hasChildren ? props.children : "pass"}</PythonBlock>
+      class <Name />
+      <Scope name={updatedProps.name} kind="class">
+        {basesPart}
+        <PythonBlock opener=":" closer="" newline={false}>{hasChildren ? props.children : "pass"}</PythonBlock>
+      </Scope>
     </Declaration>
   );
 }

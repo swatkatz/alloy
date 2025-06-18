@@ -127,4 +127,29 @@ describe("Python Class", () => {
     `;
     expect(result).toRenderTo(expected);
   });
+
+  it("renders a class with class variables like foo: str, and another identical class", () => {
+    const result = toSourceText(
+      <>
+        <py.ClassDeclaration name="A">
+          <List hardline>
+            <py.VariableDeclaration name="foo" type="str" omitNone />
+          </List>
+        </py.ClassDeclaration>
+        <br />
+        <py.ClassDeclaration name="B">
+          <List hardline>
+            <py.VariableDeclaration name="foo" type="str" omitNone />
+          </List>
+        </py.ClassDeclaration>
+      </>
+    );
+    const expected = d`
+      class A:
+        foo: str
+      class B:
+        foo: str
+    `;
+    expect(result).toRenderTo(expected);
+  });
 });
