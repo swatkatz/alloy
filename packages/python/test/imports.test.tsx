@@ -6,7 +6,8 @@ import {
   ImportRecords,
   PythonOutputSymbol,
 } from "../src/symbols/index.js";
-import { createPythonModuleScope, toSourceText } from "./utils.jsx";
+import { assertFileContents, createPythonModuleScope, toSourceText } from "./utils.jsx";
+import { Output, refkey, render } from "@alloy-js/core";
 
 describe("ImportStatement", () => {
   it("renders module import", () => {
@@ -107,5 +108,44 @@ describe("ImportStatements", () => {
     from requests import get
     import sys`;
     expect(result).toRenderTo(expected);
+  });
+});
+
+describe("Imports being used", () => {
+  it("works with importing the same name many times from different files with the default name conflict resolver", () => {
+    const rk1 = refkey();
+    const rk2 = refkey();
+    const rk3 = refkey();
+    const result = render(
+      <Output>
+        <py.SourceFile path="test_1.py">
+          <py.VariableDeclaration name="conflict" refkey={rk1} />
+        </py.SourceFile>
+        <py.SourceFile path="test_2.py">
+          <py.VariableDeclaration name="conflict" refkey={rk2} />
+        </py.SourceFile>
+        <py.SourceFile path="test_3.py">
+          <py.VariableDeclaration name="conflict" refkey={rk3} />
+        </py.SourceFile>
+        <py.SourceFile path="test.py">
+          <py.VariableDeclaration name="one" value={rk1} />
+          <hbr />
+          <py.VariableDeclaration name="two" value={rk2} />
+          <hbr />
+          <py.VariableDeclaration name="three" value={rk3} />
+        </py.SourceFile>
+      </Output>,
+    );
+    assertFileContents(result, {
+      "test.py": `
+        from test_1 import conflict
+        from test_2 import conflict as conflict_2
+        from test_3 import conflict as conflict_3
+
+        one = conflict
+        two = conflict_2
+        three = conflict_3
+      `,
+    });
   });
 });
