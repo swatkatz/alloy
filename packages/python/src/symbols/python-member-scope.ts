@@ -1,7 +1,7 @@
-import { OutputScope } from "@alloy-js/core";
+import { CustomOutputScope } from "./custom-output-scope.js";
 import { PythonOutputSymbol } from "./python-output-symbol.js";
 
-export class PythonMemberScope extends OutputScope {
+export class PythonMemberScope extends CustomOutputScope {
   get kind() {
     return "member" as const;
   }

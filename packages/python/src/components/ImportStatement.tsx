@@ -8,13 +8,6 @@ import {
 import { relative } from "pathe";
 import { ImportedSymbol, ImportRecords } from "../symbols/index.js";
 
-export interface ImportSymbol {
-  module: string; // The module to import from
-  names?: Array<string | { name: string; alias?: string }>; // Items to import
-  alias?: string; // Alias for the module itself (if importing the whole module)
-  wildcard?: boolean; // If true, use '*'
-}
-
 export interface ImportStatementsProps {
   records: ImportRecords;
 }
@@ -46,8 +39,6 @@ export function ImportStatements(props: ImportStatementsProps) {
             <ImportStatement
               path={targetPath}
               symbols={new Set([symbol])}
-              pathAlias={properties.pathAlias}
-              wildcard={properties.wildcard}
             />
             {idx < arr.length - 1 && <hbr />}
           </>
@@ -58,8 +49,6 @@ export function ImportStatements(props: ImportStatementsProps) {
           <ImportStatement
             path={targetPath}
             symbols={properties.symbols}
-            pathAlias={properties.pathAlias}
-            wildcard={properties.wildcard}
           />
         );
       }
@@ -70,13 +59,11 @@ export function ImportStatements(props: ImportStatementsProps) {
 export interface ImportStatementProps {
   path: string;
   symbols?: Set<ImportedSymbol>;
-  pathAlias?: string; // Alias for the module itself (if importing the whole module)
-  wildcard?: boolean; // If true, use '*'
 }
 
 export function ImportStatement(props: ImportStatementProps) {
   return memo(() => {
-    const { path, symbols, pathAlias, wildcard } = props;
+    const { path, symbols } = props;
     const namedImportSymbols: ImportedSymbol[] = [];
 
     if (symbols && symbols.size > 0) {
@@ -87,14 +74,8 @@ export function ImportStatement(props: ImportStatementProps) {
 
     const parts: any[] = [];
 
-    if (wildcard) {
-      parts.push(`from ${path} import *`);
-    } else if (!symbols || symbols.size === 0) {
-      if (pathAlias) {
-        parts.push(`import ${path} as ${pathAlias}`);
-      } else {
-        parts.push(`import ${path}`);
-      }
+    if (!symbols || symbols.size === 0) {
+      parts.push(`import ${path}`);
     } else {
       namedImportSymbols.sort((a, b) => {
         return a.target.name.localeCompare(b.target.name);
@@ -118,10 +99,7 @@ interface ImportBindingProps {
 
 function ImportBinding(props: Readonly<ImportBindingProps>) {
   const text = memo(() => {
-    const localName =
-      props.importedSymbol.local ?
-        props.importedSymbol.local.name
-      : props.importedSymbol.target.name;
+    const localName = props.importedSymbol.local.name;
     const targetName = props.importedSymbol.target.name;
     if (localName === targetName) {
       return targetName;
