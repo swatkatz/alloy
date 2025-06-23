@@ -37,16 +37,23 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   const assignment = props.callStatementVar ? "=" : " = ";
   var rightSide;
   if (props.omitNone && props.value === undefined) {
+    // If there's no value and omtitNone is true, so no assignment
     rightSide = "";
   } else if (value === null || value === undefined) {
+    //  If value is null or undefined, assign None
     rightSide = <>{assignment}None</>;
   } else if (props.callStatementVar && (name === undefined || name === "")) {
+    // If this is a call statement variable and no name is provided, just show the value
+    // without assignment
     rightSide = (
       <>
         <Value jsValue={value} />
       </>
     );
   } else {
+    // Otherwise, show the assignment with the value
+    // This is useful for cases like `x = 42` or `x = someFunction()`
+    // where `x` is explicitly declared and assigned a value.
     rightSide = (
       <>
         {assignment}

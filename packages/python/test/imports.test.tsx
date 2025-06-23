@@ -9,73 +9,73 @@ import {
 import { assertFileContents, createPythonModuleScope, toSourceText } from "./utils.jsx";
 import { Output, refkey, render } from "@alloy-js/core";
 
-// describe("ImportStatement", () => {
-//   it("renders module import", () => {
-//     const result = toSourceText(<ImportStatement path="sys" />);
-//     const expected = `import sys`;
-//     expect(result).toRenderTo(expected);
-//   });
+describe("ImportStatement", () => {
+  it("renders module import", () => {
+    const result = toSourceText(<ImportStatement path="sys" />);
+    const expected = `import sys`;
+    expect(result).toRenderTo(expected);
+  });
 
-//   it("renders named imports", () => {
-//     const sqrtSymbol = new PythonOutputSymbol("sqrt", {
-//       binder: undefined,
-//       scope: undefined,
-//     });
-//     const piSymbol = new PythonOutputSymbol("pi", {
-//       binder: undefined,
-//       scope: undefined,
-//     });
-//     const symbols = new Set<ImportedSymbol>([
-//       new ImportedSymbol(sqrtSymbol, sqrtSymbol),
-//       new ImportedSymbol(piSymbol, piSymbol),
-//     ]);
-//     const result = toSourceText(
-//       <ImportStatement path="math" symbols={symbols} />,
-//     );
-//     const expected = `from math import pi, sqrt`;
-//     expect(result).toRenderTo(expected);
-//   });
-// });
+  it("renders named imports", () => {
+    const sqrtSymbol = new PythonOutputSymbol("sqrt", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const piSymbol = new PythonOutputSymbol("pi", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const symbols = new Set<ImportedSymbol>([
+      new ImportedSymbol(sqrtSymbol, sqrtSymbol),
+      new ImportedSymbol(piSymbol, piSymbol),
+    ]);
+    const result = toSourceText(
+      <ImportStatement path="math" symbols={symbols} />,
+    );
+    const expected = `from math import pi, sqrt`;
+    expect(result).toRenderTo(expected);
+  });
+});
 
-// describe("ImportStatements", () => {
-//   it("renders multiple import statements", () => {
-//     const pythonModuleScope = createPythonModuleScope("math", undefined);
-//     const sqrtSymbol = new PythonOutputSymbol("sqrt", {
-//       binder: undefined,
-//       scope: undefined,
-//     });
-//     const piSymbol = new PythonOutputSymbol("pi", {
-//       binder: undefined,
-//       scope: undefined,
-//     });
-//     const mathSymbols = new Set<ImportedSymbol>([
-//       new ImportedSymbol(sqrtSymbol, sqrtSymbol),
-//       new ImportedSymbol(piSymbol, piSymbol),
-//     ]);
-//     const sysModuleScope = createPythonModuleScope("sys", undefined);
-//     const requestsScope = createPythonModuleScope("requests", undefined);
-//     const getSymbol = new PythonOutputSymbol("get", {
-//       binder: undefined,
-//       scope: undefined,
-//     });
-//     const requestsSymbols = new Set<ImportedSymbol>([
-//       new ImportedSymbol(getSymbol, getSymbol),
-//     ]);
-//     const records = new ImportRecords([
-//       [pythonModuleScope, { symbols: mathSymbols }],
-//       [requestsScope, { symbols: requestsSymbols }],
-//       [sysModuleScope, { symbols: new Set<ImportedSymbol>() }],
-//     ]);
+describe("ImportStatements", () => {
+  it("renders multiple import statements", () => {
+    const pythonModuleScope = createPythonModuleScope("math", undefined);
+    const sqrtSymbol = new PythonOutputSymbol("sqrt", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const piSymbol = new PythonOutputSymbol("pi", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const mathSymbols = new Set<ImportedSymbol>([
+      new ImportedSymbol(sqrtSymbol, sqrtSymbol),
+      new ImportedSymbol(piSymbol, piSymbol),
+    ]);
+    const sysModuleScope = createPythonModuleScope("sys", undefined);
+    const requestsScope = createPythonModuleScope("requests", undefined);
+    const getSymbol = new PythonOutputSymbol("get", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const requestsSymbols = new Set<ImportedSymbol>([
+      new ImportedSymbol(getSymbol, getSymbol),
+    ]);
+    const records = new ImportRecords([
+      [pythonModuleScope, { symbols: mathSymbols }],
+      [requestsScope, { symbols: requestsSymbols }],
+      [sysModuleScope, { symbols: new Set<ImportedSymbol>() }],
+    ]);
 
-//     const result = toSourceText(<py.ImportStatements records={records} />);
-//     const expected = `
-//     from math import pi
-//     from math import sqrt
-//     from requests import get
-//     import sys`;
-//     expect(result).toRenderTo(expected);
-//   });
-// });
+    const result = toSourceText(<py.ImportStatements records={records} />);
+    const expected = `
+    from math import pi
+    from math import sqrt
+    from requests import get
+    import sys`;
+    expect(result).toRenderTo(expected);
+  });
+});
 
 describe("Imports being used", () => {
   it("works with importing the same name many times from different files with the default name conflict resolver", () => {

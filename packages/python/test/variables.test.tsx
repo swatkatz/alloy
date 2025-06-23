@@ -60,4 +60,15 @@ describe("Python Variable", () => {
     );
     expect(res).toBe(`my_var = 42\nmy_other_var = my_var`);
   });
+  it("declares a python variable receiving another type", () => {
+    // SomeType mimicks a type
+    const res = toSourceText(
+      <>
+        <py.ClassDeclaration name="SomeType" />
+        <hbr />
+        <py.VariableDeclaration name="my_other_var" type={refkey("SomeType")} value={12} />
+      </>,
+    );
+    expect(res).toBe(`class SomeType:\n  pass\nmy_other_var: SomeType = 12`);
+  });
 });

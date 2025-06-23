@@ -80,7 +80,7 @@ it("function call with variables", () => {
   expect(result).toRenderTo(expected);
 });
 
-it("function call with variables and assignment", () => {
+it("function call with variables and assignment (using VariableDeclaration, which doesn't resolves return type of function calls correclty for now)", () => {
   // Creating the reference separately so the naming policy doesn't interfere
   const methodRef = refkey();
   const result = toSourceText(
@@ -119,6 +119,49 @@ it("function call with variables and assignment", () => {
 
 
     result: run_func = run_func(name="A name", number=42, True)
+  `;
+  expect(result).toRenderTo(expected);
+});
+
+it("function call with variables and assignment (passing the return type directly, so it can be correctly resolved)", () => {
+  // Creating the reference separately so the naming policy doesn't interfere
+  const methodRef = refkey();
+  const result = toSourceText(
+    <py.StatementList>
+      <py.MethodDeclaration
+        name="runFunc"
+        returnType="str"
+        refkey={methodRef}
+        parameters={[
+          { name: "name", type: "str" },
+          { name: "number", type: "int" },
+          { name: "flag", type: "bool" },
+        ]}
+      />
+      <hbr />
+      <py.VariableDeclaration
+        name="result"
+        type="str"
+        value={
+          <py.CallStatement
+            type={methodRef}
+            parameters={[
+              { name: "name", value: <py.Value jsValue={"A name"} /> },
+              { name: "number", value: <py.Value jsValue={42} /> },
+              { value: <py.Value jsValue={true} /> },
+            ]}
+          />
+        }
+      />
+    </py.StatementList>,
+  );
+  // TODO: Fix type once we handle types properly
+  const expected = d`
+    def run_func(name: str, number: int, flag: bool) -> str:
+      pass
+
+
+    result: str = run_func(name="A name", number=42, True)
   `;
   expect(result).toRenderTo(expected);
 });

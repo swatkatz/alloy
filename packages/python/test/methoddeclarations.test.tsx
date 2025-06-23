@@ -29,7 +29,7 @@ describe("Python MethodDeclaration", () => {
     `);
   });
 
-  it("renders a method that calls another method", () => {
+  it("renders a method that calls another method (return type being incorrectly rendered because it can't be inferred)", () => {
     const result = toSourceText(
       <>
         <py.MethodDeclaration
@@ -53,6 +53,33 @@ describe("Python MethodDeclaration", () => {
         pass
       def bar(self) -> int:
         result: foo = foo()
+    `);
+  });
+
+  it("renders a method that calls another method (return type being correctly rendered because it's hardcoded)", () => {
+    const result = toSourceText(
+      <>
+        <py.MethodDeclaration
+          name="foo"
+          instanceMethod={true}
+          returnType="int"
+        />
+        <hbr />
+        <py.MethodDeclaration name="bar" instanceMethod={true} returnType="int">
+          <py.VariableDeclaration
+            name="result"
+            type="int"
+            value={<py.CallStatement type={refkey("foo")} parameters={[]} />}
+          />
+        </py.MethodDeclaration>
+      </>,
+    );
+    // TODO: Fix type once we handle types properly
+    expect(result).toRenderTo(d`
+      def foo(self) -> int:
+        pass
+      def bar(self) -> int:
+        result: int = foo()
     `);
   });
 
