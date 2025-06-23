@@ -80,7 +80,7 @@ it("function call with variables", () => {
   expect(result).toRenderTo(expected);
 });
 
-it("function call with variables and assignment (using VariableDeclaration, which doesn't resolves return type of function calls correclty for now)", () => {
+it("function call with variables and assignment (using VariableDeclaration, which doesn't resolves return type of function calls correctly for now)", () => {
   // Creating the reference separately so the naming policy doesn't interfere
   const methodRef = refkey();
   const result = toSourceText(
