@@ -74,7 +74,6 @@ describe("Python MethodDeclaration", () => {
         </py.MethodDeclaration>
       </>,
     );
-    // TODO: Fix type once we handle types properly
     expect(result).toRenderTo(d`
       def foo(self) -> int:
         pass

@@ -155,7 +155,6 @@ it("function call with variables and assignment (passing the return type directl
       />
     </py.StatementList>,
   );
-  // TODO: Fix type once we handle types properly
   const expected = d`
     def run_func(name: str, number: int, flag: bool) -> str:
       pass
