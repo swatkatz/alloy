@@ -1,16 +1,16 @@
 import {
   Children,
   Name,
-  SourceFileContext,
   code,
   memo,
   refkey,
   useContext,
 } from "@alloy-js/core";
 import { PythonOutputSymbol } from "../symbols/index.js";
-import { getFormattedName, getModuleName } from "../utils.js";
 import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
 import { Value } from "./Value.jsx";
+import { SourceFileContext } from "./SourceFile.js";
+import { usePythonNamePolicy } from "../name-policy.js";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
   value?: Children;
@@ -20,9 +20,9 @@ export interface VariableDeclarationProps extends BaseDeclarationProps {
 }
 
 export function VariableDeclaration(props: VariableDeclarationProps) {
-  const fileContext = useContext(SourceFileContext);
-  const name = getFormattedName(props.name, "variable");
-  const module = getModuleName(fileContext, undefined);
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
+  const name = usePythonNamePolicy().getName(props.name, "variable");
   const sym = new PythonOutputSymbol(name, {
     refkeys: props.refkey ?? refkey(name!),
     metadata: props.metadata,

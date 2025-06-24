@@ -15,6 +15,8 @@ import { Reference } from "./Reference.js";
 
 export interface SourceFileContext {
   scope: PythonModuleScope;
+  /** The module name for this file, e.g. 'test' for test.py */
+  module: string;
 }
 
 export const SourceFileContext: ComponentContext<SourceFileContext> =
@@ -40,7 +42,8 @@ export function SourceFile(props: SourceFileProps) {
     .replace(/\//g, ".");
   const scope = new PythonModuleScope(path);
   const sfContext: SourceFileContext = {
-    scope,
+    scope: scope,
+    module: path,
   };
 
   return (
