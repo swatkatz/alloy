@@ -7,8 +7,8 @@ import {
 } from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
+import { getFormattedName } from "../utils.js";
 import { Value } from "./Value.jsx";
-import { usePythonNamePolicy } from "../name-policy.js";
 
 export interface EnumMemberProps {
   /**
@@ -52,7 +52,7 @@ export interface EnumMemberProps {
  * A Python enum member.
  */
 export function EnumMember(props: EnumMemberProps) {
-  const name = usePythonNamePolicy().getName(props.name, "enum-member");
+  const name = getFormattedName(props.name, "enum-member");
   const autoReference = props.auto === true ? enumModule["."].auto : undefined;
   const value = props.auto === true ? <>{autoReference}()</> : props.value;
   let sym: PythonOutputSymbol | undefined = undefined;

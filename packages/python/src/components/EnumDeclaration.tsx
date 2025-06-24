@@ -1,9 +1,9 @@
 import { Children, For } from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
+import { getFormattedName } from "../utils.js";
 import { ClassDeclaration } from "./ClassDeclaration.js";
 import { BaseDeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
-import { usePythonNamePolicy } from "../name-policy.js";
 
 export interface EnumProps extends BaseDeclarationProps {
   /**
@@ -37,7 +37,7 @@ export function EnumDeclaration(props: EnumProps) {
 
   // Handle enum styles
   if (props.style === "functional") {
-    const name = usePythonNamePolicy().getName(props.name, "enum");
+    const name = getFormattedName(props.name, "enum");
     const members = props.members ?? [];
     let opener, ender;
     if (members.length && members.every((m) => m.value === undefined)) {
