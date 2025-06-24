@@ -36,20 +36,14 @@ export function ImportStatements(props: ImportStatementsProps) {
         );
         return sortedSymbols.map((symbol, idx, arr) => (
           <>
-            <ImportStatement
-              path={targetPath}
-              symbols={new Set([symbol])}
-            />
+            <ImportStatement path={targetPath} symbols={new Set([symbol])} />
             {idx < arr.length - 1 && <hbr />}
           </>
         ));
       } else {
         // If no symbols are specified, it's either a wildcard import or a module import
         return (
-          <ImportStatement
-            path={targetPath}
-            symbols={properties.symbols}
-          />
+          <ImportStatement path={targetPath} symbols={properties.symbols} />
         );
       }
     },

@@ -1,16 +1,10 @@
+import { Children, Name, code, memo } from "@alloy-js/core";
 import {
-  Children,
-  Name,
-  code,
-  memo,
-  refkey,
-  useContext,
-} from "@alloy-js/core";
-import { PythonOutputSymbol } from "../symbols/index.js";
-import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
+  BaseDeclarationProps,
+  Declaration,
+  DeclarationProps,
+} from "./Declaration.jsx";
 import { Value } from "./Value.jsx";
-import { SourceFileContext } from "./SourceFile.js";
-import { usePythonNamePolicy } from "../name-policy.js";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
   value?: Children;
@@ -20,14 +14,10 @@ export interface VariableDeclarationProps extends BaseDeclarationProps {
 }
 
 export function VariableDeclaration(props: VariableDeclarationProps) {
-  const sfContext = useContext(SourceFileContext);
-  const module = sfContext?.module;
-  const name = usePythonNamePolicy().getName(props.name, "variable");
-  const sym = new PythonOutputSymbol(name, {
-    refkeys: props.refkey ?? refkey(name!),
-    metadata: props.metadata,
-    module: module,
-  });
+  const updatedProps: DeclarationProps = {
+    ...props,
+    nameKind: "variable",
+  };
   // Handle optional type annotation
   const typeAnnotation =
     props.type && !props.callStatementVar ? code`: ${props.type}` : "";
@@ -40,7 +30,10 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
     rightSide = "";
   } else if (value === null || value === undefined) {
     rightSide = <>{assignment}None</>;
-  } else if (props.callStatementVar && (name === undefined || name === "")) {
+  } else if (
+    props.callStatementVar &&
+    (props.name === undefined || props.name === "")
+  ) {
     rightSide = (
       <>
         <Value jsValue={value} />
@@ -56,7 +49,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   }
   return (
     <>
-      <Declaration symbol={sym}>
+      <Declaration {...updatedProps}>
         {<Name />}
         {typeAnnotation}
         {rightSide}

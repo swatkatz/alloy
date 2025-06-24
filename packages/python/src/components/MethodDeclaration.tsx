@@ -9,11 +9,11 @@ import {
   refkey,
   useContext,
 } from "@alloy-js/core";
+import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
 import { BaseDeclarationProps, Declaration } from "./Declaration.jsx";
 import { Parameters, ParametersProps } from "./Parameters.jsx";
 import { SourceFileContext } from "./SourceFile.js";
-import { usePythonNamePolicy } from "../name-policy.js";
 
 export interface MethodDeclarationProps
   extends BaseDeclarationProps,
@@ -30,13 +30,16 @@ export function MethodDeclaration(props: MethodDeclarationProps) {
   const sfContext = useContext(SourceFileContext);
   const module = sfContext?.module;
   const name =
-    !props.forceName ? usePythonNamePolicy().getName(props.name, "method") : props.name;
+    !props.forceName ?
+      usePythonNamePolicy().getName(props.name, "method")
+    : props.name;
+  // Due to forceName, we have to create the symbol here so the name policy isn't applied
+  // at the Declaration class
   const sym = new PythonOutputSymbol(name, {
     refkeys: props.refkey ?? refkey(name),
     flags:
       (props.flags ?? OutputSymbolFlags.None) |
-      (OutputSymbolFlags.MemberContainer |
-        OutputSymbolFlags.StaticMemberContainer),
+      OutputSymbolFlags.MemberContainer,
     metadata: props.metadata,
     module: module,
   });

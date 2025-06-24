@@ -4,17 +4,16 @@ import {
   Indent,
   List,
   Name,
-  OutputSymbolFlags,
   Scope,
   childrenArray,
   computed,
-  refkey,
-  useContext,
 } from "@alloy-js/core";
-import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
-import { BaseDeclarationProps, Declaration } from "./Declaration.js";
-import { SourceFileContext } from "./SourceFile.js";
 import { usePythonNamePolicy } from "../name-policy.js";
+import {
+  BaseDeclarationProps,
+  Declaration,
+  DeclarationProps,
+} from "./Declaration.js";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   bases?: Children[];
@@ -42,24 +41,12 @@ export function PythonBlock(props: BlockProps) {
 
 export function ClassDeclaration(props: ClassDeclarationProps) {
   const name = usePythonNamePolicy().getName(props.name!, "class");
-  // For classes, the module name is derived from the file context
-  const sfContext = useContext(SourceFileContext);
-  const module = sfContext?.module;
   // Propagate the name after the name policy was applied
-  const updatedProps: ClassDeclarationProps = {
+  const updatedProps: DeclarationProps = {
     ...props,
     name: name,
+    nameKind: "class",
   };
-
-  const sym = new PythonOutputSymbol(name, {
-    refkeys: props.refkey ?? refkey(name!),
-    flags:
-      (props.flags ?? OutputSymbolFlags.None) |
-      (OutputSymbolFlags.MemberContainer |
-        OutputSymbolFlags.StaticMemberContainer),
-    metadata: props.metadata,
-    module: module,
-  });
 
   const hasChildren =
     childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
@@ -69,7 +56,7 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
     </>
   );
   return (
-    <Declaration {...updatedProps} name={updatedProps.name} symbol={sym}>
+    <Declaration {...updatedProps}>
       class <Name />
       <Scope name={updatedProps.name} kind="class">
         {basesPart}

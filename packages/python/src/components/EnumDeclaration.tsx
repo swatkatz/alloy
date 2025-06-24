@@ -1,9 +1,9 @@
 import { Children, For } from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
+import { usePythonNamePolicy } from "../name-policy.js";
 import { ClassDeclaration } from "./ClassDeclaration.js";
 import { BaseDeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
-import { usePythonNamePolicy } from "../name-policy.js";
 
 export interface EnumProps extends BaseDeclarationProps {
   /**

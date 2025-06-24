@@ -1,3 +1,4 @@
+import { Output, refkey, render } from "@alloy-js/core";
 import { describe, expect, it } from "vitest";
 import { ImportStatement } from "../src/components/ImportStatement.jsx";
 import * as py from "../src/components/index.js";
@@ -6,8 +7,11 @@ import {
   ImportRecords,
   PythonOutputSymbol,
 } from "../src/symbols/index.js";
-import { assertFileContents, createPythonModuleScope, toSourceText } from "./utils.jsx";
-import { Output, refkey, render } from "@alloy-js/core";
+import {
+  assertFileContents,
+  createPythonModuleScope,
+  toSourceText,
+} from "./utils.jsx";
 
 describe("ImportStatement", () => {
   it("renders module import", () => {

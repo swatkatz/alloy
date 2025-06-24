@@ -2,6 +2,7 @@ import {
   Children,
   Declaration as CoreDeclaration,
   OutputSymbolFlags,
+  refkey,
   Refkey,
   useContext,
 } from "@alloy-js/core";
@@ -69,8 +70,10 @@ export function Declaration(props: DeclarationProps) {
   } else {
     const name = usePythonNamePolicy().getName(props.name!, props.nameKind!);
     sym = new PythonOutputSymbol(name, {
-      refkeys: props.refkey,
-      flags: props.flags,
+      refkeys: props.refkey ?? refkey(name!),
+      flags:
+        (props.flags ?? OutputSymbolFlags.None) |
+        OutputSymbolFlags.MemberContainer,
       metadata: props.metadata,
       module: module,
     });

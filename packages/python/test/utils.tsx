@@ -12,8 +12,8 @@ import { dedent } from "@alloy-js/core/testing";
 import { expect } from "vitest";
 import * as py from "../src/components/index.js";
 import { createPythonNamePolicy } from "../src/name-policy.js";
-import { PythonModuleScope } from "../src/symbols/index.js";
 import { CustomOutputScope } from "../src/symbols/custom-output-scope.js";
+import { PythonModuleScope } from "../src/symbols/index.js";
 
 export function findFile(res: OutputDirectory, path: string): OutputFile {
   const result = findFileWorker(res, path);
