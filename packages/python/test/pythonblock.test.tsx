@@ -4,8 +4,36 @@ import * as py from "../src/components/index.js";
 import { toSourceText } from "./utils.jsx";
 import { d } from "@alloy-js/core/testing";
 
+describe("Python Block", () => {
+  it("Renders a PythonBlock without content", () => {
+    const result = toSourceText(
+      <>
+      class Test<py.PythonBlock></py.PythonBlock>
+      </>
+    );
+    const expected = d`class Test:`;
+    expect(result).toRenderTo(expected);
+  });
+
+  it("Renders a PythonBlock with a line", () => {
+    const result = toSourceText(
+      <>
+      class Test<py.PythonBlock><List>This is some content</List></py.PythonBlock>
+      </>
+    );
+    const expected = d`
+    class Test:
+      This is some content
+    
+
+    `;
+    expect(result).toRenderTo(expected);
+  });
+});
+
+
 describe("Top Level Python Block", () => {
-  it("Renders two spaces after one class declaration", () => {
+  it("Renders two lines after one class declaration", () => {
     const result = toSourceText(
       <>
       class A
@@ -26,7 +54,7 @@ describe("Top Level Python Block", () => {
     `;
     expect(result).toRenderTo(expected);
   });
-  it("Renders two spaces after multiple class declarations", () => {
+  it("Renders two lines after multiple class declarations", () => {
     const result = toSourceText(
       <>
       class A
@@ -137,14 +165,12 @@ describe("Mixed Python Blocks", () => {
 
 
 
-
     class B:
       def a:
         1
 
       def b:
         2
-
 
 
 
