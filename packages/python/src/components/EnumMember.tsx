@@ -1,9 +1,16 @@
-import { Children, OutputSymbolFlags, refkey, Refkey, Show, useContext } from "@alloy-js/core";
+import {
+  Children,
+  OutputSymbolFlags,
+  refkey,
+  Refkey,
+  Show,
+  useContext,
+} from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
-import { Value } from "./Value.jsx";
 import { SourceFileContext } from "./SourceFile.jsx";
+import { Value } from "./Value.jsx";
 
 export interface EnumMemberProps {
   /**

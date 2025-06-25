@@ -1,11 +1,19 @@
-import { Children, Declaration as CoreDeclaration, For, MemberScope, OutputSymbolFlags, Scope, useBinder } from "@alloy-js/core";
+import {
+  Children,
+  Declaration as CoreDeclaration,
+  For,
+  MemberScope,
+  OutputSymbolFlags,
+  Scope,
+  useBinder,
+} from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
 import { usePythonNamePolicy } from "../name-policy.js";
-import { ClassDeclaration, PythonBlock } from "./ClassDeclaration.js";
-import { BaseDeclarationProps, Declaration } from "./Declaration.js";
-import { EnumMember } from "./EnumMember.js";
-import { usePythonScope } from "../symbols/scopes.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
+import { usePythonScope } from "../symbols/scopes.js";
+import { PythonBlock } from "./ClassDeclaration.js";
+import { BaseDeclarationProps } from "./Declaration.js";
+import { EnumMember } from "./EnumMember.js";
 
 export interface EnumProps extends BaseDeclarationProps {
   /**
@@ -68,9 +76,7 @@ export function FunctionalEnumDeclaration(props: EnumProps) {
     <>
       {opener}
       <For each={members} joiner=", ">
-        {(m) => (
-          <EnumMember name={m.name} value={m.value} functional={true} />
-        )}
+        {(m) => <EnumMember name={m.name} value={m.value} functional={true} />}
       </For>
       {ender}
     </>
@@ -78,7 +84,13 @@ export function FunctionalEnumDeclaration(props: EnumProps) {
   return (
     <>
       <CoreDeclaration symbol={sym}>
-        {name} = {enumModule["."].Enum}('{name}', <MemberScope owner={sym}><Scope name={props.name} kind="enum">{memberExpr}</Scope></MemberScope>)
+        {name} = {enumModule["."].Enum}('{name}',{" "}
+        <MemberScope owner={sym}>
+          <Scope name={props.name} kind="enum">
+            {memberExpr}
+          </Scope>
+        </MemberScope>
+        )
       </CoreDeclaration>
     </>
   );
@@ -112,23 +124,23 @@ export function ClassEnumDeclaration(props: EnumProps) {
   return (
     <CoreDeclaration symbol={sym}>
       class {props.name}({enumModule["."][baseType]})
-        <MemberScope owner={sym}>
-          <Scope name={props.name} kind="enum">
-            <PythonBlock opener=":" closer="" newline={false}>
-              <For each={memberList} hardline>
-                {(member) => (
-                  <EnumMember
-                    name={member.name}
-                    value={member.value}
-                    jsValue={member.jsValue}
-                    auto={member.auto}
-                  />
-                )}
-              </For>
-              {props.children}
-            </PythonBlock>
-          </Scope>
-        </MemberScope>
+      <MemberScope owner={sym}>
+        <Scope name={props.name} kind="enum">
+          <PythonBlock opener=":" closer="" newline={false}>
+            <For each={memberList} hardline>
+              {(member) => (
+                <EnumMember
+                  name={member.name}
+                  value={member.value}
+                  jsValue={member.jsValue}
+                  auto={member.auto}
+                />
+              )}
+            </For>
+            {props.children}
+          </PythonBlock>
+        </Scope>
+      </MemberScope>
     </CoreDeclaration>
   );
 }

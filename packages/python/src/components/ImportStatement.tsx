@@ -1,11 +1,4 @@
-import {
-  computed,
-  mapJoin,
-  memo,
-  SourceDirectoryContext,
-  useContext,
-} from "@alloy-js/core";
-import { relative } from "pathe";
+import { computed, mapJoin, memo } from "@alloy-js/core";
 import { ImportedSymbol, ImportRecords } from "../symbols/index.js";
 
 export interface ImportStatementsProps {
@@ -35,10 +28,12 @@ export function ImportStatements(props: ImportStatementsProps) {
         if (props.joinImportsFromSameModule) {
           // If joinImportsFromSameModule is true, we will group imports from the same module
           return (
-            <ImportStatement path={targetPath} symbols={new Set(sortedSymbols)} />
+            <ImportStatement
+              path={targetPath}
+              symbols={new Set(sortedSymbols)}
+            />
           );
-        }
-        else {
+        } else {
           return sortedSymbols.map((symbol, idx, arr) => (
             <>
               <ImportStatement path={targetPath} symbols={new Set([symbol])} />

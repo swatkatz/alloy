@@ -1,12 +1,17 @@
-import { Children, Declaration as CoreDeclaration, Name, code, memo, refkey, useContext } from "@alloy-js/core";
 import {
-  BaseDeclarationProps,
-  DeclarationProps,
-} from "./Declaration.jsx";
-import { Value } from "./Value.jsx";
+  Children,
+  Declaration as CoreDeclaration,
+  Name,
+  code,
+  memo,
+  refkey,
+  useContext,
+} from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
+import { BaseDeclarationProps } from "./Declaration.jsx";
 import { SourceFileContext } from "./SourceFile.jsx";
+import { Value } from "./Value.jsx";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
   value?: Children;
@@ -61,7 +66,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
         <Value jsValue={value} />
       </>
     );
-  }
+  };
   return (
     <>
       <CoreDeclaration symbol={sym}>

@@ -1,12 +1,4 @@
-import {
-  Children,
-  OutputSymbol,
-  OutputSymbolOptions,
-  track,
-  TrackOpTypes,
-  trigger,
-  TriggerOpTypes,
-} from "@alloy-js/core";
+import { OutputSymbol, OutputSymbolOptions } from "@alloy-js/core";
 
 export interface CreatePythonSymbolOptions extends OutputSymbolOptions {
   module?: string;

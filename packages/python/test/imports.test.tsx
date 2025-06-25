@@ -111,7 +111,12 @@ describe("ImportStatements", () => {
       [requestsScope, { symbols: requestsSymbols }],
     ]);
 
-    const result = toSourceText(<py.ImportStatements records={records} joinImportsFromSameModule={true} />);
+    const result = toSourceText(
+      <py.ImportStatements
+        records={records}
+        joinImportsFromSameModule={true}
+      />,
+    );
     const expected = `
     from math import pi, sqrt
     from requests import get, post`;
