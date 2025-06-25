@@ -6,9 +6,7 @@ import { assertFileContents, toSourceText } from "./utils.jsx";
 
 describe("Python Class", () => {
   it("renders a class with no body as 'pass'", () => {
-    const result = toSourceText(
-      <py.ClassDeclaration name="Foo" />
-    );
+    const result = toSourceText(<py.ClassDeclaration name="Foo" />);
     expect(result).toRenderTo(d`
       class Foo:
         pass
@@ -17,7 +15,7 @@ describe("Python Class", () => {
 
   it("renders a class with a body", () => {
     const result = toSourceText(
-      <py.ClassDeclaration name="Bar">print('hi')</py.ClassDeclaration>
+      <py.ClassDeclaration name="Bar">print('hi')</py.ClassDeclaration>,
     );
     expect(result).toRenderTo(d`
       class Bar:
@@ -52,7 +50,7 @@ describe("Python Class", () => {
     const result = toSourceText(
       <py.ClassDeclaration name="Qux" bases={["Base"]}>
         print('hello')
-      </py.ClassDeclaration>
+      </py.ClassDeclaration>,
     );
     expect(result).toRenderTo(d`
       class Qux(Base):
@@ -66,8 +64,11 @@ describe("Python Class", () => {
         <py.SourceFile path="mod1.py">
           <py.ClassDeclaration name="A" />
         </py.SourceFile>
-        <py.SourceFile path="mod2.py">
+        <py.SourceFile path="folder/mod2.py">
           <py.ClassDeclaration name="B" bases={[refkey("A")]} />
+        </py.SourceFile>
+        <py.SourceFile path="mod3.py">
+          <py.ClassDeclaration name="C" bases={[refkey("B")]} />
         </py.SourceFile>
       </Output>,
     );
@@ -77,11 +78,19 @@ describe("Python Class", () => {
     `;
     const mod2Expected = d`
       from mod1 import A
+
       class B(A):
         pass
     `;
+    const mod3Expected = d`
+      from folder.mod2 import B
+
+      class C(B):
+        pass
+    `;
     assertFileContents(result, { "mod1.py": mod1Expected });
-    assertFileContents(result, { "mod2.py": mod2Expected });
+    assertFileContents(result, { "folder/mod2.py": mod2Expected });
+    assertFileContents(result, { "mod3.py": mod3Expected });
   });
 
   it("renders a class with class variables like foo: str, and also bar: A where A is another class", () => {
@@ -103,6 +112,31 @@ describe("Python Class", () => {
         pass
       class B:
         bar: A
+        foo: str
+    `;
+    expect(result).toRenderTo(expected);
+  });
+
+  it("renders a class with class variables like foo: str, and another identical class", () => {
+    const result = toSourceText(
+      <>
+        <py.ClassDeclaration name="A">
+          <List hardline>
+            <py.VariableDeclaration name="foo" type="str" omitNone />
+          </List>
+        </py.ClassDeclaration>
+        <br />
+        <py.ClassDeclaration name="B">
+          <List hardline>
+            <py.VariableDeclaration name="foo" type="str" omitNone />
+          </List>
+        </py.ClassDeclaration>
+      </>,
+    );
+    const expected = d`
+      class A:
+        foo: str
+      class B:
         foo: str
     `;
     expect(result).toRenderTo(expected);
