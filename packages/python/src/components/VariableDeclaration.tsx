@@ -31,22 +31,31 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   const value =
     typeof props.value === "object" ? memo(() => props.value) : props.value;
   const assignmentOperator = props.callStatementVar ? "=" : " = ";
-  var rightSide;
-  if (props.omitNone && props.value === undefined) {
-    rightSide = "";
-  } else if (value === null || value === undefined) {
-    rightSide = <>{assignmentOperator}None</>;
-  } else if (
-    props.callStatementVar &&
-    (props.name === undefined || props.name === "")
-  ) {
-    rightSide = (
-      <>
-        <Value jsValue={value} />
-      </>
-    );
-  } else {
-    rightSide = (
+  const getRightSide = () => {
+    // Early return for omitNone case
+    if (props.omitNone && props.value === undefined) {
+      return "";
+    }
+
+    // Handle null/undefined values
+    if (value === null || value === undefined) {
+      return <>{assignmentOperator}None</>;
+    }
+
+    // Call statement with no name
+    if (
+      props.callStatementVar &&
+      (props.name === undefined || props.name === "")
+    ) {
+      return (
+        <>
+          <Value jsValue={value} />
+        </>
+      );
+    }
+
+    // Standard assignment
+    return (
       <>
         {assignmentOperator}
         <Value jsValue={value} />
@@ -58,7 +67,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
       <CoreDeclaration symbol={sym}>
         {<Name />}
         {typeAnnotation}
-        {rightSide}
+        {getRightSide()}
       </CoreDeclaration>
     </>
   );
