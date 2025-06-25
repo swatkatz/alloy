@@ -30,12 +30,12 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   // If we receive a symbol, resolve it to a name
   const value =
     typeof props.value === "object" ? memo(() => props.value) : props.value;
-  const assignment = props.callStatementVar ? "=" : " = ";
+  const assignmentOperator = props.callStatementVar ? "=" : " = ";
   var rightSide;
   if (props.omitNone && props.value === undefined) {
     rightSide = "";
   } else if (value === null || value === undefined) {
-    rightSide = <>{assignment}None</>;
+    rightSide = <>{assignmentOperator}None</>;
   } else if (
     props.callStatementVar &&
     (props.name === undefined || props.name === "")
@@ -48,7 +48,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   } else {
     rightSide = (
       <>
-        {assignment}
+        {assignmentOperator}
         <Value jsValue={value} />
       </>
     );
