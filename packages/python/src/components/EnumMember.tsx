@@ -1,8 +1,9 @@
-import { Children, OutputSymbolFlags, Refkey, Show } from "@alloy-js/core";
+import { Children, OutputSymbolFlags, refkey, Refkey, Show, useContext } from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
 import { Value } from "./Value.jsx";
+import { SourceFileContext } from "./SourceFile.jsx";
 
 export interface EnumMemberProps {
   /**
@@ -12,7 +13,7 @@ export interface EnumMemberProps {
 
   /**
    * Refkey for the enum member symbol. If the refkey is not provided, a symbol
-   * is not created and the member cannot be referenced by refkey.
+   * will be created and the member cannot be referenced by refkey.
    */
   refkey?: Refkey;
 
@@ -46,30 +47,29 @@ export interface EnumMemberProps {
  * A Python enum member.
  */
 export function EnumMember(props: EnumMemberProps) {
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
   const name = usePythonNamePolicy().getName(props.name, "enum-member");
   const autoReference = props.auto === true ? enumModule["."].auto : undefined;
   const value = props.auto === true ? <>{autoReference}()</> : props.value;
-  let sym: PythonOutputSymbol | undefined = undefined;
-  if (props.refkey) {
-    sym = new PythonOutputSymbol(name, {
-      refkeys: props.refkey,
-      flags: OutputSymbolFlags.StaticMember,
-    });
-  }
-  const actualName = sym ? sym.name : name;
+  let sym: PythonOutputSymbol = new PythonOutputSymbol(name, {
+    refkeys: props.refkey ?? refkey(name!),
+    flags: OutputSymbolFlags.StaticMember,
+    module: module,
+  });
   const valueCode =
     props.jsValue !== undefined ? <Value jsValue={props.jsValue} /> : value;
 
   if (props.functional) {
     return (
       <>
-        '{actualName}'<Show when={valueCode !== undefined}> : {valueCode}</Show>
+        '{sym.name}'<Show when={valueCode !== undefined}> : {valueCode}</Show>
       </>
     );
   }
   return (
     <>
-      {actualName}
+      {sym.name}
       <Show when={valueCode !== undefined}> = {valueCode}</Show>
     </>
   );

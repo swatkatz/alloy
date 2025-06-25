@@ -1,10 +1,12 @@
-import { Children, Name, code, memo } from "@alloy-js/core";
+import { Children, Declaration as CoreDeclaration, Name, code, memo, refkey, useContext } from "@alloy-js/core";
 import {
   BaseDeclarationProps,
-  Declaration,
   DeclarationProps,
 } from "./Declaration.jsx";
 import { Value } from "./Value.jsx";
+import { usePythonNamePolicy } from "../name-policy.js";
+import { PythonOutputSymbol } from "../symbols/index.js";
+import { SourceFileContext } from "./SourceFile.jsx";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
   value?: Children;
@@ -14,10 +16,14 @@ export interface VariableDeclarationProps extends BaseDeclarationProps {
 }
 
 export function VariableDeclaration(props: VariableDeclarationProps) {
-  const updatedProps: DeclarationProps = {
-    ...props,
-    nameKind: "variable",
-  };
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
+  const name = usePythonNamePolicy().getName(props.name, "variable");
+  const sym = new PythonOutputSymbol(name, {
+    refkeys: props.refkey ?? refkey(name!),
+    metadata: props.metadata,
+    module: module,
+  });
   // Handle optional type annotation
   const typeAnnotation =
     props.type && !props.callStatementVar ? code`: ${props.type}` : "";
@@ -49,11 +55,11 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   }
   return (
     <>
-      <Declaration {...updatedProps}>
+      <CoreDeclaration symbol={sym}>
         {<Name />}
         {typeAnnotation}
         {rightSide}
-      </Declaration>
+      </CoreDeclaration>
     </>
   );
 }
