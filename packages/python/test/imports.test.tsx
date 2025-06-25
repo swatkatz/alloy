@@ -91,11 +91,55 @@ describe("Imports being used", () => {
         <py.SourceFile path="test_1.py">
           <py.VariableDeclaration name="conflict" refkey={rk1} />
         </py.SourceFile>
+        <py.SourceFile path="test_3.py">
+          <py.VariableDeclaration name="conflict" refkey={rk3} />
+        </py.SourceFile>
         <py.SourceFile path="test_2.py">
           <py.VariableDeclaration name="conflict" refkey={rk2} />
         </py.SourceFile>
+        <py.SourceFile path="test.py">
+          <py.VariableDeclaration name="one" value={rk1} />
+          <hbr />
+          <py.VariableDeclaration name="three" value={rk3} />
+          <hbr />
+          <py.VariableDeclaration name="two" value={rk2} />
+        </py.SourceFile>
+      </Output>,
+    );
+    assertFileContents(result, {
+      "test.py": `
+        from test_1 import conflict
+        from test_2 import conflict as conflict_3_test_2
+        from test_3 import conflict as conflict_2_test_3
+
+        one = conflict
+        three = conflict_2_test_3
+        two = conflict_3_test_2
+      `,
+    });
+  });
+  it("works with importing the same name many times from different files and with the correct order", () => {
+    const rk1 = refkey();
+    const rk2 = refkey();
+    const rk3 = refkey();
+    const rk4 = refkey();
+    const rk5 = refkey();
+    const rk6 = refkey();
+    const rk7 = refkey();
+    const result = render(
+      <Output>
+        <py.SourceFile path="test_1.py">
+          <py.VariableDeclaration name="conflict" refkey={rk1} />
+          <py.VariableDeclaration name="something_else" refkey={rk4} />
+        </py.SourceFile>
+        <py.SourceFile path="test_2.py">
+          <py.VariableDeclaration name="conflict" refkey={rk2} />
+          <py.VariableDeclaration name="something" refkey={rk6} />
+          <py.VariableDeclaration name="something_else" refkey={rk5} />
+        </py.SourceFile>
         <py.SourceFile path="test_3.py">
           <py.VariableDeclaration name="conflict" refkey={rk3} />
+          <py.VariableDeclaration name="something" refkey={rk7} />
         </py.SourceFile>
         <py.SourceFile path="test.py">
           <py.VariableDeclaration name="one" value={rk1} />
@@ -103,18 +147,34 @@ describe("Imports being used", () => {
           <py.VariableDeclaration name="two" value={rk2} />
           <hbr />
           <py.VariableDeclaration name="three" value={rk3} />
+          <hbr />
+          <py.VariableDeclaration name="something_else" value={rk4} />
+          <hbr />
+          <py.VariableDeclaration name="something_else_two" value={rk5} />
+          <hbr />
+          <py.VariableDeclaration name="something" value={rk6} />
+          <hbr />
+          <py.VariableDeclaration name="something_two" value={rk7} />
         </py.SourceFile>
       </Output>,
     );
     assertFileContents(result, {
       "test.py": `
         from test_1 import conflict
+        from test_1 import something_else as something_else_2_test_1
         from test_2 import conflict as conflict_2_test_2
+        from test_2 import something as something_2_test_2
+        from test_2 import something_else as something_else_3_test_2
         from test_3 import conflict as conflict_3_test_3
+        from test_3 import something as something_3_test_3
 
         one = conflict
         two = conflict_2_test_2
         three = conflict_3_test_3
+        something_else = something_else_2_test_1
+        something_else_two = something_else_3_test_2
+        something = something_2_test_2
+        something_two = something_3_test_3
       `,
     });
   });

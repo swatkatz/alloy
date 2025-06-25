@@ -23,16 +23,13 @@ export function ImportStatements(props: ImportStatementsProps) {
   return mapJoin(
     () => imports.value,
     ([module, properties]) => {
-      let targetPath: string;
-
-      // local package import, so need relative import
-      const currentDir = useContext(SourceDirectoryContext)!.path;
-      targetPath = relative(currentDir, module.name);
+      // Only handling absolute imports for now
+      const targetPath = module.name;
 
       if (properties.symbols && properties.symbols.size > 0) {
         // Sort the symbols in a module by the imported name
         const sortedSymbols = Array.from(properties.symbols).sort((a, b) =>
-          a.target.name.localeCompare(b.target.name),
+          a.local.name.localeCompare(b.local.name),
         );
         return sortedSymbols.map((symbol, idx, arr) => (
           <>
