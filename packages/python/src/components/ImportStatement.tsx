@@ -64,11 +64,11 @@ export interface ImportStatementProps {
 export function ImportStatement(props: ImportStatementProps) {
   return memo(() => {
     const { path, symbols } = props;
-    const namedImportSymbols: ImportedSymbol[] = [];
+    const importSymbols: ImportedSymbol[] = [];
 
     if (symbols && symbols.size > 0) {
       for (const sym of symbols) {
-        namedImportSymbols.push(sym);
+        importSymbols.push(sym);
       }
     }
 
@@ -77,13 +77,13 @@ export function ImportStatement(props: ImportStatementProps) {
     if (!symbols || symbols.size === 0) {
       parts.push(`import ${path}`);
     } else {
-      namedImportSymbols.sort((a, b) => {
+      importSymbols.sort((a, b) => {
         return a.target.name.localeCompare(b.target.name);
       });
       parts.push(`from ${path} import `);
       parts.push(
         mapJoin(
-          () => namedImportSymbols,
+          () => importSymbols,
           (nis) => <ImportBinding importedSymbol={nis} />,
           { joiner: ", " },
         ),
