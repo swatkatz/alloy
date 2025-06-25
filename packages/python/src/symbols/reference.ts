@@ -53,7 +53,6 @@ export function ref(
 function buildMemberExpression(path: PythonOutputSymbol[]) {
   let memberExpr = "";
 
-  // Handling of class members and instance members will probably happen here
   const base: PythonOutputSymbol = path[0];
   memberExpr += base.name;
   path = path.slice(1);
