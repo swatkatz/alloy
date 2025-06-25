@@ -79,6 +79,44 @@ describe("ImportStatements", () => {
     import sys`;
     expect(result).toRenderTo(expected);
   });
+  it("renders multiple import statements, but joining imports from the same module", () => {
+    const pythonModuleScope = createPythonModuleScope("math", undefined);
+    const sqrtSymbol = new PythonOutputSymbol("sqrt", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const piSymbol = new PythonOutputSymbol("pi", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const mathSymbols = new Set<ImportedSymbol>([
+      new ImportedSymbol(sqrtSymbol, sqrtSymbol),
+      new ImportedSymbol(piSymbol, piSymbol),
+    ]);
+    const requestsScope = createPythonModuleScope("requests", undefined);
+    const getSymbol = new PythonOutputSymbol("get", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const postSymbol = new PythonOutputSymbol("post", {
+      binder: undefined,
+      scope: undefined,
+    });
+    const requestsSymbols = new Set<ImportedSymbol>([
+      new ImportedSymbol(getSymbol, getSymbol),
+      new ImportedSymbol(postSymbol, postSymbol),
+    ]);
+    const records = new ImportRecords([
+      [pythonModuleScope, { symbols: mathSymbols }],
+      [requestsScope, { symbols: requestsSymbols }],
+    ]);
+
+    const result = toSourceText(<py.ImportStatements records={records} joinImportsFromSameModule={true} />);
+    const expected = `
+    from math import pi, sqrt
+    from requests import get, post`;
+    expect(result).toRenderTo(expected);
+  });
 });
 
 describe("Imports being used", () => {

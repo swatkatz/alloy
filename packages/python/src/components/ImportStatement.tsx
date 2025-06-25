@@ -10,6 +10,7 @@ import { ImportedSymbol, ImportRecords } from "../symbols/index.js";
 
 export interface ImportStatementsProps {
   records: ImportRecords;
+  joinImportsFromSameModule?: boolean;
 }
 
 export function ImportStatements(props: ImportStatementsProps) {
@@ -31,12 +32,20 @@ export function ImportStatements(props: ImportStatementsProps) {
         const sortedSymbols = Array.from(properties.symbols).sort((a, b) =>
           a.local.name.localeCompare(b.local.name),
         );
-        return sortedSymbols.map((symbol, idx, arr) => (
-          <>
-            <ImportStatement path={targetPath} symbols={new Set([symbol])} />
-            {idx < arr.length - 1 && <hbr />}
-          </>
-        ));
+        if (props.joinImportsFromSameModule) {
+          // If joinImportsFromSameModule is true, we will group imports from the same module
+          return (
+            <ImportStatement path={targetPath} symbols={new Set(sortedSymbols)} />
+          );
+        }
+        else {
+          return sortedSymbols.map((symbol, idx, arr) => (
+            <>
+              <ImportStatement path={targetPath} symbols={new Set([symbol])} />
+              {idx < arr.length - 1 && <hbr />}
+            </>
+          ));
+        }
       } else {
         // If no symbols are specified, it's either a wildcard import or a module import
         return (
