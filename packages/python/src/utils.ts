@@ -24,9 +24,3 @@ export function getCallSignatureProps(
 
   return defaultProps(callSignatureProps, defaults);
 }
-
-const pythonIdentifierRegex = /^[A-Za-z_][A-Za-z0-9_]*$/;
-
-export function isValidPythonIdentifier(str: string) {
-  return pythonIdentifierRegex.test(str);
-}
