@@ -1,9 +1,19 @@
-import { memo, OutputSymbolFlags, Refkey, resolve, untrack, useContext, useMemberScope } from "@alloy-js/core";
+import {
+  memo,
+  OutputSymbolFlags,
+  Refkey,
+  resolve,
+  untrack,
+  useContext,
+  useMemberScope,
+} from "@alloy-js/core";
 import { SourceFileContext } from "../components/SourceFile.jsx";
-import { PythonMemberScope } from "./python-member-scope.js";
-import { PythonModuleScope } from "./python-module-scope.js";
-import { PythonOutputSymbol, PythonSymbolFlags } from "./python-output-symbol.js";
-import { PythonOutputScope } from "./scopes.js";
+import {
+  PythonMemberScope,
+  PythonModuleScope,
+  PythonOutputScope,
+  PythonOutputSymbol,
+} from "./index.js";
 
 export function ref(
   refkey: Refkey,

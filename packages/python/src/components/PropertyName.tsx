@@ -9,7 +9,7 @@ export interface PropertyNameProps {
 }
 
 /**
- * A Python property name for a class or object member. If a `name` prop is provided, 
+ * A Python property name for a class or object member. If a `name` prop is provided,
  * it will be used as the property name. Otherwise, the name will be taken from the
  * {@link (MemberDeclarationContext:variable)}.
  */

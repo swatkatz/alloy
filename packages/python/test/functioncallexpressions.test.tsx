@@ -1,8 +1,8 @@
+import { refkey } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
 import { toSourceText } from "./utils.jsx";
-import { refkey } from "@alloy-js/core";
 
 describe("FunctionCallExpression", () => {
   it("renders", () => {
@@ -98,9 +98,21 @@ describe("FunctionCallExpression", () => {
         <py.FunctionCallExpression
           target={"example_method"}
           args={[
-            <py.VariableDeclaration name="name" initializer={"A name"} callStatementVar />,
-            <py.VariableDeclaration name="number" initializer={42} callStatementVar />,
-            <py.VariableDeclaration name="flag" initializer={true} callStatementVar />,
+            <py.VariableDeclaration
+              name="name"
+              initializer={"A name"}
+              callStatementVar
+            />,
+            <py.VariableDeclaration
+              name="number"
+              initializer={42}
+              callStatementVar
+            />,
+            <py.VariableDeclaration
+              name="flag"
+              initializer={true}
+              callStatementVar
+            />,
           ]}
         />
       </py.StatementList>,
@@ -118,8 +130,16 @@ describe("FunctionCallExpression", () => {
           target={"example_method"}
           args={[
             <py.Value jsValue={"A name"} />,
-            <py.VariableDeclaration name="number" initializer={42} callStatementVar />,
-            <py.VariableDeclaration name="flag" initializer={true} callStatementVar />,
+            <py.VariableDeclaration
+              name="number"
+              initializer={42}
+              callStatementVar
+            />,
+            <py.VariableDeclaration
+              name="flag"
+              initializer={true}
+              callStatementVar
+            />,
           ]}
         />
       </py.StatementList>,

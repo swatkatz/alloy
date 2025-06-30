@@ -27,7 +27,9 @@ describe("FunctionParameters", () => {
   });
   it("renders multiple string parameters with instanceFunction", () => {
     const params = ["x", "y", "z"];
-    const result = <py.FunctionParameters parameters={params} instanceFunction />;
+    const result = (
+      <py.FunctionParameters parameters={params} instanceFunction />
+    );
     expect(toSourceText(result)).toBe(d`
       self, x, y, z
     `);
@@ -82,7 +84,11 @@ describe("FunctionParameters", () => {
   it("renders multiple parameters", () => {
     const params = [
       { name: "x", type: "int" },
-      { name: "y", type: "dict", default: <py.Value jsValue={{ John: 123, Doe: 234 }} /> },
+      {
+        name: "y",
+        type: "dict",
+        default: <py.Value jsValue={{ John: 123, Doe: 234 }} />,
+      },
     ];
     const result = <py.FunctionParameters parameters={params} />;
     expect(result).toRenderTo(`x: int, y: dict = {"John": 123, "Doe": 234}`);

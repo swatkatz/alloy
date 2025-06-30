@@ -3,7 +3,6 @@ import {
   Declaration as CoreDeclaration,
   Name,
   OutputSymbolFlags,
-  Refkey,
   createSymbolSlot,
   effect,
   memo,
@@ -16,7 +15,6 @@ import { BaseDeclarationProps } from "./Declaration.jsx";
 import { SourceFileContext } from "./SourceFile.jsx";
 import { TypeRefContext } from "./TypeRefContext.jsx";
 import { Value } from "./Value.jsx";
-import { CallSignature } from "./CallSignature.jsx";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
   initializer?: Children;
@@ -66,10 +64,12 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
       }
     }
   });
-  
+
   // If we receive a symbol, resolve it to a name
   const value =
-    typeof props.initializer === "object" ? memo(() => props.initializer) : props.initializer;
+    typeof props.initializer === "object" ?
+      memo(() => props.initializer)
+    : props.initializer;
   const assignmentOperator = props.callStatementVar ? "=" : " = ";
   const getRightSide = () => {
     // Early return for omitNone case
@@ -92,9 +92,12 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
     }
 
     // Standard assignment
-    return [renderRightSideOperator, (
-      <ValueTypeSymbolSlot><Value jsValue={value ?? props.children} /></ValueTypeSymbolSlot>
-    )];
+    return [
+      renderRightSideOperator,
+      <ValueTypeSymbolSlot>
+        <Value jsValue={value ?? props.children} />
+      </ValueTypeSymbolSlot>,
+    ];
   };
   const [renderRightSideOperator, rightSide] = getRightSide();
   return (

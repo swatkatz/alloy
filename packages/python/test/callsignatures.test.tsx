@@ -44,7 +44,13 @@ describe("Call Signature", () => {
   });
   it("renders a simple call signature with all properties", () => {
     const result = toSourceText(
-      <py.CallSignature parameters={["a", "b"]} instanceFunction args kwargs returnType="int" />,
+      <py.CallSignature
+        parameters={["a", "b"]}
+        instanceFunction
+        args
+        kwargs
+        returnType="int"
+      />,
     );
     expect(result).toRenderTo(d`
       (self, a, b, *args, **kwargs) -> int
@@ -167,9 +173,7 @@ describe("Call Signature - parametersChildren", () => {
       />
     );
     const result = toSourceText(
-      <py.CallSignature
-        parametersChildren={parametersChildren}
-      />,
+      <py.CallSignature parametersChildren={parametersChildren} />,
     );
     expect(result).toRenderTo(d`
       (a: int, b: str)

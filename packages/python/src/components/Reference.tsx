@@ -1,6 +1,5 @@
 import { computed, emitSymbol, Refkey } from "@alloy-js/core";
 import { ref } from "../symbols/index.js";
-import { isTypeRefContext } from "../context/type-ref-context.jsx";
 
 export interface ReferenceProps {
   refkey: Refkey;

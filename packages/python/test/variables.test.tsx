@@ -55,7 +55,10 @@ describe("Python Variable", () => {
       <>
         <py.VariableDeclaration name="my_var" initializer={42} />
         <hbr />
-        <py.VariableDeclaration name="my_other_var" initializer={refkey("my_var")} />
+        <py.VariableDeclaration
+          name="my_other_var"
+          initializer={refkey("my_var")}
+        />
       </>,
     );
     expect(res).toBe(`my_var = 42\nmy_other_var = my_var`);
