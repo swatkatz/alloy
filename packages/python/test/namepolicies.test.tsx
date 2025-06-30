@@ -61,7 +61,7 @@ it("renders a function with parameters", () => {
 
 it("correct formatting of instance parameters names", () => {
   const result = toSourceText(
-    <py.Parameters
+    <py.FunctionParameters
       parameters={[
         { name: "this-is-a-number", type: "int" },
         {
