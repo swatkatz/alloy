@@ -54,15 +54,11 @@ it("correct resolving of external module", () => {
   expect(result).toRenderTo(expected);
 });
 
-it("function call with variables", () => {
-  // Creating the reference separately so the naming policy doesn't interfere
-  const methodRef = refkey();
+it("Class instantiation without a reference", () => {
   const result = toSourceText(
     <py.StatementList>
-      <py.FunctionDeclaration name="runFunc" refkey={methodRef} />
-      <hbr />
       <py.NewExpression
-        target={methodRef}
+        target={"ExampleClass"}
         args={[
           <py.Value jsValue={"A name"} />,
           <py.Value jsValue={42} />,
@@ -72,84 +68,16 @@ it("function call with variables", () => {
     </py.StatementList>,
   );
   const expected = d`
-    def run_func():
-      pass
-
-
-    
-    run_func("A name", 42, True)
+    ExampleClass("A name", 42, True)
   `;
   expect(result).toRenderTo(expected);
 });
 
-it("function call with variables and assignment", () => {
-  // Creating the reference separately so the naming policy doesn't interfere
-  const methodRef = refkey();
-  const result = toSourceText(
-    <py.StatementList>
-      <py.FunctionDeclaration
-        name="runFunc"
-        returnType="str"
-        refkey={methodRef}
-        parameters={[
-          { name: "name", type: "str" },
-          { name: "number", type: "int" },
-          { name: "flag", type: "bool" },
-        ]}
-      />
-      <hbr />
-      <py.VariableDeclaration
-        name="result"
-        type={<py.Reference refkey={methodRef} />}
-        initializer={
-          <py.NewExpression
-            target={methodRef}
-            args={[
-              <py.Value jsValue={"A name"} />,
-              <py.Value jsValue={42} />,
-              <py.Value jsValue={true} />,
-            ]}
-          />
-        }
-      />
-    </py.StatementList>,
-  );
-  // TODO: Fix type once we handle types properly
-  const expected = d`
-    def run_func(name: str, number: int, flag: bool) -> str:
-      pass
-    
-    
-    
-    result: run_func = run_func("A name", 42, True)
-  `;
-  expect(result).toRenderTo(expected);
-});
-
-it("function call without a method", () => {
+it("Class instantiation without a reference and with call statement vars", () => {
   const result = toSourceText(
     <py.StatementList>
       <py.NewExpression
-        target={"test"}
-        args={[
-          <py.Value jsValue={"A name"} />,
-          <py.Value jsValue={42} />,
-          <py.Value jsValue={true} />,
-        ]}
-      />
-    </py.StatementList>,
-  );
-  const expected = d`
-    test("A name", 42, True)
-  `;
-  expect(result).toRenderTo(expected);
-});
-
-it("function call without a method and with call statement vars", () => {
-  const result = toSourceText(
-    <py.StatementList>
-      <py.NewExpression
-        target={"test"}
+        target={"ExampleClass"}
         args={[
           <py.VariableDeclaration name="name" initializer={"A name"} callStatementVar />,
           <py.VariableDeclaration name="number" initializer={42} callStatementVar />,
@@ -159,7 +87,27 @@ it("function call without a method and with call statement vars", () => {
     </py.StatementList>,
   );
   const expected = d`
-    test(name="A name", number=42, flag=True)
+    ExampleClass(name="A name", number=42, flag=True)
   `;
   expect(result).toRenderTo(expected);
 });
+
+it("Class instantiation without a reference mixing unnamed and named vars", () => {
+  const result = toSourceText(
+    <py.StatementList>
+      <py.NewExpression
+        target={"ExampleClass"}
+        args={[
+          <py.Value jsValue={"A name"} />,
+          <py.VariableDeclaration name="number" initializer={42} callStatementVar />,
+          <py.VariableDeclaration name="flag" initializer={true} callStatementVar />,
+        ]}
+      />
+    </py.StatementList>,
+  );
+  const expected = d`
+    ExampleClass("A name", number=42, flag=True)
+  `;
+  expect(result).toRenderTo(expected);
+});
+
