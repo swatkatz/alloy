@@ -80,8 +80,16 @@ it("correct formatting of call statement vars", () => {
       <py.NewExpression
         target={"test"}
         args={[
-          <py.VariableDeclaration name="this-is-a-long-name" initializer={<py.Value jsValue={"A name"} />} callStatementVar />,
-          <py.VariableDeclaration name="andThisIsANumber" initializer={<py.Value jsValue={42} />} callStatementVar />,
+          <py.VariableDeclaration
+            name="this-is-a-long-name"
+            initializer={<py.Value jsValue={"A name"} />}
+            callStatementVar
+          />,
+          <py.VariableDeclaration
+            name="andThisIsANumber"
+            initializer={<py.Value jsValue={42} />}
+            callStatementVar
+          />,
         ]}
       />
     </py.StatementList>,

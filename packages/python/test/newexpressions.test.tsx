@@ -79,9 +79,21 @@ it("Class instantiation without a reference and with call statement vars", () =>
       <py.NewExpression
         target={"ExampleClass"}
         args={[
-          <py.VariableDeclaration name="name" initializer={"A name"} callStatementVar />,
-          <py.VariableDeclaration name="number" initializer={42} callStatementVar />,
-          <py.VariableDeclaration name="flag" initializer={true} callStatementVar />,
+          <py.VariableDeclaration
+            name="name"
+            initializer={"A name"}
+            callStatementVar
+          />,
+          <py.VariableDeclaration
+            name="number"
+            initializer={42}
+            callStatementVar
+          />,
+          <py.VariableDeclaration
+            name="flag"
+            initializer={true}
+            callStatementVar
+          />,
         ]}
       />
     </py.StatementList>,
@@ -99,8 +111,16 @@ it("Class instantiation without a reference mixing unnamed and named vars", () =
         target={"ExampleClass"}
         args={[
           <py.Value jsValue={"A name"} />,
-          <py.VariableDeclaration name="number" initializer={42} callStatementVar />,
-          <py.VariableDeclaration name="flag" initializer={true} callStatementVar />,
+          <py.VariableDeclaration
+            name="number"
+            initializer={42}
+            callStatementVar
+          />,
+          <py.VariableDeclaration
+            name="flag"
+            initializer={true}
+            callStatementVar
+          />,
         ]}
       />
     </py.StatementList>,
@@ -110,4 +130,3 @@ it("Class instantiation without a reference mixing unnamed and named vars", () =
   `;
   expect(result).toRenderTo(expected);
 });
-

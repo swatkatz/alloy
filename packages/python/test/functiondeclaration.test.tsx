@@ -1,4 +1,4 @@
-import { Props, refkey } from "@alloy-js/core";
+import { refkey } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
@@ -13,7 +13,6 @@ describe("Function Declaration", () => {
   //     def foo(self):
   //       pass
 
-
   //   `);
   // });
 
@@ -27,7 +26,6 @@ describe("Function Declaration", () => {
   //   expect(result).toRenderTo(d`
   //     def foo() -> int:
   //       pass
-
 
   //   `);
   // });
@@ -80,7 +78,6 @@ describe("Function Declaration", () => {
   //     def bar(self):
   //       print('hi')
 
-
   //   `);
   // });
 
@@ -104,7 +101,6 @@ describe("Function Declaration", () => {
   //       def baz(x: int, y=0, z: int = 42, *args, **kwargs):
   //         print(x, y)
 
-
   //     `,
   //   );
   // });
@@ -116,7 +112,6 @@ describe("Function Declaration", () => {
   //   expect(result).toRenderTo(d`
   //     def __init__(self, x):
   //       pass
-
 
   //   `);
   // });
@@ -162,7 +157,7 @@ describe("Function Declaration", () => {
   //   expect(toSourceText(decl)).toBe(d`
   //     def foo(a, b):
   //       return a + b
-      
+
   //   `);
   // });
 
@@ -177,7 +172,7 @@ describe("Function Declaration", () => {
   //   expect(toSourceText(decl)).toBe(d`
   //     def foo(a, b):
   //       return a + b
-      
+
   //   `);
   // });
 
@@ -197,7 +192,7 @@ describe("Function Declaration", () => {
   //   expect(toSourceText(decl)).toBe(d`
   //     def foo(x: int = 10, y: str = "default", z: float = 3.14) -> int:
   //       return a + b
-      
+
   //   `);
   // });
 });

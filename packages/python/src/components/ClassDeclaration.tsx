@@ -26,7 +26,6 @@ import {
   DeclarationProps,
 } from "./Declaration.js";
 import { PropertyName } from "./PropertyName.jsx";
-import { VariableDeclaration } from "./VariableDeclaration.jsx";
 import { TypeRefContext } from "./TypeRefContext.jsx";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
@@ -105,7 +104,8 @@ export function ClassMember(props: ClassMemberProps) {
   let flags = OutputSymbolFlags.None | OutputSymbolFlags.InstanceMember;
 
   const memberScope = useMemberScope();
-  let scope: PythonOutputScope = memberScope.instanceMembers! as PythonOutputScope;
+  let scope: PythonOutputScope =
+    memberScope.instanceMembers! as PythonOutputScope;
 
   const sym = new PythonOutputSymbol(name, {
     scope,
@@ -127,7 +127,8 @@ export interface ClassFieldProps extends ClassMemberProps {
 }
 
 export function ClassField(props: ClassFieldProps) {
-  const initializerSection = props.children ? <> = {props.children}</> : <> = {"None"}</>;
+  const initializerSection =
+    props.children ? <> = {props.children}</> : <> = {"None"}</>;
   const typeSection = props.type && (
     <>
       : <TypeRefContext>{props.type}</TypeRefContext>

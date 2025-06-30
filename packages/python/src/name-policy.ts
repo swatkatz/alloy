@@ -2,17 +2,17 @@ import { createNamePolicy, NamePolicy, useNamePolicy } from "@alloy-js/core";
 import { constantCase, pascalCase, snakeCase } from "change-case";
 
 export type PythonElements =
-  | "class"  // Classes
+  | "class" // Classes
   | "class-member" // Class members (attributes, methods)
-  | "function"  // Functions
-  | "variable"  // Variables
-  | "object-member"  // Object members (attributes, methods)
+  | "function" // Functions
+  | "variable" // Variables
+  | "object-member" // Object members (attributes, methods)
   | "constant"
   | "parameter"
   | "method"
   | "module"
-  | "enum"  // Enums
-  | "enum-member";  // Enum members
+  | "enum" // Enums
+  | "enum-member"; // Enum members
 
 // Reserved words
 const GLOBAL_RESERVED_WORDS = new Set([
@@ -51,7 +51,7 @@ const GLOBAL_RESERVED_WORDS = new Set([
   "while",
   "with",
   "and",
-  "yield"
+  "yield",
 ]);
 
 /**
@@ -60,9 +60,7 @@ const GLOBAL_RESERVED_WORDS = new Set([
  * @param element - The Python element kind.
  * @returns A Python-safe name.
  */
-function ensureNonReservedName(
-  name: string,
-): string {
+function ensureNonReservedName(name: string): string {
   const suffix = "_";
 
   // Global reserved words always need handling
@@ -72,7 +70,6 @@ function ensureNonReservedName(
 
   return name;
 }
-
 
 export function createPythonNamePolicy(): NamePolicy<PythonElements> {
   const caseOptions = {

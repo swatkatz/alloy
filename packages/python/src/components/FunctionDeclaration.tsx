@@ -2,20 +2,18 @@ import {
   childrenArray,
   findKeyedChild,
   findUnkeyedChildren,
-  memo,
   Name,
   OutputSymbolFlags,
   Scope,
   useContext,
   type Children,
 } from "@alloy-js/core";
+import { PythonOutputSymbol } from "../symbols/index.js";
 import { getCallSignatureProps } from "../utils.js";
 import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import { BaseDeclarationProps, Declaration } from "./Declaration.js";
 import { FunctionBody, FunctionParameters } from "./FunctionBase.jsx";
 import { SourceFileContext } from "./SourceFile.js";
-import { usePythonNamePolicy } from "../name-policy.js";
-import { PythonOutputSymbol } from "../symbols/index.js";
 
 export interface FunctionDeclarationProps
   extends BaseDeclarationProps,
@@ -93,7 +91,6 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
 
 FunctionDeclaration.Parameters = FunctionParameters;
 FunctionDeclaration.Body = FunctionBody;
-
 
 export function InitFunctionDeclaration(
   props: Omit<

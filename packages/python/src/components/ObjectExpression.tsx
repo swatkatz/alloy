@@ -97,9 +97,7 @@ export function ObjectProperty(props: ObjectPropertyProps) {
   let name;
   if (props.name) {
     const namer = usePythonNamePolicy();
-    name = (
-      <PropertyName name={namer.getName(props.name, "object-member")} />
-    );
+    name = <PropertyName name={namer.getName(props.name, "object-member")} />;
   } else if (props.nameExpression) {
     name = <>[{props.nameExpression}]</>;
   } else {
