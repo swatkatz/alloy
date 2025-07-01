@@ -207,11 +207,17 @@ describe("Python Class", () => {
       <Output>
         <py.SourceFile path="inst.py">
           <List hardline>
-            <py.VariableDeclaration name="one" refkey={v1Rk} type={classRk}>
-              <py.ObjectExpression>
-                <py.ObjectProperty name="noProp" refkey={refkey()} value="1" />
-              </py.ObjectExpression>
-            </py.VariableDeclaration>
+            <py.VariableDeclaration
+              name="one"
+              refkey={v1Rk}
+              type={classRk}
+              initializer={
+                <py.MemberExpression>
+                  <py.MemberExpression.Part refkey={classRk} />
+                  <py.MemberExpression.Part args />
+                </py.MemberExpression>
+              }
+            />
             <>{memberRefkey(v1Rk, classMemberRk)}</>
           </List>
         </py.SourceFile>
@@ -231,7 +237,7 @@ describe("Python Class", () => {
       "inst.py": `
         from decl import Bar
 
-        one: Bar = None
+        one: Bar = Bar()
         one.instanceProp
       `,
     });
