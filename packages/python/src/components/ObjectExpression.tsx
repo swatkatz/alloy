@@ -145,6 +145,7 @@ export interface ObjectSpreadPropertyProps {
   children?: Children;
 }
 
+// TODO: Review this
 export function ObjectSpreadProperty(props: ObjectSpreadPropertyProps) {
   let value;
   if (props.value) {

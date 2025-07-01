@@ -7,6 +7,7 @@ export * from "./FunctionBase.js";
 export * from "./FunctionCallExpression.js";
 export * from "./FunctionDeclaration.js";
 export * from "./ImportStatement.js";
+export * from "./MemberExpression.js";
 export * from "./NewExpression.js";
 export * from "./ObjectExpression.js";
 export * from "./PropertyName.js";

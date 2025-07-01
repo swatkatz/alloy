@@ -1,8 +1,6 @@
 import {
   Block,
-  BlockProps,
   Children,
-  Indent,
   List,
   MemberDeclaration,
   Name,
@@ -10,9 +8,9 @@ import {
   Refkey,
   Scope,
   childrenArray,
-  computed,
   refkey,
   splitProps,
+  useContext,
   useMemberScope,
 } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
@@ -26,6 +24,7 @@ import {
   DeclarationProps,
 } from "./Declaration.js";
 import { PropertyName } from "./PropertyName.jsx";
+import { SourceFileContext } from "./SourceFile.jsx";
 import { TypeRefContext } from "./TypeRefContext.jsx";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
@@ -47,7 +46,7 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
       OutputSymbolFlags.MemberContainer,
     metadata: props.metadata,
   });
-// Propagate the name after the name policy was applied
+  // Propagate the name after the name policy was applied
   const updatedProps: DeclarationProps = {
     ...props,
     name: name,
@@ -80,6 +79,8 @@ export interface ClassMemberProps {
 export function ClassMember(props: ClassMemberProps) {
   const namer = usePythonNamePolicy();
   const name = namer.getName(props.name, "class-member");
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
 
   let flags = OutputSymbolFlags.None | OutputSymbolFlags.InstanceMember;
 
@@ -91,6 +92,7 @@ export function ClassMember(props: ClassMemberProps) {
     scope,
     refkeys: props.refkey,
     flags,
+    module: module,
   });
 
   return (
