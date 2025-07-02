@@ -127,7 +127,6 @@ export interface ClassMemberProps {
 
 /**
  * A Python class member, which can be a field or a method.
- *
  * @remarks
  *
  * Not made to be used directly, but rather as a base for the components
