@@ -121,23 +121,22 @@ it("supports multiple levels of nesting", () => {
   `);
 });
 
-// // TODO: REVISE THIS
-// it("flattens nested member expressions", () => {
-//   expect(
-//     toSourceText(
-//       <MemberExpression>
-//         <MemberExpression.Part id="outer" />
-//         <MemberExpression>
-//           <MemberExpression.Part id="inner" />
-//           <MemberExpression.Part id="prop" />
-//         </MemberExpression>
-//         <MemberExpression.Part id="last" />
-//       </MemberExpression>,
-//     ),
-//   ).toBe(d`
-//     outer.inner.prop.last
-//   `);
-// });
+it("flattens nested member expressions", () => {
+  expect(
+    toSourceText(
+      <MemberExpression>
+        <MemberExpression.Part id="outer" />
+        <MemberExpression>
+          <MemberExpression.Part id="inner" />
+          <MemberExpression.Part id="prop" />
+        </MemberExpression>
+        <MemberExpression.Part id="last" />
+      </MemberExpression>,
+    ),
+  ).toBe(d`
+    outer.inner.prop.last
+  `);
+});
 
 it("handles a mix of dot and bracket notation", () => {
   expect(
@@ -193,29 +192,27 @@ it("takes children for the id part", () => {
 });
 
 describe("with refkeys", () => {
-  // // TODO: This test isn't rendering the test scope name as variable suffix in conflicts, investigate why
-  //   it("handles symbols correctly", () => {
-  //     const rk1 = refkey();
-  //     const rk2 = refkey();
-  //     expect(
-  //       toSourceText(
-  //         <StatementList>
-  //           <VariableDeclaration name="test1" refkey={rk1} initializer={1} />
-  //           <VariableDeclaration name="test1" refkey={rk2} initializer={2} />
-  //           <MemberExpression>
-  //             <MemberExpression.Part refkey={rk1} />
-  //             <MemberExpression.Part refkey={rk2} />
-  //           </MemberExpression>
-  //         </StatementList>,
-  //       ),
-  //     ).toBe(d`
-  //       test1 = 1;
-  //       test1_2_ = 2;
-  //       test1.test1_2_;
-  //     `);
-  //   });
+    it("handles symbols correctly", () => {
+      const rk1 = refkey();
+      const rk2 = refkey();
+      expect(
+        toSourceText(
+          <StatementList>
+            <VariableDeclaration name="test1" refkey={rk1} initializer={1} />
+            <VariableDeclaration name="test1" refkey={rk2} initializer={2} />
+            <MemberExpression>
+              <MemberExpression.Part refkey={rk1} />
+              <MemberExpression.Part refkey={rk2} />
+            </MemberExpression>
+          </StatementList>,
+        ),
+      ).toBe(d`
+        test1 = 1;
+        test1_2_test = 2;
+        test1.test1_2_test;
+      `);
+    });
 
-  // TODO: This is failing to render the ClassMember, investigate
   it("handles optional parameters correctly", () => {
     const fooRef = refkey();
     const modelRef = refkey();
@@ -257,7 +254,6 @@ describe("with refkeys", () => {
     `);
   });
 
-  // TODO: This showed an error in the rendering of ClassFields that are non-optional, investigate
   it("handles class member correctly", () => {
     const classRefkey = refkey();
     const interfaceRefkey = refkey();
@@ -305,7 +301,6 @@ describe("with refkeys", () => {
     `);
   });
 
-  // TODO: This test isn't rendering the test scope name as variable suffix in conflicts, investigate why
   it("handles late resolved refkeys correctly", () => {
     const rk1 = refkey();
     const rk2 = refkey();
@@ -321,9 +316,9 @@ describe("with refkeys", () => {
         </List>,
       ),
     ).toBe(d`
-      test1.test1_2_
+      test1.test1_2_test
       test1 = 1
-      test1_2_ = 2
+      test1_2_test = 2
     `);
   });
 
