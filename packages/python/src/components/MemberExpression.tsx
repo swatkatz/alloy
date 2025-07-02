@@ -92,9 +92,7 @@ export function MemberExpression(props: MemberExpressionProps): Children {
   // whether we use dot or bracket notation.
 
   return computed(() => {
-    return isCallChain.value ?
-        formatCallChain(parts)
-      : formatNonCallChain(parts);
+    return formatChain(parts);
   });
 }
 
@@ -223,116 +221,7 @@ function getSymbolForRefkey(refkey: Refkey) {
   return binder!.getSymbolForRefkey(refkey);
 }
 
-/**
- * Formatting of call chains (i.e. member expressions which have more than one
- * call in them). The general approach is that line breaks occur after each
- * call, and there is only one call per line. When there are non-call elements,
- * they occur prior to the call part. The first part of the member expression
- * contains all but the last non-call part.
- *
- * The following is an example of proper formatting:
- *
- * ```ts
- * z.dummy             // all but the last non-call part for the first element
- *   .object({         // the first call part with line break after
- *      a: 1,
- *   })
- *   .dummy.partial()  // the next call part with non-call parts before it
- * ```
- */
-function formatCallChain(parts: PartDescriptor[]): Children {
-  return computed(() => {
-    const expression: Children[] = [];
-
-    // break the expression into parts.
-    const chunks: PartDescriptor[][] = [];
-
-    // the first part is all the non-call parts
-    let partIndex = 0;
-
-    function pushPart() {
-      const part = parts[partIndex];
-      if (!part) throw new Error("No part to push");
-      chunks.at(-1)!.push(part);
-      partIndex++;
-    }
-
-    function pushChunk() {
-      chunks.push([]);
-    }
-
-    // For the first chunk, take all the non-call parts except the last one
-    // and put them in a chunk.
-    pushChunk();
-    while (
-      partIndex < parts.length &&
-      (partIndex === parts.length - 1 ||
-        chunks.at(-1)!.length === 0 ||
-        parts[partIndex + 1].args === undefined)
-    ) {
-      pushPart();
-      if (chunks.at(-1)!.at(-1)!.args !== undefined) {
-        // the first segment always ends after we see a call
-        // if we happen to take one
-        break;
-      }
-    }
-
-    // then for all remaining parts, collect all the non-call parts and end with
-    // a call chunk
-    while (partIndex < parts.length) {
-      pushChunk();
-      while (partIndex < parts.length && !parts[partIndex].args) {
-        pushPart();
-      }
-      while (partIndex < parts.length && parts[partIndex].args) {
-        pushPart();
-      }
-    }
-
-    for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
-      const chunk = chunks[chunkIndex];
-      const chunkExpression = [];
-      for (let partIndex = 0; partIndex < chunk.length; partIndex++) {
-        if (chunkIndex === 0 && partIndex === 0) {
-          // first part is just gonna be the id
-          const firstPart =
-            isIdPartDescriptor(chunk[0]) ? chunk[0].id : chunk[0].index;
-          chunkExpression.push(firstPart);
-          continue;
-        }
-        const part = chunk[partIndex];
-
-        if (part.args !== undefined) {
-          // For parts with only args (no name), append function call directly
-          chunkExpression.push(formatCallExpr(part));
-        } else if (part.accessStyle === "dot") {
-          chunkExpression.push(formatDotAccess(part));
-        } else {
-          // bracket notation - don't include the dot
-          chunkExpression.push(formatArrayAccess(part));
-        }
-      }
-
-      expression.push(
-        chunkIndex === 0 ? chunkExpression : (
-          <>
-            <sbr />
-            {chunkExpression}
-          </>
-        ),
-      );
-    }
-
-    return (
-      <group>
-        <indent>{expression}</indent>
-      </group>
-    );
-  });
-}
-
-function formatNonCallChain(parts: PartDescriptor[]): Children {
+function formatChain(parts: PartDescriptor[]): Children {
   return computed(() => {
     const expression: Children[] = [];
 
@@ -377,7 +266,7 @@ function formatDotAccess(part: PartDescriptor) {
   return (
     <group>
       <indent>
-        <sbr />
+        <ifBreak> \</ifBreak><sbr />
         {"."}
         {isIdPartDescriptor(part) ? part.id : part.index}
       </indent>
