@@ -57,7 +57,7 @@ export interface ClassDeclarationProps extends BaseDeclarationProps {
  *     return a + b
  * ```
  * @remarks
- * 
+ *
  * Any parameters or type parameters declared in this signature will be placed
  * in the current scope. This component does not make a scope to hold its
  * parameters.
@@ -127,9 +127,9 @@ export interface ClassMemberProps {
 
 /**
  * A Python class member, which can be a field or a method.
- * 
+ *
  * @remarks
- * 
+ *
  * Not made to be used directly, but rather as a base for the components
  * {@link ClassField} and {@link ClassMethod}.
  */

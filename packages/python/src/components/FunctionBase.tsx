@@ -10,9 +10,9 @@ import {
 import { usePythonNamePolicy } from "../name-policy.js";
 import { ParameterDescriptor } from "../parameter-descriptor.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
+import { SourceFileContext } from "./SourceFile.jsx";
 import { TypeRefContext } from "./TypeRefContext.jsx";
 import { Value } from "./Value.jsx";
-import { SourceFileContext } from "./SourceFile.jsx";
 
 const functionParametersTag = Symbol();
 const functionBodyTag = Symbol();
@@ -32,7 +32,7 @@ export interface FunctionParametersProps {
 
 /**
  * A Python function body, which can be used to define the body of a function.
- * 
+ *
  * @example
  * ```tsx
  * <py.FunctionDeclaration name="foo">
@@ -59,7 +59,7 @@ export const FunctionBody = taggedComponent(
 /**
  * A Python function parameters declaration, which can be used to define the
  * parameters of a function.
- * 
+ *
  * @example
  * ```tsx
  * <py.FunctionDeclaration name="foo">
@@ -71,11 +71,11 @@ export const FunctionBody = taggedComponent(
  * def foo(a, b):
  *   return a + b
  * ```
- * 
+ *
  * @remarks
- * 
+ *
  * Providing parameters can be accomplished in one of three ways:
- * 
+ *
  * 1. As an array of {@link ParameterDescriptor}s.
  * 2. As raw content via the `parametersChildren`.
  * 3. As a child of this component via the {@link (FunctionParameters:namespace).parameter} components.
@@ -185,7 +185,6 @@ function normalizeAndDeclareParameters(
   if (typeof parameters[0] === "string") {
     return (parameters as string[]).map((paramName) => {
       const name = namePolicy.getName(paramName, "parameter");
-
 
       const symbol = new PythonOutputSymbol(name, {
         pythonFlags: flags,

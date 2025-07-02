@@ -69,7 +69,7 @@ export interface VariableDeclarationProps extends BaseDeclarationProps {
  * myCallStmtVar=12
  * 12
  * ```
-*/
+ */
 export function VariableDeclaration(props: VariableDeclarationProps) {
   const TypeSymbolSlot = createSymbolSlot();
   const ValueTypeSymbolSlot = createSymbolSlot();

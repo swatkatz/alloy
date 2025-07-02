@@ -1,4 +1,4 @@
-import { refkey, Props } from "@alloy-js/core";
+import { Props, refkey } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
@@ -19,10 +19,7 @@ describe("Function Declaration", () => {
 
   it("renders a function with no body as 'pass' with return type", () => {
     const result = toSourceText(
-      <py.FunctionDeclaration
-        name="foo"
-        returnType="int"
-      />,
+      <py.FunctionDeclaration name="foo" returnType="int" />,
     );
     expect(result).toRenderTo(d`
       def foo() -> int:
@@ -130,7 +127,9 @@ describe("Function Declaration", () => {
 
   it("can be an async function with returnType", () => {
     expect(
-      toSourceText(<py.FunctionDeclaration async name="foo" returnType="Foo" />),
+      toSourceText(
+        <py.FunctionDeclaration async name="foo" returnType="Foo" />,
+      ),
     ).toBe(d`
       async def foo() -> Foo:
         pass
@@ -143,7 +142,9 @@ describe("Function Declaration", () => {
       return <>Foo</>;
     }
     expect(
-      toSourceText(<py.FunctionDeclaration async name="foo" returnType={<Foo />} />),
+      toSourceText(
+        <py.FunctionDeclaration async name="foo" returnType={<Foo />} />,
+      ),
     ).toBe(d`
       async def foo() -> Foo:
         pass
@@ -169,7 +170,9 @@ describe("Function Declaration", () => {
     const decl = (
       <py.FunctionDeclaration name="foo">
         <py.FunctionDeclaration.Body>return a + b</py.FunctionDeclaration.Body>
-        <py.FunctionDeclaration.Parameters>a, b</py.FunctionDeclaration.Parameters>
+        <py.FunctionDeclaration.Parameters>
+          a, b
+        </py.FunctionDeclaration.Parameters>
       </py.FunctionDeclaration>
     );
 

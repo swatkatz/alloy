@@ -43,7 +43,7 @@ export interface EnumProps extends BaseDeclarationProps {
 
 /**
  * A Python enum declaration, following https://docs.python.org/3.11/library/enum.html.
- * 
+ *
  * @example
  * ```tsx
  * <EnumDeclaration name="Direction" style="functional">

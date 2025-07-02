@@ -43,7 +43,7 @@ export interface CallSignatureProps {
 /**
  * A Python call signature, e.g. the part after the `def` keyword and the name in a
  * function expression.
- * 
+ *
  * @example
  * ```tsx
  * <CallSignature
@@ -56,7 +56,7 @@ export interface CallSignatureProps {
  * (a: int, b: str) -> int
  * ```
  * @remarks
- * 
+ *
  * Any parameters or type parameters declared in this signature will be placed
  * in the current scope. This component does not make a scope to hold its
  * parameters.

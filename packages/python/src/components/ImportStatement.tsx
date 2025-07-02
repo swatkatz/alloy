@@ -66,12 +66,12 @@ export interface ImportStatementProps {
 
 /**
  * A Python import statement.
- * 
+ *
  * @remarks
  * This component renders an import statement for a given path and symbols.
  * If no symbols are provided, it will render a simple import statement.
- * If symbols are provided, it will render an import statement with the specified symbols.  
- * 
+ * If symbols are provided, it will render an import statement with the specified symbols.
+ *
  * @example
  * ```tsx
  * <ImportStatement path="os" />
