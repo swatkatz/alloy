@@ -146,9 +146,7 @@ describe("Python Class", () => {
           <py.StatementList>
             <py.ClassField name="just_name" />
             <py.ClassField name="name_and_type" type="number" />
-            <py.ClassField name="name_type_and_value" type="number">
-              12
-            </py.ClassField>
+            <py.ClassField name="name_type_and_value" type="number" initializer={12} />
             <py.ClassField name="class_based" type={refkey("Base")} nullish />
           </py.StatementList>
         </py.ClassDeclaration>

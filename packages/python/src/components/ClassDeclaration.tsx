@@ -26,6 +26,7 @@ import {
 import { PropertyName } from "./PropertyName.jsx";
 import { SourceFileContext } from "./SourceFile.jsx";
 import { TypeRefContext } from "./TypeRefContext.jsx";
+import { VariableDeclaration } from "./VariableDeclaration.jsx";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   /**
@@ -160,9 +161,13 @@ export function ClassMember(props: ClassMemberProps) {
 
 export interface ClassFieldProps extends ClassMemberProps {
   /**
-   * The type of the class field.
+   * The type of the class field. Optional.
    */
   type?: Children;
+  /**
+   * The initial value of the class field. Optional.
+   */
+  initializer?: Children;
 }
 
 /**
@@ -183,8 +188,6 @@ export interface ClassFieldProps extends ClassMemberProps {
  * it defaults to `None`.
  */
 export function ClassField(props: ClassFieldProps) {
-  const initializerSection =
-    props.children ? <> = {props.children}</> : (props.nullish ? <> = {"None"}</> : undefined);
   const typeSection = props.type && (
     <>
       : <TypeRefContext>{props.type}</TypeRefContext>
@@ -193,9 +196,13 @@ export function ClassField(props: ClassFieldProps) {
 
   return (
     <ClassMember {...props} nullish={props.nullish}>
-      <PropertyName />
-      {typeSection}
-      {initializerSection}
+      <VariableDeclaration
+        name={props.name}
+        type={props.type}
+        refkey={props.refkey}
+        omitNone={!props.nullish}
+        initializer={props.initializer}
+      />
     </ClassMember>
   );
 }
