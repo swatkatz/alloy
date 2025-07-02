@@ -17,12 +17,59 @@ import { TypeRefContext } from "./TypeRefContext.jsx";
 import { Value } from "./Value.jsx";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
+  /**
+   * The initial value of the variable.
+   */
   initializer?: Children;
-  type?: Children; // Optional, only for type annotation
-  omitNone?: boolean; // Optional, to omit None assignment
-  callStatementVar?: boolean; // Optional, to indicate if this is a call statement variable
+  /**
+   * The type of the variable. Used only for type annotation. Optional.
+   */
+  type?: Children;
+  /**
+   * Indicates if we should omit the None assignment. Optional.
+   */
+  omitNone?: boolean;
+  /**
+   * Indicates if this is a call statement variable. Optional.
+   * This is used to handle cases where the variable is part of a call statement.
+   */
+  callStatementVar?: boolean;
 }
 
+/**
+ * A variable declaration component for Python.
+ *
+ * @example
+ * ```tsx
+ * <VariableDeclaration
+ *   name="myVar"
+ *   type="int"
+ *   initializer={42}  // Initial value
+ * />
+ * <VariableDeclaration
+ *   name="myOtherVar"
+ *   type="str"
+ *   omitNone={true}
+ * />
+ * <VariableDeclaration
+ *   name="myCallStmtVar"
+ *   callStatementVar={true}
+ *   initializer={12}
+ * />
+ * VariableDeclaration
+ *   name=""
+ *   callStatementVar={true}
+ *   initializer={12}
+ * />
+ * ```
+ * renders to
+ * ```py
+ * myVar: int = 42
+ * myOtherVar: str
+ * myCallStmtVar=12
+ * 12
+ * ```
+*/
 export function VariableDeclaration(props: VariableDeclarationProps) {
   const TypeSymbolSlot = createSymbolSlot();
   const ValueTypeSymbolSlot = createSymbolSlot();
@@ -44,9 +91,6 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
     : undefined;
 
   effect(() => {
-    // Force tracking
-    void TypeSymbolSlot.ref.value;
-    void ValueTypeSymbolSlot.ref.value;
     if (TypeSymbolSlot.ref.value) {
       const takenSymbols = TypeSymbolSlot.ref.value;
       for (const symbol of takenSymbols) {

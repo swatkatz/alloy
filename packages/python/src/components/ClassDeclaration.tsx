@@ -28,9 +28,39 @@ import { SourceFileContext } from "./SourceFile.jsx";
 import { TypeRefContext } from "./TypeRefContext.jsx";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
+  /**
+   * The classes that this class extends.
+   */
   bases?: Children[];
 }
 
+/**
+ * Create a Python class declaration.
+ *
+ * @example
+ * ```tsx
+ * <ClassDeclaration name="MyClass" bases={["BaseClass"]}>
+ *   <ClassField name="a" type="int" />
+ *   <ClassField name="b" type="str" />
+ *   <py.ClassMethod name="my_method" parameters={[{ name: "a", type: "int" }, { name: "b", type: "str" }]} returnType="int">
+ *     return a + b
+ *   </ClassMethod>
+ * </ClassDeclaration>
+ * ```
+ * renders to
+ * ```py
+ * class MyClass(BaseClass):
+ *   a: int = None
+ *   b: str = None
+ *   def my_method(self, a: int, b: str) -> int:
+ *     return a + b
+ * ```
+ * @remarks
+ * 
+ * Any parameters or type parameters declared in this signature will be placed
+ * in the current scope. This component does not make a scope to hold its
+ * parameters.
+ */
 export function ClassDeclaration(props: ClassDeclarationProps) {
   const name = usePythonNamePolicy().getName(props.name!, "class");
   const sfContext = useContext(SourceFileContext);
@@ -72,13 +102,36 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
 }
 
 export interface ClassMemberProps {
+  /**
+   * The name of the class member.
+   */
   name: string;
+  /**
+   * The refkey for this class member.
+   */
   refkey?: Refkey;
+  /**
+   * Any children to render inside the class member.
+   */
   children?: Children;
+  /**
+   * Documentation for this declaration
+   */
   doc?: Children;
+  /**
+   * Whether this member is can be null or not.
+   */
   nullish?: boolean;
 }
 
+/**
+ * A Python class member, which can be a field or a method.
+ * 
+ * @remarks
+ * 
+ * Not made to be used directly, but rather as a base for the components
+ * {@link ClassField} and {@link ClassMethod}.
+ */
 export function ClassMember(props: ClassMemberProps) {
   const namer = usePythonNamePolicy();
   const name = namer.getName(props.name, "class-member");
@@ -106,23 +159,40 @@ export function ClassMember(props: ClassMemberProps) {
 }
 
 export interface ClassFieldProps extends ClassMemberProps {
+  /**
+   * The type of the class field.
+   */
   type?: Children;
-  optional?: boolean;
-  children?: Children;
 }
 
+/**
+ * A Python class field, which can have a type and an initializer.
+ *
+ * @example
+ * ```tsx
+ * <ClassField name="a" type="int" />
+ * ```
+ * renders to
+ * ```py
+ * a: int = None
+ * ```
+ *
+ * @remarks
+ *
+ * If the `children` prop is provided, it will be used as the initializer. If not,
+ * it defaults to `None`.
+ */
 export function ClassField(props: ClassFieldProps) {
   const initializerSection =
-    props.children ? <> = {props.children}</> : <> = {"None"}</>;
+    props.children ? <> = {props.children}</> : (props.nullish ? <> = {"None"}</> : undefined);
   const typeSection = props.type && (
     <>
       : <TypeRefContext>{props.type}</TypeRefContext>
     </>
   );
-  const nullish = props.nullish ?? props.optional;
 
   return (
-    <ClassMember {...props} nullish={nullish}>
+    <ClassMember {...props} nullish={props.nullish}>
       <PropertyName />
       {typeSection}
       {initializerSection}
@@ -132,16 +202,41 @@ export function ClassField(props: ClassFieldProps) {
 
 export interface ClassMethodProps extends ClassMemberProps, CallSignatureProps {
   async?: boolean;
-  instanceFunction?: boolean; // true if this is an instance method
+  instanceFunction?: boolean; // true if this is an instance method (defaults to true)
   classFunction?: boolean; // true if this is a class method
   children?: Children;
 }
 
+/**
+ * A Python class method.
+ *
+ * @example
+ * ```tsx
+ * <ClassMethod name="my_method" parameters={[{ name: "a", type: "int" }, { name: "b", type: "str" }]} returnType="int">
+ *   return a + b
+ * </ClassMethod>
+ * ```
+ * renders to
+ * ```py
+ * def my_method(self, a: int, b: str) -> int:
+ *   return a + b
+ * ```
+ * @remarks
+ * The `instanceFunction` prop indicates whether this is an instance method
+ * (defaults to true). If `false`, it will omit `self` from being rendered.
+ * The `classFunction` prop indicates whether this is a class method (defaults to
+ * false). If `true`, it is a class method.
+ * The `async` prop indicates whether this is an async method (defaults to false).
+ * The `children` prop is the body of the method. If not provided, it defaults
+ * to `pass`.
+ */
 export function ClassMethod(props: ClassMethodProps) {
   const callProps = getCallSignatureProps(props);
   const [_, rest] = splitProps(props, ["doc"]);
   const hasChildren =
     childrenArray(() => props.children).filter((c) => Boolean(c)).length > 0;
+  // Defaults to true in case the prop is not provided
+  callProps.instanceFunction = props.instanceFunction ?? true;
 
   return (
     <>
