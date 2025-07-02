@@ -52,11 +52,7 @@ describe("Python Variable", () => {
 
   it("declares a python variable with omitNone", () => {
     const res = toSourceText(
-      <py.VariableDeclaration
-        name="omitNoneVar"
-        type="int"
-        omitNone={true}
-      />,
+      <py.VariableDeclaration name="omitNoneVar" type="int" omitNone={true} />,
     );
     expect(res).toBe(`omit_none_var: int`);
   });

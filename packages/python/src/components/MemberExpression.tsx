@@ -277,7 +277,8 @@ function formatDotAccess(part: PartDescriptor) {
   return (
     <group>
       <indent>
-        <ifBreak> \</ifBreak><sbr />
+        <ifBreak> \</ifBreak>
+        <sbr />
         {"."}
         {isIdPartDescriptor(part) ? part.id : part.index}
       </indent>

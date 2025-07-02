@@ -1,10 +1,4 @@
-import {
-  code,
-  List,
-  Output,
-  refkey,
-  render,
-} from "@alloy-js/core";
+import { code, Output, refkey, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
@@ -66,7 +60,9 @@ it("renders basic member expression with an expression index", () => {
         <py.VariableDeclaration name="x" initializer={1} refkey={xRefkey} />
         <py.MemberExpression>
           <py.MemberExpression.Part id="arr" />
-          <py.MemberExpression.Part mapAccess>{xRefkey} + 1</py.MemberExpression.Part>
+          <py.MemberExpression.Part mapAccess>
+            {xRefkey} + 1
+          </py.MemberExpression.Part>
           <py.MemberExpression.Part id="foo-bar" />
         </py.MemberExpression>
       </py.StatementList>,
@@ -83,7 +79,9 @@ it("renders basic member expression with an expression index - 2", () => {
       <py.StatementList>
         <py.MemberExpression>
           <py.MemberExpression.Part id="arr" />
-          <py.MemberExpression.Part mapAccess>"foo" + 1</py.MemberExpression.Part>
+          <py.MemberExpression.Part mapAccess>
+            "foo" + 1
+          </py.MemberExpression.Part>
           <py.MemberExpression.Part id="foo-bar" />
         </py.MemberExpression>
       </py.StatementList>,
@@ -170,15 +168,26 @@ it("takes children for the id part", () => {
       <py.StatementList>
         <py.MemberExpression>
           <py.MemberExpression.Part>child1</py.MemberExpression.Part>
-          <py.MemberExpression.Part id="child2" mapAccess></py.MemberExpression.Part>
+          <py.MemberExpression.Part
+            id="child2"
+            mapAccess
+          ></py.MemberExpression.Part>
         </py.MemberExpression>
         <py.MemberExpression>
           <py.MemberExpression.Part>child1</py.MemberExpression.Part>
-          <py.MemberExpression.Part id="child2" mapAccess></py.MemberExpression.Part>
+          <py.MemberExpression.Part
+            id="child2"
+            mapAccess
+          ></py.MemberExpression.Part>
           <py.MemberExpression.Part args />
-          <py.MemberExpression.Part id="child3" mapAccess></py.MemberExpression.Part>
+          <py.MemberExpression.Part
+            id="child3"
+            mapAccess
+          ></py.MemberExpression.Part>
           <py.MemberExpression.Part args />
-          <py.MemberExpression.Part mapAccess>"foo" + 1</py.MemberExpression.Part>
+          <py.MemberExpression.Part mapAccess>
+            "foo" + 1
+          </py.MemberExpression.Part>
           <py.MemberExpression.Part args />
         </py.MemberExpression>
       </py.StatementList>,
@@ -190,26 +199,26 @@ it("takes children for the id part", () => {
 });
 
 describe("with refkeys", () => {
-    it("handles symbols correctly", () => {
-      const rk1 = refkey();
-      const rk2 = refkey();
-      expect(
-        toSourceText(
-          <py.StatementList>
-            <py.VariableDeclaration name="test1" refkey={rk1} initializer={1} />
-            <py.VariableDeclaration name="test1" refkey={rk2} initializer={2} />
-            <py.MemberExpression>
-              <py.MemberExpression.Part refkey={rk1} />
-              <py.MemberExpression.Part refkey={rk2} />
-            </py.MemberExpression>
-          </py.StatementList>,
-        ),
-      ).toBe(d`
+  it("handles symbols correctly", () => {
+    const rk1 = refkey();
+    const rk2 = refkey();
+    expect(
+      toSourceText(
+        <py.StatementList>
+          <py.VariableDeclaration name="test1" refkey={rk1} initializer={1} />
+          <py.VariableDeclaration name="test1" refkey={rk2} initializer={2} />
+          <py.MemberExpression>
+            <py.MemberExpression.Part refkey={rk1} />
+            <py.MemberExpression.Part refkey={rk2} />
+          </py.MemberExpression>
+        </py.StatementList>,
+      ),
+    ).toBe(d`
         test1 = 1
         test1_2_test = 2
         test1.test1_2_test
       `);
-    });
+  });
 
   it("handles optional parameters correctly", () => {
     const fooRef = refkey();

@@ -37,7 +37,7 @@ export interface SourceFileProps {
  * A Python source file component that represents a Python file in the source directory.
  * It provides a scope for the file, which is a `PythonModuleScope` that contains
  * all the symbols defined in the file, such as functions, classes, and variables.
- * 
+ *
  * @example
  * ```tsx
  * <SourceFile path="test.py" export>
@@ -49,9 +49,9 @@ export interface SourceFileProps {
  * def test():
  *   pass
  * ```
- * 
+ *
  * @remarks
- * 
+ *
  * The `path` prop is the path to the file relative to the source directory.
  * The `children` prop can be used to add content to the file, such as
  * function definitions, class definitions, and variable declarations.

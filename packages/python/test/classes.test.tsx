@@ -1,4 +1,4 @@
-import { List, memberRefkey, Output, refkey, render } from "@alloy-js/core";
+import { memberRefkey, Output, refkey, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
@@ -146,7 +146,11 @@ describe("Python Class", () => {
           <py.StatementList>
             <py.ClassField name="just_name" />
             <py.ClassField name="name_and_type" type="number" />
-            <py.ClassField name="name_type_and_value" type="number" initializer={12} />
+            <py.ClassField
+              name="name_type_and_value"
+              type="number"
+              initializer={12}
+            />
             <py.ClassField name="class_based" type={refkey("Base")} nullish />
           </py.StatementList>
         </py.ClassDeclaration>
@@ -248,12 +252,19 @@ describe("Python Class", () => {
           <py.StatementList>
             <py.ClassField name="a" type="int" />
             <py.ClassField name="b" type="int" />
-            <py.ClassMethod name="my_method" parameters={[{ name: "a", type: "int" }, { name: "b", type: "int" }]} returnType="int">
+            <py.ClassMethod
+              name="my_method"
+              parameters={[
+                { name: "a", type: "int" },
+                { name: "b", type: "int" },
+              ]}
+              returnType="int"
+            >
               return a + b
             </py.ClassMethod>
           </py.StatementList>
         </py.ClassDeclaration>
-      </>
+      </>,
     );
     const expected = d`
       class MyClass(BaseClass):

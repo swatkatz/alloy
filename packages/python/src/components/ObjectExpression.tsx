@@ -18,8 +18,8 @@ import {
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
 import { PropertyName } from "./PropertyName.jsx";
-import { Value } from "./Value.js";
 import { SourceFileContext } from "./SourceFile.jsx";
+import { Value } from "./Value.js";
 
 export interface ObjectExpressionProps {
   children?: Children;
@@ -31,7 +31,7 @@ export interface ObjectExpressionProps {
 
 /**
  * Used to create Python object literals.
- * 
+ *
  * @remarks
  * It can take a `jsValue` prop which can be an array of key-value pairs,
  * a Map, or an object. If `jsValue` is not provided, it will render an empty object `{}`.
@@ -109,7 +109,7 @@ export interface ObjectPropertyProps {
 }
 
 /** Used to create properties in Python object literals.
- * 
+ *
  * @remarks
  * It can take a `name` prop which is the name of the property, or a `nameExpression`
  * prop which is a JSX expression that evaluates to the name of the property.

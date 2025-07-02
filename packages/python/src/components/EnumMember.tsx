@@ -52,7 +52,7 @@ export interface EnumMemberProps {
 
 /**
  * A Python enum member.
- * 
+ *
  * @example
  * ```tsx
  * <EnumMember name="NORTH" />

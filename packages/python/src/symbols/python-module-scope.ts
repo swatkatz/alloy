@@ -1,10 +1,10 @@
 import { reactive, shallowReactive, useContext } from "@alloy-js/core";
+import { SourceFileContext } from "../components/SourceFile.jsx";
 import { CustomOutputScope } from "./custom-output-scope.js";
 import {
   PythonOutputSymbol,
   PythonSymbolFlags,
 } from "./python-output-symbol.js";
-import { SourceFileContext } from "../components/SourceFile.jsx";
 
 export class ImportedSymbol {
   local: PythonOutputSymbol;
