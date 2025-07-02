@@ -417,26 +417,25 @@ describe("with function calls", () => {
 
 describe("formatting", () => {
   describe("simple chains", () => {
-    // // TODO See if we can implement that backslash line break
-    // it("just dots", () => {
-    //   expect(
-    //     toSourceText(
-    //       <MemberExpression>
-    //         <MemberExpression.Part id="four" />
-    //         <MemberExpression.Part id="four" />
-    //         <MemberExpression.Part id="four" />
-    //         <MemberExpression.Part id="four" />
-    //         <MemberExpression.Part id="four" />
-    //         <MemberExpression.Part id="four" />
-    //       </MemberExpression>,
-    //       { printOptions: { printWidth: 12 } },
-    //     ),
-    //   ).toBe(d`
-    //     four.four \\
-    //       .four.four \\
-    //       .four.four
-    //   `);
-    // });
+    it("just dots", () => {
+      expect(
+        toSourceText(
+          <MemberExpression>
+            <MemberExpression.Part id="four" />
+            <MemberExpression.Part id="four" />
+            <MemberExpression.Part id="two" />
+            <MemberExpression.Part id="two" />
+            <MemberExpression.Part id="two" />
+            <MemberExpression.Part id="two" />
+          </MemberExpression>,
+          { printOptions: { printWidth: 12 } },
+        ),
+      ).toBe(d`
+        four.four \\
+          .two.two \\
+          .two.two
+      `);
+    });
 
     it("bracket breaks", () => {
       expect(
@@ -503,29 +502,26 @@ describe("formatting", () => {
       `);
     });
 
-    // TODO See if we can implement that backslash line break
-    // it("handles multiple calls", () => {
-    //   expect(
-    //     toSourceText(
-    //       <MemberExpression>
-    //         <MemberExpression.Part id="z" />
-    //         <MemberExpression.Part id="object" />
-    //         <MemberExpression.Part
-    //           args={[<ObjectExpression jsValue={{ x: 1 }} />]}
-    //         />
-    //         <MemberExpression.Part id="partial" />
-    //         <MemberExpression.Part args={[]} />
-    //       </MemberExpression>,
-    //       { printOptions: { printWidth: 12 } },
-    //     ),
-    //   ).toBe(d`
-    //     z \\
-    //       .object({
-    //         x: 1,
-    //       })
-    //       .partial()
-    //   `);
-    // });
+    it("handles multiple calls", () => {
+      expect(
+        toSourceText(
+          <MemberExpression>
+            <MemberExpression.Part id="z" />
+            <MemberExpression.Part id="object" />
+            <MemberExpression.Part
+              args={[<ObjectExpression jsValue={{ x: 1 }} />]}
+            />
+            <MemberExpression.Part id="partial" />
+            <MemberExpression.Part args={[]} />
+          </MemberExpression>,
+          { printOptions: { printWidth: 12 } },
+        ),
+      ).toBe(d`
+        z.object({
+          x: 1,
+        }).partial()
+      `);
+    });
 
     it("renders multiple calls on the same line when there are no breaks and they fit", () => {
       expect(
@@ -545,55 +541,49 @@ describe("formatting", () => {
       `);
     });
 
-    // // TODO See if we can implement that backslash line break
-    // it("handles multiple calls with id parts", () => {
-    //   expect(
-    //     toSourceText(
-    //       <MemberExpression>
-    //         <MemberExpression.Part id="z" />
-    //         <MemberExpression.Part id="z1" />
-    //         <MemberExpression.Part id="object" />
-    //         <MemberExpression.Part
-    //           args={[<ObjectExpression jsValue={{ x: 1 }} />]}
-    //         />
-    //         <MemberExpression.Part id="foo" />
-    //         <MemberExpression.Part id="partial" />
-    //         <MemberExpression.Part args={[]} />
-    //       </MemberExpression>,
-    //     ),
-    //   ).toBe(d`
-    //     z.z1 \\
-    //       .object({
-    //         x: 1,
-    //       })
-    //       .foo.partial()
-    //   `);
-    // });
+    it("handles multiple calls with id parts", () => {
+      expect(
+        toSourceText(
+          <MemberExpression>
+            <MemberExpression.Part id="z" />
+            <MemberExpression.Part id="z1" />
+            <MemberExpression.Part id="object" />
+            <MemberExpression.Part
+              args={[<ObjectExpression jsValue={{ x: 1 }} />]}
+            />
+            <MemberExpression.Part id="foo" />
+            <MemberExpression.Part id="partial" />
+            <MemberExpression.Part args={[]} />
+          </MemberExpression>,
+        ),
+      ).toBe(d`
+        z.z1.object({
+          x: 1,
+        }).foo.partial()
+      `);
+    });
 
-    // // TODO See if we can implement that backslash line break
-    // it("handles the first part being a call", () => {
-    //   expect(
-    //     toSourceText(
-    //       <MemberExpression>
-    //         <MemberExpression.Part id="z" />
-    //         <MemberExpression.Part args />
-    //         <MemberExpression.Part id="z1" />
-    //         <MemberExpression.Part id="object" />
-    //         <MemberExpression.Part
-    //           args={[<ObjectExpression jsValue={{ x: 1 }} />]}
-    //         />
-    //         <MemberExpression.Part id="foo" />
-    //         <MemberExpression.Part id="partial" />
-    //         <MemberExpression.Part args={[]} />
-    //       </MemberExpression>,
-    //     ),
-    //   ).toBe(d`
-    //     z() \\
-    //       .z1.object({
-    //         x: 1,
-    //       }) \\
-    //       .foo.partial()
-    //   `);
-    // });
+    it("handles the first part being a call", () => {
+      expect(
+        toSourceText(
+          <MemberExpression>
+            <MemberExpression.Part id="z" />
+            <MemberExpression.Part args />
+            <MemberExpression.Part id="z1" />
+            <MemberExpression.Part id="object" />
+            <MemberExpression.Part
+              args={[<ObjectExpression jsValue={{ x: 1 }} />]}
+            />
+            <MemberExpression.Part id="foo" />
+            <MemberExpression.Part id="partial" />
+            <MemberExpression.Part args={[]} />
+          </MemberExpression>,
+        ),
+      ).toBe(d`
+        z().z1.object({
+          x: 1,
+        }).foo.partial()
+      `);
+    });
   });
 });
