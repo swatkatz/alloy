@@ -36,13 +36,9 @@ it("from object property", () => {
 
 it("spread property", () => {
   const comp = (
-    <ObjectExpression>
-      <ObjectSpreadProperty>abc</ObjectSpreadProperty>
-    </ObjectExpression>
+    <ObjectSpreadProperty>abc</ObjectSpreadProperty>
   );
   expect(toSourceText(comp)).toBe(d`
-  {
-    **abc
-  }
+  **abc
   `);
 });

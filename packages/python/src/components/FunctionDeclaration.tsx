@@ -28,6 +28,24 @@ export interface FunctionDeclarationProps
 /**
  * A Python function declaration.
  *
+ * @example
+ * ```tsx
+ * <FunctionDeclaration name="my_function" returnType="int">
+ *   <FunctionDeclaration.Parameters>
+ *     <Parameter name="a" type="int" />
+ *     <Parameter name="b" type="str" />
+ *   </FunctionDeclaration.Parameters>
+ *   <FunctionDeclaration.Body>
+ *     return a + b
+ *   </FunctionDeclaration.Body>
+ * </FunctionDeclaration>
+ * ```
+ * This will generate:
+ * ```python
+ * def my_function(a: int, b: str) -> int:
+ *   return a + b
+ * ```
+ * 
  * @remarks
  *
  * Providing parameters and type parameters can be accomplished in one of three
@@ -95,6 +113,23 @@ FunctionDeclaration.Body = FunctionBody;
 /**
  * A Python `__init__` function declaration.
  *
+ * @example
+ * ```tsx
+ * <InitFunctionDeclaration>
+ *   <FunctionDeclaration.Parameters>
+ *     <Parameter name="self" type="MyClass" />
+ *   </FunctionDeclaration.Parameters>
+ *   <FunctionDeclaration.Body>
+ *     self.attribute = "value"
+ *   </FunctionDeclaration.Body>
+ * </InitFunctionDeclaration>
+ * ```
+ * This will generate:
+ * ```python
+ * def __init__(self: MyClass) -> None:
+ *     self.attribute = "value"
+ * ```
+ * 
  * @remarks
  *
  * This is a convenience component that sets the name to `__init__`, marks it as

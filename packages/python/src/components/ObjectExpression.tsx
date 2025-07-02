@@ -172,7 +172,24 @@ export interface ObjectSpreadPropertyProps {
   children?: Children;
 }
 
-// TODO: Review this
+/**
+ * Used to create a spread property, which is used to
+ * unpack dictionaries into function calls or object literals.
+ *
+ * @example
+ * ```tsx
+ * <ObjectSpreadProperty>abc</ObjectSpreadProperty>
+ * ```
+ * This will render as:
+ * ```py
+ * **abc
+ * ```
+ * 
+ * @remarks
+ * It can take a `value` prop which is a JSX expression that evaluates to the value of the spread property,
+ * or a `jsValue` prop which can be any valid JavaScript value. If neither `value` nor `jsValue`
+ * is provided, it will render an empty value.
+ */
 export function ObjectSpreadProperty(props: ObjectSpreadPropertyProps) {
   let value;
   if (props.value) {

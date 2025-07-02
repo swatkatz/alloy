@@ -16,6 +16,14 @@ export interface NewExpressionProps extends FunctionCallExpressionProps {}
 /**
  * Used to create new instances of classes in Python.
  *
+ * @example
+ * ```tsx
+ * <NewExpression target="MyClass" args={["arg1", "arg2"]} />
+ * ```
+ * This will generate:
+ * ```python
+ * MyClass(arg1, arg2)
+ * ```
  * @remarks
  *
  * It is similar to FunctionCallExpression but specifically for class instantiation.
