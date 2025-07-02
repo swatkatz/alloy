@@ -33,6 +33,8 @@ export interface ClassDeclarationProps extends BaseDeclarationProps {
 
 export function ClassDeclaration(props: ClassDeclarationProps) {
   const name = usePythonNamePolicy().getName(props.name!, "class");
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
   const basesPart = props.bases && (
     <>
       (<List children={props.bases} comma space />)
@@ -45,6 +47,7 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
       (props.flags ?? OutputSymbolFlags.None) |
       OutputSymbolFlags.MemberContainer,
     metadata: props.metadata,
+    module: module,
   });
   // Propagate the name after the name policy was applied
   const updatedProps: DeclarationProps = {

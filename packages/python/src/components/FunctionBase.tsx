@@ -5,12 +5,14 @@ import {
   For,
   Show,
   taggedComponent,
+  useContext,
 } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { ParameterDescriptor } from "../parameter-descriptor.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { TypeRefContext } from "./TypeRefContext.jsx";
 import { Value } from "./Value.jsx";
+import { SourceFileContext } from "./SourceFile.jsx";
 
 const functionParametersTag = Symbol();
 const functionBodyTag = Symbol();
@@ -52,6 +54,8 @@ export const FunctionParameters = taggedComponent(
       );
     }
 
+    const sfContext = useContext(SourceFileContext);
+    const module = sfContext?.module;
     const parameters = normalizeAndDeclareParameters(props.parameters ?? []);
     const additionalArgs =
       props.instanceFunction ? [{ name: "self" }]
@@ -64,7 +68,7 @@ export const FunctionParameters = taggedComponent(
             {(param) =>
               parameter({
                 ...param,
-                symbol: new PythonOutputSymbol(param.name, {}),
+                symbol: new PythonOutputSymbol(param.name, { module: module }),
               })
             }
           </For>
@@ -134,6 +138,8 @@ function normalizeAndDeclareParameters(
   flags: PythonSymbolFlags = PythonSymbolFlags.ParameterSymbol,
 ): DeclaredParameterDescriptor[] {
   const namePolicy = usePythonNamePolicy();
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
   if (parameters.length === 0) {
     return [];
   }
@@ -141,8 +147,10 @@ function normalizeAndDeclareParameters(
     return (parameters as string[]).map((paramName) => {
       const name = namePolicy.getName(paramName, "parameter");
 
+
       const symbol = new PythonOutputSymbol(name, {
         pythonFlags: flags,
+        module: module,
       });
 
       return { refkeys: symbol.refkeys, symbol };
@@ -158,6 +166,7 @@ function normalizeAndDeclareParameters(
           refkeys: param.refkey,
           pythonFlags: flags | nullishFlag,
           metadata: param.metadata,
+          module: module,
         },
       );
 
