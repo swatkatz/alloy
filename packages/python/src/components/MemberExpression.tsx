@@ -221,6 +221,9 @@ function getSymbolForRefkey(refkey: Refkey) {
   return binder!.getSymbolForRefkey(refkey);
 }
 
+/**
+ * Format a chain of parts into a MemberExpression.
+ */
 function formatChain(parts: PartDescriptor[]): Children {
   return computed(() => {
     const expression: Children[] = [];
@@ -247,6 +250,10 @@ function formatChain(parts: PartDescriptor[]): Children {
   });
 }
 
+/**
+ * Format a part of a member expression that is an array access.
+ * This is used for parts like `foo[0]` or `foo["bar"]`.
+ */
 function formatArrayAccess(part: PartDescriptor) {
   return (
     <group>
@@ -262,6 +269,10 @@ function formatArrayAccess(part: PartDescriptor) {
   );
 }
 
+/**
+ * Format a part of a member expression that is a dot access.
+ * This is used for parts like `foo.bar` or `foo.baz()`.
+ */
 function formatDotAccess(part: PartDescriptor) {
   return (
     <group>
@@ -274,6 +285,10 @@ function formatDotAccess(part: PartDescriptor) {
   );
 }
 
+/**
+ * Format a part of a member expression that is a function call.
+ * This is used for parts like `foo.bar()` or `foo.baz(arg1, arg2)`.
+ */
 function formatCallExpr(part: PartDescriptor) {
   const args = computed(() => {
     return typeof part.args === "boolean" ? [] : (part.args ?? []);
@@ -296,6 +311,10 @@ function formatCallExpr(part: PartDescriptor) {
   );
 }
 
+/**
+ * Flattens a member expression by recursively expanding MemberExpression
+ * components and collecting their children.
+ */
 function flattenMemberExpression(children: Children[]): Children[] {
   const flattened: Children[] = [];
   for (const child of children) {

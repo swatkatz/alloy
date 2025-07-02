@@ -30,6 +30,21 @@ export interface FunctionParametersProps {
   readonly children?: Children;
 }
 
+/**
+ * A Python function body, which can be used to define the body of a function.
+ * 
+ * @example
+ * ```tsx
+ * <py.FunctionDeclaration name="foo">
+ *   <py.FunctionDeclaration.Parameters>a, b</py.FunctionDeclaration.Parameters>
+ *   <py.FunctionDeclaration.Body>return a + b</py.FunctionDeclaration.Body>
+ * </py.FunctionDeclaration>
+ * This will generate:
+ * ```python
+ * def foo(a, b):
+ *   return a + b
+ * ```
+ */
 export const FunctionBody = taggedComponent(
   functionBodyTag,
   function Body(props: FunctionBodyProps) {
@@ -41,6 +56,30 @@ export const FunctionBody = taggedComponent(
   },
 );
 
+/**
+ * A Python function parameters declaration, which can be used to define the
+ * parameters of a function.
+ * 
+ * @example
+ * ```tsx
+ * <py.FunctionDeclaration name="foo">
+ *   <py.FunctionDeclaration.Parameters>a, b</py.FunctionDeclaration.Parameters>
+ *   <py.FunctionDeclaration.Body>return a + b</py.FunctionDeclaration.Body>
+ * </py.FunctionDeclaration>
+ * This will generate:
+ * ```python
+ * def foo(a, b):
+ *   return a + b
+ * ```
+ * 
+ * @remarks
+ * 
+ * Providing parameters can be accomplished in one of three ways:
+ * 
+ * 1. As an array of {@link ParameterDescriptor}s.
+ * 2. As raw content via the `parametersChildren`.
+ * 3. As a child of this component via the {@link (FunctionParameters:namespace).parameter} components.
+ */
 export const FunctionParameters = taggedComponent(
   functionParametersTag,
   function Parameters(props: FunctionParametersProps) {

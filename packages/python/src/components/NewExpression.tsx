@@ -13,10 +13,15 @@ import { SourceFileContext } from "./SourceFile.jsx";
 
 export interface NewExpressionProps extends FunctionCallExpressionProps {}
 
-// NewExpression is used to create new instances of classes in Python.
-// It is similar to FunctionCallExpression but specifically for class instantiation.
-// Args is a list arguments that can be either Values, which will render as positional arguments,
-// or VariableDeclarations, which will render as named arguments in the call statement.
+/**
+ * Used to create new instances of classes in Python.
+ * 
+ * @remarks
+ * 
+ * It is similar to FunctionCallExpression but specifically for class instantiation.
+ * Args is a list arguments that can be either Values, which will render as positional arguments,
+ * or VariableDeclarations, which will render as named arguments in the call statement.
+ */
 export function NewExpression(props: NewExpressionProps) {
   const sfContext = useContext(SourceFileContext);
   const module = sfContext?.module;

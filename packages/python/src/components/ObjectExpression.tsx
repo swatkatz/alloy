@@ -29,6 +29,16 @@ export interface ObjectExpressionProps {
     | Record<string, unknown>;
 }
 
+/**
+ * Used to create Python object literals.
+ * 
+ * @remarks
+ * It can take a `jsValue` prop which can be an array of key-value pairs,
+ * a Map, or an object. If `jsValue` is not provided, it will render an empty object `{}`.
+ * The `children` prop can be used to add additional properties
+ * to the object expression, which will be rendered after the properties from `jsValue`.
+ * Each property can be defined using the `ObjectProperty` component.
+ */
 export function ObjectExpression(props: ObjectExpressionProps) {
   const sfContext = useContext(SourceFileContext);
   const module = sfContext?.module;
@@ -98,6 +108,15 @@ export interface ObjectPropertyProps {
   refkey?: Refkey | Refkey[];
 }
 
+/** Used to create properties in Python object literals.
+ * 
+ * @remarks
+ * It can take a `name` prop which is the name of the property, or a `nameExpression`
+ * prop which is a JSX expression that evaluates to the name of the property.
+ * The `value` prop can be used to set the value of the property, or a `jsValue`
+ * prop which can be any valid JavaScript value. If neither `value` nor `jsValue`
+ * is provided, it will render an empty value.
+ */
 export function ObjectProperty(props: ObjectPropertyProps) {
   const sfContext = useContext(SourceFileContext);
   const module = sfContext?.module;
