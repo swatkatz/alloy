@@ -5,6 +5,18 @@ export interface FunctionCallExpressionProps {
   args?: Children[];
 }
 
+/**
+ * A Python function call expression.
+ *
+ * @example
+ * ```tsx
+ * <FunctionCallExpression target="foo" args={["arg1", "arg2"]} />
+ * ```
+ * This will generate:
+ * ```python
+ * foo(arg1, arg2)
+ * ```
+ */
 export function FunctionCallExpression(props: FunctionCallExpressionProps) {
   return (
     <group>

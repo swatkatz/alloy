@@ -92,6 +92,15 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
 FunctionDeclaration.Parameters = FunctionParameters;
 FunctionDeclaration.Body = FunctionBody;
 
+/**
+ * A Python `__init__` function declaration.
+ *
+ * @remarks
+ *
+ * This is a convenience component that sets the name to `__init__`, marks it as
+ * an instance function, and forces the name to be `__init__` without applying
+ * the name policy.
+ */
 export function InitFunctionDeclaration(
   props: Omit<
     FunctionDeclarationProps,

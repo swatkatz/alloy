@@ -42,7 +42,28 @@ export interface EnumProps extends BaseDeclarationProps {
 }
 
 /**
- * A Python enum declaration, following https://docs.python.org/3.11/library/enum.html
+ * A Python enum declaration, following https://docs.python.org/3.11/library/enum.html.
+ * 
+ * @example
+ * ```tsx
+ * <EnumDeclaration name="Direction" style="functional">
+ *   members={[
+ *     { name: "NORTH" },
+ *     { name: "SOUTH" },
+ *     { name: "EAST" },
+ *     { name: "WEST" },
+ *   ]}
+ * />
+ * ```
+ * This will generate:
+ * ```python
+ * from enum import Enum
+ * class Direction(Enum):
+ *     NORTH = "NORTH"
+ *     SOUTH = "SOUTH"
+ *     EAST = "EAST"
+ *     WEST = "WEST"
+ * ```
  */
 export function EnumDeclaration(props: EnumProps) {
   // Handle enum styles

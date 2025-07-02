@@ -24,7 +24,8 @@ export const TypeRefContext = ({ children }: TypeRefContextProps) => {
   );
 };
 
-/** Ensure the current component is inside a type ref context.
+/** 
+ * Ensure the current component is inside a type ref context.
  * If not it will wrap in a {@link TypeRefContext} component.
  * If yes it will not add an extra node and return the original component.
  */
