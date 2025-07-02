@@ -4,6 +4,11 @@ export interface ValueProps {
   jsValue?: unknown;
 }
 
+/**
+ * A component that renders a JavaScript value in a Python-like syntax.
+ * It handles various types of values including numbers, booleans, strings,
+ * functions, arrays, and objects.
+ */
 export function Value(props: ValueProps): any {
   return memo(() => {
     const jsValue = props.jsValue;

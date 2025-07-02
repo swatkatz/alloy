@@ -26,7 +26,7 @@ export interface FunctionDeclarationProps
 }
 
 /**
- * A TypeScript function declaration.
+ * A Python function declaration.
  *
  * @remarks
  *

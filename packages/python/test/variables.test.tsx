@@ -50,6 +50,39 @@ describe("Python Variable", () => {
     expect(res).toBe(`name_id_pairs = {"John": 123, "Doe": 234}`);
   });
 
+  it("declares a python variable with omitNone", () => {
+    const res = toSourceText(
+      <py.VariableDeclaration
+        name="omitNoneVar"
+        type="int"
+        omitNone={true}
+      />,
+    );
+    expect(res).toBe(`omit_none_var: int`);
+  });
+
+  it("declares a call statement python variable", () => {
+    const res = toSourceText(
+      <py.VariableDeclaration
+        name="callStmtVar"
+        initializer={12}
+        callStatementVar={true}
+      />,
+    );
+    expect(res).toBe(`call_stmt_var=12`);
+  });
+
+  it("declares a call statement python variable without name", () => {
+    const res = toSourceText(
+      <py.VariableDeclaration
+        name=""
+        initializer={12}
+        callStatementVar={true}
+      />,
+    );
+    expect(res).toBe(`12`);
+  });
+
   it("declares a python variable receiving other variable as value", () => {
     const res = toSourceText(
       <>

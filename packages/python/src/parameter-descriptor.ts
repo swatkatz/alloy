@@ -36,7 +36,7 @@ export interface ParameterDescriptorBase {
 }
 
 /**
- * Information for a TypeScript function parameter.
+ * Information for a Python function parameter.
  */
 export interface ParameterDescriptor extends ParameterDescriptorBase {
   /**

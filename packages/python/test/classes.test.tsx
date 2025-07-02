@@ -143,14 +143,14 @@ describe("Python Class", () => {
         <hbr />
         <hbr />
         <py.ClassDeclaration name="A">
-          <List hardline>
+          <py.StatementList>
             <py.ClassField name="just_name" />
             <py.ClassField name="name_and_type" type="number" />
             <py.ClassField name="name_type_and_value" type="number">
               12
             </py.ClassField>
-            <py.ClassField name="class_based" type={refkey("Base")} />
-          </List>
+            <py.ClassField name="class_based" type={refkey("Base")} nullish />
+          </py.StatementList>
         </py.ClassDeclaration>
       </>,
     );
@@ -160,8 +160,8 @@ describe("Python Class", () => {
 
 
       class A:
-        just_name = None
-        name_and_type: number = None
+        just_name
+        name_and_type: number
         name_type_and_value: number = 12
         class_based: Base = None
 
@@ -174,15 +174,15 @@ describe("Python Class", () => {
     const result = toSourceText(
       <>
         <py.ClassDeclaration name="A">
-          <List hardline>
+          <py.StatementList>
             <py.VariableDeclaration name="foo" type="str" omitNone />
-          </List>
+          </py.StatementList>
         </py.ClassDeclaration>
         <br />
         <py.ClassDeclaration name="B">
-          <List hardline>
+          <py.StatementList>
             <py.VariableDeclaration name="foo" type="str" omitNone />
-          </List>
+          </py.StatementList>
         </py.ClassDeclaration>
       </>,
     );
@@ -206,7 +206,7 @@ describe("Python Class", () => {
     const res = render(
       <Output>
         <py.SourceFile path="inst.py">
-          <List hardline>
+          <py.StatementList>
             <py.VariableDeclaration
               name="one"
               refkey={v1Rk}
@@ -219,15 +219,15 @@ describe("Python Class", () => {
               }
             />
             <>{memberRefkey(v1Rk, classMemberRk)}</>
-          </List>
+          </py.StatementList>
         </py.SourceFile>
         <py.SourceFile path="decl.py">
           <py.ClassDeclaration name="Bar" refkey={classRk}>
-            <List hardline>
+            <py.StatementList>
               <py.ClassField name="instanceProp" refkey={classMemberRk}>
                 42
               </py.ClassField>
-            </List>
+            </py.StatementList>
           </py.ClassDeclaration>
         </py.SourceFile>
       </Output>,
@@ -241,5 +241,32 @@ describe("Python Class", () => {
         one.instanceProp
       `,
     });
+  });
+
+  it("renders a class with class fields and method", () => {
+    const result = toSourceText(
+      <>
+        <py.ClassDeclaration name="MyClass" bases={["BaseClass"]}>
+          <py.StatementList>
+            <py.ClassField name="a" type="int" />
+            <py.ClassField name="b" type="int" />
+            <py.ClassMethod name="my_method" parameters={[{ name: "a", type: "int" }, { name: "b", type: "int" }]} returnType="int">
+              return a + b
+            </py.ClassMethod>
+          </py.StatementList>
+        </py.ClassDeclaration>
+      </>
+    );
+    const expected = d`
+      class MyClass(BaseClass):
+        a: int
+        b: int
+        def my_method(self, a: int, b: int) -> int:
+          return a + b
+
+
+
+    `;
+    expect(result).toRenderTo(expected);
   });
 });

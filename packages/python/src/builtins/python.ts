@@ -10,3 +10,10 @@ export const enumModule = createModule({
     ".": ["auto", "Enum", "Flag", "IntEnum", "IntFlag", "StrEnum"],
   },
 });
+
+export const typingModule = createModule({
+  name: "typing",
+  descriptor: {
+    ".": ["auto", "Any", "Callable", "Dict", "List", "Optional", "Tuple"],
+  },
+});

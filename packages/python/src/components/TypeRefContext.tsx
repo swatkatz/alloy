@@ -5,9 +5,6 @@ import {
 } from "../context/type-ref-context.jsx";
 
 export interface TypeRefContextProps {
-  /**
-   * Children
-   */
   children: Children;
 }
 
