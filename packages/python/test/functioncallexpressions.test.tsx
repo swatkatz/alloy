@@ -66,7 +66,7 @@ describe("FunctionCallExpression", () => {
         <hbr />
         <py.VariableDeclaration
           name="result"
-          type={<py.Reference refkey={methodRef} />}
+          type="str"
           initializer={
             <py.FunctionCallExpression
               target={methodRef}
@@ -80,14 +80,13 @@ describe("FunctionCallExpression", () => {
         />
       </py.StatementList>,
     );
-    // TODO: Fix type once we handle types properly
     const expected = d`
       def run_func(name: str, number: int, flag: bool) -> str:
         pass
       
       
       
-      result: run_func = run_func("A name", 42, True)
+      result: str = run_func("A name", 42, True)
     `;
     expect(result).toRenderTo(expected);
   });
