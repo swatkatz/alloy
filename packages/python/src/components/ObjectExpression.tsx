@@ -157,5 +157,5 @@ export function ObjectSpreadProperty(props: ObjectSpreadPropertyProps) {
     value = props.children;
   }
 
-  return <>...{value}</>;
+  return <>**{value}</>;
 }
