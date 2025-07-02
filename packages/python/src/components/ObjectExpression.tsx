@@ -13,11 +13,13 @@ import {
   Refkey,
   Switch,
   takeSymbols,
+  useContext,
 } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
 import { PropertyName } from "./PropertyName.jsx";
 import { Value } from "./Value.js";
+import { SourceFileContext } from "./SourceFile.jsx";
 
 export interface ObjectExpressionProps {
   children?: Children;
@@ -28,9 +30,12 @@ export interface ObjectExpressionProps {
 }
 
 export function ObjectExpression(props: ObjectExpressionProps) {
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
   const symbol = new PythonOutputSymbol("", {
     flags:
       OutputSymbolFlags.StaticMemberContainer | OutputSymbolFlags.Transient,
+    module: module,
   });
 
   emitSymbol(symbol);
@@ -94,6 +99,8 @@ export interface ObjectPropertyProps {
 }
 
 export function ObjectProperty(props: ObjectPropertyProps) {
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
   let name;
   if (props.name) {
     const namer = usePythonNamePolicy();
@@ -109,6 +116,7 @@ export function ObjectProperty(props: ObjectPropertyProps) {
     sym = new PythonOutputSymbol(props.name, {
       refkeys: props.refkey,
       flags: OutputSymbolFlags.StaticMember,
+      module: module,
     });
 
     moveTakenMembersTo(sym);
