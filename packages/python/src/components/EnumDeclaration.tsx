@@ -1,4 +1,5 @@
 import {
+  Block,
   Children,
   Declaration as CoreDeclaration,
   For,
@@ -6,14 +7,15 @@ import {
   OutputSymbolFlags,
   Scope,
   useBinder,
+  useContext,
 } from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
 import { usePythonScope } from "../symbols/scopes.js";
-import { PythonBlock } from "./ClassDeclaration.js";
 import { BaseDeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
+import { SourceFileContext } from "./SourceFile.jsx";
 
 export interface EnumProps extends BaseDeclarationProps {
   /**
@@ -40,7 +42,28 @@ export interface EnumProps extends BaseDeclarationProps {
 }
 
 /**
- * A Python enum declaration, following https://docs.python.org/3.11/library/enum.html
+ * A Python enum declaration, following https://docs.python.org/3.11/library/enum.html.
+ *
+ * @example
+ * ```tsx
+ * <EnumDeclaration name="Direction" style="functional">
+ *   members={[
+ *     { name: "NORTH" },
+ *     { name: "SOUTH" },
+ *     { name: "EAST" },
+ *     { name: "WEST" },
+ *   ]}
+ * />
+ * ```
+ * This will generate:
+ * ```python
+ * from enum import Enum
+ * class Direction(Enum):
+ *     NORTH = "NORTH"
+ *     SOUTH = "SOUTH"
+ *     EAST = "EAST"
+ *     WEST = "WEST"
+ * ```
  */
 export function EnumDeclaration(props: EnumProps) {
   // Handle enum styles
@@ -52,6 +75,8 @@ export function EnumDeclaration(props: EnumProps) {
 
 export function FunctionalEnumDeclaration(props: EnumProps) {
   const name = usePythonNamePolicy().getName(props.name, "enum");
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
   const binder = useBinder();
   const scope = usePythonScope();
   const sym = new PythonOutputSymbol(name, {
@@ -60,6 +85,7 @@ export function FunctionalEnumDeclaration(props: EnumProps) {
     refkeys: props.refkey,
     flags: OutputSymbolFlags.StaticMemberContainer,
     metadata: props.metadata,
+    module: module,
   });
   const members = props.members ?? [];
   let opener, ender;
@@ -99,6 +125,8 @@ export function FunctionalEnumDeclaration(props: EnumProps) {
 export function ClassEnumDeclaration(props: EnumProps) {
   const baseType = props.baseType || "Enum";
   const name = usePythonNamePolicy().getName(props.name, "enum");
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
   const binder = useBinder();
   const scope = usePythonScope();
   const sym = new PythonOutputSymbol(name, {
@@ -107,6 +135,7 @@ export function ClassEnumDeclaration(props: EnumProps) {
     refkeys: props.refkey,
     flags: OutputSymbolFlags.StaticMemberContainer,
     metadata: props.metadata,
+    module: module,
   });
   let memberList: Array<{
     name: string;
@@ -126,7 +155,7 @@ export function ClassEnumDeclaration(props: EnumProps) {
       class {props.name}({enumModule["."][baseType]})
       <MemberScope owner={sym}>
         <Scope name={props.name} kind="enum">
-          <PythonBlock opener=":" closer="" newline={false}>
+          <Block opener=":" closer="" newline={false}>
             <For each={memberList} hardline>
               {(member) => (
                 <EnumMember
@@ -138,7 +167,7 @@ export function ClassEnumDeclaration(props: EnumProps) {
               )}
             </For>
             {props.children}
-          </PythonBlock>
+          </Block>
         </Scope>
       </MemberScope>
     </CoreDeclaration>
