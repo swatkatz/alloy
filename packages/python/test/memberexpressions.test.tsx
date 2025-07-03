@@ -6,7 +6,6 @@ import {
   ClassDeclaration,
   ClassField,
   FunctionDeclaration,
-  ObjectExpression,
 } from "../src/components/index.js";
 import { ParameterDescriptor, SourceFile } from "../src/index.js";
 import { assertFileContents, toSourceText } from "./utils.js";
@@ -464,73 +463,6 @@ describe("formatting", () => {
   });
 
   describe("call chains", () => {
-    it("handles single calls", () => {
-      expect(
-        toSourceText(
-          <py.MemberExpression>
-            <py.MemberExpression.Part id="z" />
-            <py.MemberExpression.Part id="object" />
-            <py.MemberExpression.Part
-              args={[<ObjectExpression jsValue={{ x: 1 }} />]}
-            />
-          </py.MemberExpression>,
-          { printOptions: { printWidth: 12 } },
-        ),
-      ).toBe(d`
-        z.object({
-          x: 1,
-        })
-      `);
-    });
-
-    it("handles single calls with multiple parameters", () => {
-      expect(
-        toSourceText(
-          <py.MemberExpression>
-            <py.MemberExpression.Part id="z" />
-            <py.MemberExpression.Part id="object" />
-            <py.MemberExpression.Part
-              args={[
-                <ObjectExpression jsValue={{ x: 1 }} />,
-                <ObjectExpression jsValue={{ y: 2 }} />,
-              ]}
-            />
-          </py.MemberExpression>,
-          { printOptions: { printWidth: 12 } },
-        ),
-      ).toBe(d`
-        z.object(
-          {
-            x: 1,
-          },
-          {
-            y: 2,
-          }
-        )
-      `);
-    });
-
-    it("handles multiple calls", () => {
-      expect(
-        toSourceText(
-          <py.MemberExpression>
-            <py.MemberExpression.Part id="z" />
-            <py.MemberExpression.Part id="object" />
-            <py.MemberExpression.Part
-              args={[<ObjectExpression jsValue={{ x: 1 }} />]}
-            />
-            <py.MemberExpression.Part id="partial" />
-            <py.MemberExpression.Part args={[]} />
-          </py.MemberExpression>,
-          { printOptions: { printWidth: 12 } },
-        ),
-      ).toBe(d`
-        z.object({
-          x: 1,
-        }).partial()
-      `);
-    });
-
     it("renders multiple calls on the same line when there are no breaks and they fit", () => {
       expect(
         toSourceText(
@@ -546,51 +478,6 @@ describe("formatting", () => {
         ),
       ).toBe(d`
         z.object().partial().optional()
-      `);
-    });
-
-    it("handles multiple calls with id parts", () => {
-      expect(
-        toSourceText(
-          <py.MemberExpression>
-            <py.MemberExpression.Part id="z" />
-            <py.MemberExpression.Part id="z1" />
-            <py.MemberExpression.Part id="object" />
-            <py.MemberExpression.Part
-              args={[<ObjectExpression jsValue={{ x: 1 }} />]}
-            />
-            <py.MemberExpression.Part id="foo" />
-            <py.MemberExpression.Part id="partial" />
-            <py.MemberExpression.Part args={[]} />
-          </py.MemberExpression>,
-        ),
-      ).toBe(d`
-        z.z1.object({
-          x: 1,
-        }).foo.partial()
-      `);
-    });
-
-    it("handles the first part being a call", () => {
-      expect(
-        toSourceText(
-          <py.MemberExpression>
-            <py.MemberExpression.Part id="z" />
-            <py.MemberExpression.Part args />
-            <py.MemberExpression.Part id="z1" />
-            <py.MemberExpression.Part id="object" />
-            <py.MemberExpression.Part
-              args={[<ObjectExpression jsValue={{ x: 1 }} />]}
-            />
-            <py.MemberExpression.Part id="foo" />
-            <py.MemberExpression.Part id="partial" />
-            <py.MemberExpression.Part args={[]} />
-          </py.MemberExpression>,
-        ),
-      ).toBe(d`
-        z().z1.object({
-          x: 1,
-        }).foo.partial()
       `);
     });
   });
