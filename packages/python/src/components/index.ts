@@ -9,7 +9,6 @@ export * from "./FunctionDeclaration.js";
 export * from "./ImportStatement.js";
 export * from "./MemberExpression.js";
 export * from "./NewExpression.js";
-export * from "./ObjectExpression.js";
 export * from "./PropertyName.js";
 export * from "./Reference.js";
 export * from "./SourceFile.js";
