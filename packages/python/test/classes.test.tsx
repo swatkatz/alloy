@@ -136,42 +136,6 @@ describe("Python Class", () => {
     expect(result).toRenderTo(expected);
   });
 
-  it("renders a class with class fields", () => {
-    const result = toSourceText(
-      <>
-        <py.ClassDeclaration name="Base"></py.ClassDeclaration>
-        <hbr />
-        <hbr />
-        <py.ClassDeclaration name="A">
-          <py.StatementList>
-            <py.ClassField name="just_name" />
-            <py.ClassField name="name_and_type" type="number" />
-            <py.ClassField
-              name="name_type_and_value"
-              type="number"
-              initializer={12}
-            />
-            <py.ClassField name="class_based" type={refkey("Base")} nullish />
-          </py.StatementList>
-        </py.ClassDeclaration>
-      </>,
-    );
-    const expected = d`
-      class Base:
-        pass
-
-
-      class A:
-        just_name
-        name_and_type: number
-        name_type_and_value: number = 12
-        class_based: Base = None
-
-
-    `;
-    expect(result).toRenderTo(expected);
-  });
-
   it("renders a class with class variables like foo: str, and another identical class", () => {
     const result = toSourceText(
       <>
@@ -198,6 +162,58 @@ describe("Python Class", () => {
 
     `;
     expect(result).toRenderTo(expected);
+  });
+});
+
+describe("Python Class - ClassField", () => {
+  it("renders a class with class fields", () => {
+    const result = toSourceText(
+      <>
+        <py.ClassDeclaration name="Base"></py.ClassDeclaration>
+        <hbr />
+        <hbr />
+        <py.ClassDeclaration name="A">
+          <py.StatementList>
+            <py.ClassField name="just_name" />
+            <py.ClassField name="name_and_type" type="number" />
+            <py.ClassField
+              name="name_type_and_value"
+              type="number"
+              initializer={12}
+            />
+            <py.ClassField name="class_based" type={refkey("Base")} nullish />
+            <py.ClassField name="with_children">24</py.ClassField>
+          </py.StatementList>
+        </py.ClassDeclaration>
+      </>,
+    );
+    const expected = d`
+      class Base:
+        pass
+
+
+      class A:
+        just_name
+        name_and_type: number
+        name_type_and_value: number = 12
+        class_based: Base = None
+        with_children = 24
+
+
+    `;
+    expect(result).toRenderTo(expected);
+  });
+
+  it("raises an error if children are provided with an initializer for a class field", () => {
+    expect(() => toSourceText(
+      <>
+        <py.ClassDeclaration name="A">
+          <py.StatementList>
+            <py.ClassField name="field" initializer={12}>24</py.ClassField>
+          </py.StatementList>
+        </py.ClassDeclaration>
+      </>,
+    )).toThrowError("You can either provide 'children' or 'initializer', not both.");
   });
 
   it("correctly access members of its type", () => {
@@ -242,9 +258,16 @@ describe("Python Class", () => {
         one: Bar = Bar()
         one.instanceProp
       `,
+      "decl.py": `
+        class Bar:
+          instanceProp = 42
+
+      `,
     });
   });
+});
 
+describe("Python Class - ClassMethod", () => {
   it("renders a class with class fields and method", () => {
     const result = toSourceText(
       <>
@@ -262,6 +285,21 @@ describe("Python Class", () => {
             >
               return a + b
             </py.ClassMethod>
+            <py.ClassMethod
+              name="my_class_method"
+              instanceFunction={false}
+              classFunction={true}
+              returnType="int"
+            >
+              pass
+            </py.ClassMethod>
+            <py.ClassMethod
+              name="my_standalone_function"
+              instanceFunction={false}
+              returnType="int"
+            >
+              pass
+            </py.ClassMethod>
           </py.StatementList>
         </py.ClassDeclaration>
       </>,
@@ -273,8 +311,14 @@ describe("Python Class", () => {
         def my_method(self, a: int, b: int) -> int:
           return a + b
 
+        def my_class_method(cls) -> int:
+          pass
+
+        def my_standalone_function() -> int:
+          pass
 
 
+          
     `;
     expect(result).toRenderTo(expected);
   });

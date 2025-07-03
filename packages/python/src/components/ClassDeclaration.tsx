@@ -187,11 +187,15 @@ export interface ClassFieldProps extends ClassMemberProps {
  * it defaults to `None`.
  */
 export function ClassField(props: ClassFieldProps) {
-  const typeSection = props.type && (
-    <>
-      : <TypeRefContext>{props.type}</TypeRefContext>
-    </>
-  );
+  if (props.children && props.initializer) {
+    throw new Error(
+      `You can either provide 'children' or 'initializer', not both.`,
+    );
+  }
+  let initializer: Children = props.initializer ?? undefined;
+  if (!initializer && props.children) {
+    initializer = <>{props.children}</>;
+  }
 
   return (
     <ClassMember {...props} nullish={props.nullish}>
@@ -200,7 +204,7 @@ export function ClassField(props: ClassFieldProps) {
         type={props.type}
         refkey={props.refkey}
         omitNone={!props.nullish}
-        initializer={props.initializer}
+        initializer={initializer}
       />
     </ClassMember>
   );
