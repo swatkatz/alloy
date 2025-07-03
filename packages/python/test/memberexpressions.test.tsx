@@ -274,7 +274,7 @@ describe("with refkeys", () => {
             <ClassField
               name="prop1"
               refkey={interfaceMemberRefkey}
-              type={"string"}
+              type={"str"}
             />
           </ClassDeclaration>
           <ClassDeclaration name="Foo" refkey={classRefkey}>
@@ -299,7 +299,7 @@ describe("with refkeys", () => {
       ),
     ).toBe(d`
        class Bar:
-         prop1: string
+         prop1: str
 
        class Foo:
          test1: Bar = None
