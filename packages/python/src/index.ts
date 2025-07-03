@@ -4,3 +4,4 @@ export * from "./name-policy.js";
 export * from "./parameter-descriptor.js";
 export * from "./symbols/index.js";
 export * from "./utils.js";
+export * from "./symbols/index.js";
