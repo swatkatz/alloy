@@ -77,7 +77,6 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
     flags:
       (props.flags ?? OutputSymbolFlags.None) |
       OutputSymbolFlags.MemberContainer,
-    metadata: props.metadata,
     module: module,
   });
   // Propagate the name after the name policy was applied

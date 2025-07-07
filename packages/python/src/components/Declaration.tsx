@@ -31,11 +31,6 @@ export interface BaseDeclarationProps {
   children?: Children;
 
   /**
-   * Arbitrary metadata about this declaration.
-   */
-  metadata?: Record<string, unknown>;
-
-  /**
    * Documentation for this declaration
    */
   doc?: Children;
@@ -79,7 +74,6 @@ export function Declaration(props: DeclarationProps) {
     sym = new PythonOutputSymbol(name, {
       refkeys: props.refkey ?? refkey(name!),
       flags: props.flags,
-      metadata: props.metadata,
       module: module,
     });
   }

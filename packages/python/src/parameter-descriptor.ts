@@ -1,9 +1,9 @@
 import type { Children, Refkey } from "@alloy-js/core";
 
 /**
- * Common properties for ParameterDescriptor and FunctionTypeParameterDescriptor.
+ * Information for a Python function parameter.
  */
-export interface ParameterDescriptorBase {
+export interface ParameterDescriptor {
   /**
    * The name of the parameter.
    */
@@ -25,20 +25,10 @@ export interface ParameterDescriptorBase {
   readonly optional?: boolean;
 
   /**
-   * Arbitrary metadata for the parameter symbol.
-   */
-  readonly metadata?: Record<string, unknown>;
-
-  /**
    * Documentation for the parameter.
    */
   readonly doc?: Children;
-}
 
-/**
- * Information for a Python function parameter.
- */
-export interface ParameterDescriptor extends ParameterDescriptorBase {
   /**
    * The default value of the parameter.
    */

@@ -203,7 +203,6 @@ function normalizeAndDeclareParameters(
         {
           refkeys: param.refkey,
           pythonFlags: flags | nullishFlag,
-          metadata: param.metadata,
           module: module,
         },
       );
