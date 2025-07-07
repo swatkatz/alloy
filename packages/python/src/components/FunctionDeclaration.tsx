@@ -12,8 +12,9 @@ import { PythonOutputSymbol } from "../symbols/index.js";
 import { getCallSignatureProps } from "../utils.js";
 import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import { BaseDeclarationProps, Declaration } from "./Declaration.js";
-import { FunctionBody, FunctionParameters } from "./FunctionBase.jsx";
+import { FunctionParameters } from "./FunctionBase.jsx";
 import { SourceFileContext } from "./SourceFile.js";
+import { PythonBlock } from "./PythonBlock.jsx";
 
 export interface FunctionDeclarationProps
   extends BaseDeclarationProps,
@@ -58,14 +59,13 @@ export interface FunctionDeclarationProps
 export function FunctionDeclaration(props: FunctionDeclarationProps) {
   const children = childrenArray(() => props.children);
   // Validate that only one of instanceFunction or classFunction is
-  const bodyChildren = findKeyedChild(children, FunctionBody.tag) ?? undefined;
   const filteredChildren = findUnkeyedChildren(children);
   const returnType = props.returnType;
 
-  const sBody = bodyChildren ?? (
-    <FunctionDeclaration.Body>
+  const sBody = (
+    <PythonBlock>
       {children.length > 0 ? filteredChildren : "pass"}
-    </FunctionDeclaration.Body>
+    </PythonBlock>
   );
 
   const asyncKwd = props.async ? "async " : "";
@@ -103,7 +103,6 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
 }
 
 FunctionDeclaration.Parameters = FunctionParameters;
-FunctionDeclaration.Body = FunctionBody;
 
 /**
  * A Python `__init__` function declaration.

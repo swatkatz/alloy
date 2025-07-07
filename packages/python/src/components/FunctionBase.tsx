@@ -13,14 +13,8 @@ import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { SourceFileContext } from "./SourceFile.jsx";
 import { TypeRefContext } from "./TypeRefContext.jsx";
 import { Value } from "./Value.jsx";
-import { PythonBlock } from "./PythonBlock.jsx";
 
 const functionParametersTag = Symbol();
-const functionBodyTag = Symbol();
-
-export interface FunctionBodyProps {
-  readonly children?: Children;
-}
 
 export interface FunctionParametersProps {
   readonly parameters?: ParameterDescriptor[] | string[];
@@ -30,32 +24,6 @@ export interface FunctionParametersProps {
   readonly classFunction?: boolean;
   readonly children?: Children;
 }
-
-/**
- * A Python function body, which can be used to define the body of a function.
- *
- * @example
- * ```tsx
- * <py.FunctionDeclaration name="foo">
- *   <py.FunctionDeclaration.Parameters>a, b</py.FunctionDeclaration.Parameters>
- *   <py.FunctionDeclaration.Body>return a + b</py.FunctionDeclaration.Body>
- * </py.FunctionDeclaration>
- * This will generate:
- * ```python
- * def foo(a, b):
- *   return a + b
- * ```
- */
-export const FunctionBody = taggedComponent(
-  functionBodyTag,
-  function Body(props: FunctionBodyProps) {
-    return (
-      <PythonBlock>
-        {props.children}
-      </PythonBlock>
-    );
-  },
-);
 
 /**
  * A Python function parameters declaration, which can be used to define the
