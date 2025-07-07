@@ -13,6 +13,7 @@ import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { SourceFileContext } from "./SourceFile.jsx";
 import { TypeRefContext } from "./TypeRefContext.jsx";
 import { Value } from "./Value.jsx";
+import { PythonBlock } from "./PythonBlock.jsx";
 
 const functionParametersTag = Symbol();
 const functionBodyTag = Symbol();
@@ -49,9 +50,9 @@ export const FunctionBody = taggedComponent(
   functionBodyTag,
   function Body(props: FunctionBodyProps) {
     return (
-      <Block opener="" closer="">
+      <PythonBlock>
         {props.children}
-      </Block>
+      </PythonBlock>
     );
   },
 );
