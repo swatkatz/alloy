@@ -78,7 +78,6 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   const name = usePythonNamePolicy().getName(props.name, "variable");
   const sym = new PythonOutputSymbol(name, {
     refkeys: props.refkey ?? refkey(name!),
-    metadata: props.metadata,
     module: module,
     pythonFlags: PythonSymbolFlags.None,
   });

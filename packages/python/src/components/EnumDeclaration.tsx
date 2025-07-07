@@ -84,7 +84,6 @@ export function FunctionalEnumDeclaration(props: EnumProps) {
     scope,
     refkeys: props.refkey,
     flags: OutputSymbolFlags.StaticMemberContainer,
-    metadata: props.metadata,
     module: module,
   });
   const members = props.members ?? [];
@@ -134,7 +133,6 @@ export function ClassEnumDeclaration(props: EnumProps) {
     scope,
     refkeys: props.refkey,
     flags: OutputSymbolFlags.StaticMemberContainer,
-    metadata: props.metadata,
     module: module,
   });
   let memberList: Array<{

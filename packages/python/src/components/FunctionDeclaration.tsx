@@ -84,7 +84,6 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
       flags:
         (props.flags ?? OutputSymbolFlags.None) |
         OutputSymbolFlags.MemberContainer,
-      metadata: props.metadata,
       module: module,
     });
   }
