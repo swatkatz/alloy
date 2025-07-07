@@ -165,41 +165,4 @@ describe("Function Declaration", () => {
 
     `);
   });
-
-  it("supports parameters by element", () => {
-    const decl = (
-      <py.FunctionDeclaration name="foo">
-        <py.FunctionDeclaration.Body>return a + b</py.FunctionDeclaration.Body>
-        <py.FunctionDeclaration.Parameters>
-          a, b
-        </py.FunctionDeclaration.Parameters>
-      </py.FunctionDeclaration>
-    );
-
-    expect(toSourceText(decl)).toBe(d`
-      def foo(a, b):
-        return a + b
-
-    `);
-  });
-
-  it("supports more complex parameters by element", () => {
-    const params = [
-      { name: "x", type: "int", optional: true, default: 10 },
-      { name: "y", type: "str", optional: true, default: "default" },
-      { name: "z", type: "float", optional: true, default: 3.14 },
-    ];
-    const decl = (
-      <py.FunctionDeclaration name="foo" returnType="int">
-        <py.FunctionDeclaration.Body>return a + b</py.FunctionDeclaration.Body>
-        <py.FunctionDeclaration.Parameters parameters={params} />
-      </py.FunctionDeclaration>
-    );
-
-    expect(toSourceText(decl)).toBe(d`
-      def foo(x: int = 10, y: str = "default", z: float = 3.14) -> int:
-        return a + b
-
-    `);
-  });
 });

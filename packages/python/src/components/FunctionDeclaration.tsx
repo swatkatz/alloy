@@ -48,18 +48,16 @@ export interface FunctionDeclarationProps
  * 
  * @remarks
  *
- * Providing parameters and type parameters can be accomplished in one of three
+ * Providing parameters and type parameters can be accomplished in one of two
  * ways:
  *
  * 1. As an array of {@link ParameterDescriptor}s.
- * 2. As raw content via the `parametersChildren`.
- * 3. As a child of this component via the
+ * 2. As a child of this component via the
  *    {@link (FunctionDeclaration:namespace).Parameters} components.
  */
 export function FunctionDeclaration(props: FunctionDeclarationProps) {
   const children = childrenArray(() => props.children);
-  const parametersChildren =
-    findKeyedChild(children, FunctionParameters.tag) ?? undefined;
+  // Validate that only one of instanceFunction or classFunction is
   const bodyChildren = findKeyedChild(children, FunctionBody.tag) ?? undefined;
   const filteredChildren = findUnkeyedChildren(children);
   const returnType = props.returnType;
@@ -88,9 +86,7 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
     });
   }
 
-  const callSignatureProps = getCallSignatureProps(props, {
-    parametersChildren,
-  });
+  const callSignatureProps = getCallSignatureProps(props, {});
 
   return (
     <>

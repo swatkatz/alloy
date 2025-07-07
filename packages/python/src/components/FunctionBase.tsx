@@ -74,11 +74,10 @@ export const FunctionBody = taggedComponent(
  *
  * @remarks
  *
- * Providing parameters can be accomplished in one of three ways:
+ * Providing parameters can be accomplished in one of two ways:
  *
  * 1. As an array of {@link ParameterDescriptor}s.
- * 2. As raw content via the `parametersChildren`.
- * 3. As a child of this component via the {@link (FunctionParameters:namespace).parameter} components.
+ * 2. As a child of this component via the {@link (FunctionParameters:namespace).parameter} components.
  */
 export const FunctionParameters = taggedComponent(
   functionParametersTag,
