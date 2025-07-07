@@ -161,22 +161,3 @@ describe("Call Signature - Parameter Descriptors", () => {
     `);
   });
 });
-
-describe("Call Signature - parametersChildren", () => {
-  it("renders a call signature with parameter descriptors", () => {
-    const parametersChildren = (
-      <py.FunctionParameters
-        parameters={[
-          { name: "a", type: "int" },
-          { name: "b", type: "str" },
-        ]}
-      />
-    );
-    const result = toSourceText(
-      <py.CallSignature parametersChildren={parametersChildren} />,
-    );
-    expect(result).toRenderTo(d`
-      (a: int, b: str)
-    `);
-  });
-});

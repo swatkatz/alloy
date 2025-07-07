@@ -11,11 +11,6 @@ export interface CallSignatureProps {
   parameters?: ParameterDescriptor[] | string[];
 
   /**
-   * Raw content to be used as the parameter list.
-   */
-  parametersChildren?: Children;
-
-  /**
    * Indicates if there are positional arguments (`*args`) in the function
    */
   args?: boolean;
@@ -62,15 +57,13 @@ export interface CallSignatureProps {
  * parameters.
  */
 export function CallSignature(props: CallSignatureProps) {
-  const sParams = props.parametersChildren ?? (
-    <FunctionDeclaration.Parameters
+  const sParams = <FunctionDeclaration.Parameters
       parameters={props.parameters}
       args={props.args}
       kwargs={props.kwargs}
       instanceFunction={props.instanceFunction}
       classFunction={props.classFunction}
-    />
-  );
+    />;
 
   const sReturnType =
     props.returnType ?
