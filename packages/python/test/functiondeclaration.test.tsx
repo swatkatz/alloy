@@ -165,4 +165,39 @@ describe("Function Declaration", () => {
 
     `);
   });
+  it("renders function with Parameters component", () => {
+    const parameters = [
+      { name: "x", type: "int" },
+    ];
+    const decl = (
+      <py.FunctionDeclaration name="foo" instanceFunction={true}>
+        <py.FunctionDeclaration.Parameters parameters={parameters} />
+        self.attribute = "value"
+      </py.FunctionDeclaration>
+    );
+
+    expect(toSourceText(decl)).toBe(d`
+      def foo(self):
+        self.attribute = "value"
+
+    `);
+  });
+  it("renders __init__ function with Parameters component", () => {
+    const parameters = [
+      { name: "self" },
+      { name: "x", type: "int" },
+    ];
+    const decl = (
+      <py.InitFunctionDeclaration>
+        <py.FunctionDeclaration.Parameters parameters={parameters} />
+        self.attribute = "value"
+      </py.InitFunctionDeclaration>
+    );
+
+    expect(toSourceText(decl)).toBe(d`
+      def __init__(self):
+        self.attribute = "value"
+
+    `);
+  });
 });
