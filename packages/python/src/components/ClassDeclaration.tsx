@@ -2,32 +2,22 @@ import {
   Block,
   Children,
   List,
-  MemberDeclaration,
   Name,
   OutputSymbolFlags,
-  Refkey,
   Scope,
   childrenArray,
   refkey,
-  splitProps,
   takeSymbols,
   useContext,
-  useMemberScope,
 } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
-import { PythonOutputScope } from "../symbols/scopes.js";
-import { getCallSignatureProps } from "../utils.js";
-import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import {
   BaseDeclarationProps,
   Declaration,
   DeclarationProps,
 } from "./Declaration.js";
-import { PropertyName } from "./PropertyName.jsx";
 import { SourceFileContext } from "./SourceFile.jsx";
-import { TypeRefContext } from "./TypeRefContext.jsx";
-import { VariableDeclaration } from "./VariableDeclaration.jsx";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   /**
@@ -85,7 +75,7 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
     // Transform emitted symbols into instance/class members
     memberSymbol.flags |= OutputSymbolFlags.InstanceMember;
   });
-  
+
   // Propagate the name after the name policy was applied
   const updatedProps: DeclarationProps = {
     ...props,

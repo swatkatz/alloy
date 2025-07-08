@@ -84,8 +84,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   let scope: OutputScope | undefined = undefined;
   if (memberScope !== undefined) {
     scope = memberScope.instanceMembers!;
-  }
-  else {
+  } else {
     scope = useScope();
   }
 

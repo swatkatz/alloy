@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
 import {
   ClassDeclaration,
-  VariableDeclaration,
   FunctionDeclaration,
+  VariableDeclaration,
 } from "../src/components/index.js";
 import { ParameterDescriptor, SourceFile } from "../src/index.js";
 import { assertFileContents, toSourceText } from "./utils.js";
@@ -229,10 +229,20 @@ describe("with refkeys", () => {
     const template = (
       <py.StatementList>
         <ClassDeclaration name="Model1" refkey={model1Ref}>
-          <VariableDeclaration name="foo" refkey={classMethod1Ref} type="str" omitNone={true} />
+          <VariableDeclaration
+            name="foo"
+            refkey={classMethod1Ref}
+            type="str"
+            omitNone={true}
+          />
         </ClassDeclaration>
         <ClassDeclaration name="Model2" refkey={model2Ref}>
-          <VariableDeclaration name="bar" refkey={classMethod2Ref} type="str" omitNone={true} />
+          <VariableDeclaration
+            name="bar"
+            refkey={classMethod2Ref}
+            type="str"
+            omitNone={true}
+          />
         </ClassDeclaration>
         <py.VariableDeclaration
           name="model1_instance"
@@ -285,7 +295,12 @@ describe("with refkeys", () => {
     const template = (
       <py.StatementList>
         <ClassDeclaration name="Model" refkey={modelRef}>
-          <VariableDeclaration name="bar" refkey={refkey()} type="str" omitNone={true} />
+          <VariableDeclaration
+            name="bar"
+            refkey={refkey()}
+            type="str"
+            omitNone={true}
+          />
         </ClassDeclaration>
         <FunctionDeclaration name="fooFunction" parameters={parameters}>
           <py.StatementList>

@@ -55,7 +55,7 @@ export interface DeclarationProps extends Omit<BaseDeclarationProps, "name"> {
 
 /**
  * A Python declaration, which can be a class, function, variable, etc.
- * 
+ *
  * @remarks
  * This component is used to create a declaration with a symbol that can be
  * referenced in the code. It can also be used to create a member scope for

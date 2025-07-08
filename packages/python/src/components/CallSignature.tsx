@@ -39,9 +39,7 @@ export function CallSignatureParameters(props: CallSignatureParametersProps) {
   }
   // Validate that only one of instanceFunction or classFunction is true
   if (props.instanceFunction && props.classFunction) {
-    throw new Error(
-      "Cannot be both an instance function and a class function",
-    );
+    throw new Error("Cannot be both an instance function and a class function");
   }
 
   const sfContext = useContext(SourceFileContext);
@@ -81,7 +79,7 @@ export function CallSignatureParameters(props: CallSignatureParametersProps) {
       : null}
     </group>
   );
-};
+}
 
 function parameter(param: DeclaredParameterDescriptor) {
   const SymbolSlot = createSymbolSlot();
@@ -226,14 +224,17 @@ export interface CallSignatureProps {
  * parameters.
  */
 export function CallSignature(props: CallSignatureProps) {
-  const sParams = <CallSignatureParameters
+  const sParams = (
+    <CallSignatureParameters
       parameters={props.parameters}
       args={props.args}
       kwargs={props.kwargs}
       instanceFunction={props.instanceFunction}
       classFunction={props.classFunction}
-    />;
-  const typeParams = props.typeParameters ? `[${props.typeParameters.join(", ")}]` : "";
+    />
+  );
+  const typeParams =
+    props.typeParameters ? `[${props.typeParameters.join(", ")}]` : "";
   const sReturnType =
     props.returnType ?
       <>
