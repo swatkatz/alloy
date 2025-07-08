@@ -211,9 +211,6 @@ export function ClassField(props: ClassFieldProps) {
 
 export interface ClassMethodProps extends ClassMemberProps, CallSignatureProps {
   async?: boolean;
-  instanceFunction?: boolean; // true if this is an instance method (defaults to true)
-  classFunction?: boolean; // true if this is a class method
-  children?: Children;
 }
 
 /**

@@ -167,11 +167,17 @@ function normalizeAndDeclareParameters(
 
 export interface CallSignatureProps {
   /**
-   * The parameters to the function. Can be an array of strings for parameters
+   * The parameters to the call signature. Can be an array of strings for parameters
    * which don't have a type or a default value. Otherwise, it's an array of
    * {@link ParameterDescriptor}s.
    */
   parameters?: ParameterDescriptor[] | string[];
+
+  /**
+   * The type parameters of the call signature, e.g. for a generic function.
+   * This is only supported in Python 3.12+.
+   */
+  typeParameters?: string[];
 
   /**
    * Indicates if there are positional arguments (`*args`) in the function
@@ -227,7 +233,7 @@ export function CallSignature(props: CallSignatureProps) {
       instanceFunction={props.instanceFunction}
       classFunction={props.classFunction}
     />;
-
+  const typeParams = props.typeParameters ? `[${props.typeParameters.join(", ")}]` : "";
   const sReturnType =
     props.returnType ?
       <>
@@ -238,7 +244,7 @@ export function CallSignature(props: CallSignatureProps) {
 
   return (
     <>
-      ({sParams}){sReturnType}
+      {typeParams}({sParams}){sReturnType}
     </>
   );
 }

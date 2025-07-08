@@ -18,10 +18,7 @@ export interface FunctionDeclarationProps
   extends BaseDeclarationProps,
     CallSignatureProps {
   async?: boolean;
-  instanceFunction?: boolean; // true if this is an instance method
-  classFunction?: boolean; // true if this is a class method
   forceName?: boolean; // if true, the name will not be transformed by the name policy
-  children?: Children;
 }
 
 /**
@@ -41,37 +38,17 @@ export interface FunctionDeclarationProps
  * def my_function(a: int, b: str) -> int:
  *   return a + b
  * ```
- * 
- * @remarks
- *
- * Providing parameters and type parameters can be accomplished in one of two
- * ways:
- *
- * 1. As an array of {@link ParameterDescriptor}s.
- * 2. As a child of this component via the
- *    {@link (FunctionDeclaration:namespace).Parameters} components.
  */
 export function FunctionDeclaration(props: FunctionDeclarationProps) {
-  const children = childrenArray(() => props.children);
-  // Validate that only one of instanceFunction or classFunction is
-  const filteredChildren = findUnkeyedChildren(children);
-  const returnType = props.returnType;
-
-  const sBody = (
-    <PythonBlock>
-      {children.length > 0 ? filteredChildren : "pass"}
-    </PythonBlock>
-  );
-
   const asyncKwd = props.async ? "async " : "";
-
   let sym: PythonOutputSymbol | undefined = undefined;
+  const callSignatureProps = getCallSignatureProps(props, {});
   if (props.forceName) {
     const sfContext = useContext(SourceFileContext);
     const module = sfContext?.module;
     const name = props.name;
     // Due to forceName, we have to create the symbol here so the name policy isn't applied
-    // at the Declaration class
+    // at the Declaration class; otherwise, the symbol is only created in Declaration.
     sym = new PythonOutputSymbol(name, {
       refkeys: props.refkey,
       flags:
@@ -81,16 +58,16 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
     });
   }
 
-  const callSignatureProps = getCallSignatureProps(props, {});
-
   return (
     <>
       <Declaration {...props} nameKind="function" symbol={sym}>
         {asyncKwd}def <Name />
         <Scope name={props.name} kind="function">
-          <CallSignature {...callSignatureProps} returnType={returnType} />
+          <CallSignature {...callSignatureProps} returnType={props.returnType} />
           {":"}
-          {sBody}
+          <PythonBlock>
+            {props.children ?? "pass"}
+          </PythonBlock>
         </Scope>
       </Declaration>
     </>
