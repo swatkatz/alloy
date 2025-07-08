@@ -214,4 +214,46 @@ describe("Function Declaration", () => {
 
     `);
   });
+
+  it("renders nested functions", () => {
+    const parameters = [{ name: "x", type: "int" }];
+    const parameters_nested = [{ name: "y", type: "int" }];
+    const parameters_nested_nested = [{ name: "z", type: "int" }];
+    const fooRef = refkey();
+    const barRef = refkey();
+    const foobarRef = refkey();
+    const decl = (
+      <py.FunctionDeclaration
+        name="foo"
+        parameters={parameters}
+        refkey={fooRef}
+      >
+        <py.FunctionDeclaration
+          name="bar"
+          parameters={parameters_nested}
+          refkey={barRef}
+        >
+          <py.FunctionDeclaration
+            name="foobar"
+            parameters={parameters_nested_nested}
+            refkey={foobarRef}
+          >
+            return z * 2
+          </py.FunctionDeclaration>
+          return <py.FunctionCallExpression target={foobarRef} args={[<py.Value jsValue={2} />]} />
+        </py.FunctionDeclaration>
+        return <py.FunctionCallExpression target={barRef} args={[<py.Value jsValue={3} />]} />
+      </py.FunctionDeclaration>
+    );
+
+    expect(toSourceText(decl)).toBe(d`
+      def foo(x: int):
+        def bar(y: int):
+          def foobar(z: int):
+            return z * 2
+          return foobar(2)
+        return bar(3)
+
+    `);
+  });
 });
