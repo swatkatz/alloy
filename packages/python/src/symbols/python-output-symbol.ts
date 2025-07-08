@@ -15,9 +15,10 @@ export enum PythonSymbolFlags {
   FunctionSymbol = 1 << 2, // def >func<()
   ParameterSymbol = 1 << 3, // def foo(>x<):
   InstanceMember = 1 << 4, // self.>value< = 42
-  StaticMember = 1 << 5, // @staticmethod / @classFunction decorated methods or class variables
-  PrivateMember = 1 << 6, // _hidden or __hidden__-named variables
-  Nullish = 1 << 7, // >foo<: Optional[str] = None
+  NonInstanceScopeMember = 1 << 5, // >value< = 42, but inside a member scope
+  StaticMember = 1 << 6, // @staticmethod / @classFunction decorated methods or class variables
+  PrivateMember = 1 << 7, // _hidden or __hidden__-named variables
+  Nullish = 1 << 8, // >foo<: Optional[str] = None
 }
 
 export interface CreatePythonSymbolOptions extends OutputSymbolOptions {

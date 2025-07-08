@@ -1,10 +1,10 @@
-import { code, Output, refkey, render } from "@alloy-js/core";
+import { code, memberRefkey, Output, refkey, render } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
 import {
   ClassDeclaration,
-  ClassField,
+  VariableDeclaration,
   FunctionDeclaration,
 } from "../src/components/index.js";
 import { ParameterDescriptor, SourceFile } from "../src/index.js";
@@ -219,6 +219,62 @@ describe("with refkeys", () => {
       `);
   });
 
+  it("Correctly resolves member expressions from 2 different classes", () => {
+    const model1Ref = refkey();
+    const model2Ref = refkey();
+    const classMethod1Ref = refkey();
+    const classMethod2Ref = refkey();
+    const v1Rk = refkey();
+    const v2Rk = refkey();
+    const template = (
+      <py.StatementList>
+        <ClassDeclaration name="Model1" refkey={model1Ref}>
+          <VariableDeclaration name="foo" refkey={classMethod1Ref} type="str" omitNone={true} />
+        </ClassDeclaration>
+        <ClassDeclaration name="Model2" refkey={model2Ref}>
+          <VariableDeclaration name="bar" refkey={classMethod2Ref} type="str" omitNone={true} />
+        </ClassDeclaration>
+        <py.VariableDeclaration
+          name="model1_instance"
+          refkey={v1Rk}
+          type={model1Ref}
+          initializer={
+            <py.MemberExpression>
+              <py.MemberExpression.Part refkey={model1Ref} />
+              <py.MemberExpression.Part args />
+            </py.MemberExpression>
+          }
+        />
+        <py.VariableDeclaration
+          name="model2_instance"
+          refkey={v2Rk}
+          type={model2Ref}
+          initializer={
+            <py.MemberExpression>
+              <py.MemberExpression.Part refkey={model2Ref} />
+              <py.MemberExpression.Part args />
+            </py.MemberExpression>
+          }
+        />
+        <>{memberRefkey(v1Rk, classMethod1Ref)}</>
+        <>{memberRefkey(v2Rk, classMethod2Ref)}</>
+      </py.StatementList>
+    );
+
+    expect(toSourceText(template)).toBe(d`
+      class Model1:
+        foo: str
+
+      class Model2:
+        bar: str
+
+      model1_instance: Model1 = Model1()
+      model2_instance: Model2 = Model2()
+      model1_instance.foo
+      model2_instance.bar
+    `);
+  });
+
   it("handles optional parameters correctly", () => {
     const fooRef = refkey();
     const modelRef = refkey();
@@ -229,7 +285,7 @@ describe("with refkeys", () => {
     const template = (
       <py.StatementList>
         <ClassDeclaration name="Model" refkey={modelRef}>
-          <ClassField name="bar" refkey={refkey()} type="str" />
+          <VariableDeclaration name="bar" refkey={refkey()} type="str" omitNone={true} />
         </ClassDeclaration>
         <FunctionDeclaration name="fooFunction" parameters={parameters}>
           <py.StatementList>
@@ -264,24 +320,32 @@ describe("with refkeys", () => {
     const classRefkey = refkey();
     const interfaceRefkey = refkey();
     const interfaceMemberRefkey = refkey();
+    const classMethodRefkey = refkey();
     const classMemberRefkey = refkey();
     const instanceRefkey = refkey();
     expect(
       toSourceText(
         <py.StatementList>
           <ClassDeclaration name="Bar" refkey={interfaceRefkey}>
-            <ClassField
+            <VariableDeclaration
               name="prop1"
               refkey={interfaceMemberRefkey}
               type={"str"}
+              omitNone={true}
             />
           </ClassDeclaration>
           <ClassDeclaration name="Foo" refkey={classRefkey}>
-            <ClassField
+            <VariableDeclaration
               name="test1"
               refkey={classMemberRefkey}
               type={interfaceRefkey}
-              nullish
+            />
+            <br />
+            <FunctionDeclaration
+              name="testMethod"
+              parameters={[]}
+              refkey={classMethodRefkey}
+              returnType={interfaceRefkey}
             />
           </ClassDeclaration>
           <py.VariableDeclaration
@@ -294,6 +358,11 @@ describe("with refkeys", () => {
             <py.MemberExpression.Part refkey={classMemberRefkey} />
             <py.MemberExpression.Part refkey={interfaceMemberRefkey} />
           </py.MemberExpression>
+          <py.MemberExpression>
+            <py.MemberExpression.Part refkey={instanceRefkey} />
+            <py.MemberExpression.Part refkey={classMethodRefkey} />
+            <py.MemberExpression.Part args={[]} />
+          </py.MemberExpression>
         </py.StatementList>,
       ),
     ).toBe(d`
@@ -302,9 +371,13 @@ describe("with refkeys", () => {
 
        class Foo:
          test1: Bar = None
+         def test_method() -> Bar:
+           pass
+
 
        inst = Foo()
        inst.test1.prop1
+       inst.test_method()
     `);
   });
 

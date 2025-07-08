@@ -2,12 +2,16 @@ import {
   Children,
   Declaration as CoreDeclaration,
   Name,
+  OutputScope,
   OutputSymbolFlags,
   createSymbolSlot,
   effect,
+  emitSymbol,
   memo,
   refkey,
   useContext,
+  useMemberScope,
+  useScope,
 } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
@@ -76,11 +80,22 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   const sfContext = useContext(SourceFileContext);
   const module = sfContext?.module;
   const name = usePythonNamePolicy().getName(props.name, "variable");
+  const memberScope = useMemberScope();
+  let scope: OutputScope | undefined = undefined;
+  if (memberScope !== undefined) {
+    scope = memberScope.instanceMembers!;
+  }
+  else {
+    scope = useScope();
+  }
+
   const sym = new PythonOutputSymbol(name, {
+    scope: scope,
     refkeys: props.refkey ?? refkey(name!),
     module: module,
     pythonFlags: PythonSymbolFlags.None,
   });
+  emitSymbol(sym);
   // Handle optional type annotation
   const type =
     props.type && !props.callStatementVar ?
@@ -138,7 +153,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
     return [
       renderRightSideOperator,
       <ValueTypeSymbolSlot>
-        <Value jsValue={value ?? props.children} />
+        <Value jsValue={value} />
       </ValueTypeSymbolSlot>,
     ];
   };

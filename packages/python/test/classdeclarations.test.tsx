@@ -165,7 +165,7 @@ describe("Python Class", () => {
   });
 });
 
-describe("Python Class - ClassField", () => {
+describe("Python Class - VariableDeclaration", () => {
   it("renders a class with class fields", () => {
     const result = toSourceText(
       <>
@@ -174,15 +174,14 @@ describe("Python Class - ClassField", () => {
         <hbr />
         <py.ClassDeclaration name="A">
           <py.StatementList>
-            <py.ClassField name="just_name" />
-            <py.ClassField name="name_and_type" type="number" />
-            <py.ClassField
+            <py.VariableDeclaration name="just_name" />
+            <py.VariableDeclaration name="name_and_type" type="number" />
+            <py.VariableDeclaration
               name="name_type_and_value"
               type="number"
               initializer={12}
             />
-            <py.ClassField name="class_based" type={refkey("Base")} nullish />
-            <py.ClassField name="with_children">24</py.ClassField>
+            <py.VariableDeclaration name="class_based" type={refkey("Base")} />
           </py.StatementList>
         </py.ClassDeclaration>
       </>,
@@ -193,32 +192,20 @@ describe("Python Class - ClassField", () => {
 
 
       class A:
-        just_name
-        name_and_type: number
+        just_name = None
+        name_and_type: number = None
         name_type_and_value: number = 12
         class_based: Base = None
-        with_children = 24
 
 
     `;
     expect(result).toRenderTo(expected);
   });
 
-  it("raises an error if children are provided with an initializer for a class field", () => {
-    expect(() => toSourceText(
-      <>
-        <py.ClassDeclaration name="A">
-          <py.StatementList>
-            <py.ClassField name="field" initializer={12}>24</py.ClassField>
-          </py.StatementList>
-        </py.ClassDeclaration>
-      </>,
-    )).toThrowError("You can either provide 'children' or 'initializer', not both.");
-  });
-
   it("correctly access members of its type", () => {
     const classRk = refkey();
     const classMemberRk = refkey();
+    const classMethodRk = refkey();
     const v1Rk = refkey();
 
     const res = render(
@@ -237,14 +224,19 @@ describe("Python Class - ClassField", () => {
               }
             />
             <>{memberRefkey(v1Rk, classMemberRk)}</>
+            <>{memberRefkey(v1Rk, classMethodRk)}()</>
           </py.StatementList>
         </py.SourceFile>
         <py.SourceFile path="decl.py">
           <py.ClassDeclaration name="Bar" refkey={classRk}>
             <py.StatementList>
-              <py.ClassField name="instanceProp" refkey={classMemberRk}>
-                42
-              </py.ClassField>
+              <py.VariableDeclaration name="instanceProp" refkey={classMemberRk} initializer={42} />
+              <py.FunctionDeclaration
+                name="instanceMethod"
+                instanceFunction={true}
+                refkey={classMethodRk}
+                returnType="int"
+              />
             </py.StatementList>
           </py.ClassDeclaration>
         </py.SourceFile>
@@ -257,57 +249,62 @@ describe("Python Class - ClassField", () => {
 
         one: Bar = Bar()
         one.instanceProp
+        one.instanceMethod()
       `,
       "decl.py": `
         class Bar:
           instanceProp = 42
+          def instanceMethod(self) -> int:
+            pass
+
 
       `,
     });
   });
 });
 
-describe("Python Class - ClassMethod", () => {
+describe("Python Class - FunctionDeclaration", () => {
   it("renders a class with class fields and method", () => {
     const result = toSourceText(
       <>
         <py.ClassDeclaration name="MyClass" bases={["BaseClass"]}>
           <py.StatementList>
-            <py.ClassField name="a" type="int" />
-            <py.ClassField name="b" type="int" />
-            <py.ClassMethod
+            <py.VariableDeclaration name="a" type="int" />
+            <py.VariableDeclaration name="b" type="int" />
+            <py.FunctionDeclaration
               name="my_method"
               parameters={[
                 { name: "a", type: "int" },
                 { name: "b", type: "int" },
               ]}
               returnType="int"
+              instanceFunction={true}
             >
               return a + b
-            </py.ClassMethod>
-            <py.ClassMethod
+            </py.FunctionDeclaration>
+            <py.FunctionDeclaration
               name="my_class_method"
               instanceFunction={false}
               classFunction={true}
               returnType="int"
             >
               pass
-            </py.ClassMethod>
-            <py.ClassMethod
+            </py.FunctionDeclaration>
+            <py.FunctionDeclaration
               name="my_standalone_function"
               instanceFunction={false}
               returnType="int"
             >
               pass
-            </py.ClassMethod>
+            </py.FunctionDeclaration>
           </py.StatementList>
         </py.ClassDeclaration>
       </>,
     );
     const expected = d`
       class MyClass(BaseClass):
-        a: int
-        b: int
+        a: int = None
+        b: int = None
         def my_method(self, a: int, b: int) -> int:
           return a + b
 
