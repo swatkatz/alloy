@@ -11,6 +11,7 @@ export function getCallSignatureProps(
 ) {
   const [callSignatureProps] = splitProps(props, [
     "parameters",
+    "typeParameters",
     "args",
     "kwargs",
     "instanceFunction",

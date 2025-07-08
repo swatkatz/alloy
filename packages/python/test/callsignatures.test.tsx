@@ -89,6 +89,14 @@ describe("Call Signature", () => {
       (a, b, *args, **kwargs)
     `);
   });
+  it("renders a simple call signature with type parameters", () => {
+    const result = toSourceText(
+      <py.CallSignature parameters={["a", "b"]} typeParameters={["T", "U"]} />,
+    );
+    expect(result).toRenderTo(d`
+      [T, U](a, b)
+    `);
+  });
   it("renders a simple call signature with return type", () => {
     const result = toSourceText(
       <py.CallSignature parameters={["a", "b"]} returnType="int" />,
@@ -220,6 +228,7 @@ describe("Call Signature - Parameter Descriptors", () => {
   it("renders a more complex call signature with parameter descriptors", () => {
     const result = toSourceText(
       <py.CallSignature
+        typeParameters={["T", "U"]}
         parameters={[
           { name: "a", type: "int" },
           { name: "b", type: "str", default: "default_value" },
@@ -228,7 +237,7 @@ describe("Call Signature - Parameter Descriptors", () => {
       />,
     );
     expect(result).toRenderTo(d`
-      (a: int, b: str = "default_value") -> int
+      [T, U](a: int, b: str = "default_value") -> int
     `);
   });
 });

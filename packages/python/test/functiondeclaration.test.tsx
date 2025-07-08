@@ -165,6 +165,19 @@ describe("Function Declaration", () => {
 
     `);
   });
+  it("supports type parameters", () => {
+    const decl = (
+      <py.FunctionDeclaration name="foo" parameters={["a", "b"]} typeParameters={["T", "U"]}>
+        return a + b
+      </py.FunctionDeclaration>
+    );
+
+    expect(toSourceText(decl)).toBe(d`
+      def foo[T, U](a, b):
+        return a + b
+
+    `);
+  });
   it("renders function with Parameters component", () => {
     const parameters = [
       { name: "x", type: "int" },
