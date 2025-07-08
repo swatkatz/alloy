@@ -1,10 +1,14 @@
 import {
   childrenArray,
+  emitSymbol,
   findUnkeyedChildren,
   Name,
+  OutputScope,
   OutputSymbolFlags,
   Scope,
   useContext,
+  useMemberScope,
+  useScope,
   type Children,
 } from "@alloy-js/core";
 import { PythonOutputSymbol } from "../symbols/index.js";
@@ -13,6 +17,7 @@ import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import { BaseDeclarationProps, Declaration } from "./Declaration.js";
 import { SourceFileContext } from "./SourceFile.js";
 import { PythonBlock } from "./PythonBlock.jsx";
+import { usePythonNamePolicy } from "../name-policy.js";
 
 export interface FunctionDeclarationProps
   extends BaseDeclarationProps,
@@ -43,20 +48,29 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
   const asyncKwd = props.async ? "async " : "";
   let sym: PythonOutputSymbol | undefined = undefined;
   const callSignatureProps = getCallSignatureProps(props, {});
-  if (props.forceName) {
-    const sfContext = useContext(SourceFileContext);
-    const module = sfContext?.module;
-    const name = props.name;
-    // Due to forceName, we have to create the symbol here so the name policy isn't applied
-    // at the Declaration class; otherwise, the symbol is only created in Declaration.
-    sym = new PythonOutputSymbol(name, {
-      refkeys: props.refkey,
-      flags:
-        (props.flags ?? OutputSymbolFlags.None) |
-        OutputSymbolFlags.MemberContainer,
-      module: module,
-    });
+  const sfContext = useContext(SourceFileContext);
+  const module = sfContext?.module;
+  let name = usePythonNamePolicy().getName(props.name, "function");
+  const memberScope = useMemberScope();
+  let scope: OutputScope | undefined = undefined;
+  if (memberScope !== undefined) {
+    scope = memberScope.instanceMembers!;
   }
+  else {
+    scope = useScope();
+  }
+  
+  if (props.forceName) {
+    name = props.name;
+  }
+  sym = new PythonOutputSymbol(name, {
+    scope: scope,
+    refkeys: props.refkey,
+    flags:
+      (props.flags ?? OutputSymbolFlags.None),
+    module: module,
+  });
+  emitSymbol(sym);
 
   return (
     <>
