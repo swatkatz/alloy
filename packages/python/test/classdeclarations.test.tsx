@@ -230,7 +230,11 @@ describe("Python Class - VariableDeclaration", () => {
         <py.SourceFile path="decl.py">
           <py.ClassDeclaration name="Bar" refkey={classRk}>
             <py.StatementList>
-              <py.VariableDeclaration name="instanceProp" refkey={classMemberRk} initializer={42} />
+              <py.VariableDeclaration
+                name="instanceProp"
+                refkey={classMemberRk}
+                initializer={42}
+              />
               <py.FunctionDeclaration
                 name="instanceMethod"
                 instanceFunction={true}

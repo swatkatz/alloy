@@ -167,7 +167,11 @@ describe("Function Declaration", () => {
   });
   it("supports type parameters", () => {
     const decl = (
-      <py.FunctionDeclaration name="foo" parameters={["a", "b"]} typeParameters={["T", "U"]}>
+      <py.FunctionDeclaration
+        name="foo"
+        parameters={["a", "b"]}
+        typeParameters={["T", "U"]}
+      >
         return a + b
       </py.FunctionDeclaration>
     );
@@ -179,11 +183,13 @@ describe("Function Declaration", () => {
     `);
   });
   it("renders function with Parameters component", () => {
-    const parameters = [
-      { name: "x", type: "int" },
-    ];
+    const parameters = [{ name: "x", type: "int" }];
     const decl = (
-      <py.FunctionDeclaration name="foo" instanceFunction={true} parameters={parameters}>
+      <py.FunctionDeclaration
+        name="foo"
+        instanceFunction={true}
+        parameters={parameters}
+      >
         self.attribute = "value"
       </py.FunctionDeclaration>
     );
@@ -195,9 +201,7 @@ describe("Function Declaration", () => {
     `);
   });
   it("renders __init__ function with Parameters component", () => {
-    const parameters = [
-      { name: "x", type: "int" },
-    ];
+    const parameters = [{ name: "x", type: "int" }];
     const decl = (
       <py.InitFunctionDeclaration parameters={parameters}>
         self.attribute = "value"

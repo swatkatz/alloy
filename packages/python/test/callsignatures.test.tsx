@@ -14,7 +14,9 @@ describe("Call Signature Parameters", () => {
   });
   it("renders ParameterDescriptor parameters", () => {
     const result = toSourceText(
-      <py.CallSignatureParameters parameters={[{ name: "a" }, { name: "b" }]} />,
+      <py.CallSignatureParameters
+        parameters={[{ name: "a" }, { name: "b" }]}
+      />,
     );
     expect(result).toRenderTo(d`
       a, b

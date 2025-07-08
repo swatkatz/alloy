@@ -1,7 +1,5 @@
 import {
-  childrenArray,
   emitSymbol,
-  findUnkeyedChildren,
   Name,
   OutputScope,
   OutputSymbolFlags,
@@ -9,15 +7,14 @@ import {
   useContext,
   useMemberScope,
   useScope,
-  type Children,
 } from "@alloy-js/core";
+import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
 import { getCallSignatureProps } from "../utils.js";
 import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import { BaseDeclarationProps, Declaration } from "./Declaration.js";
-import { SourceFileContext } from "./SourceFile.js";
 import { PythonBlock } from "./PythonBlock.jsx";
-import { usePythonNamePolicy } from "../name-policy.js";
+import { SourceFileContext } from "./SourceFile.js";
 
 export interface FunctionDeclarationProps
   extends BaseDeclarationProps,
@@ -55,19 +52,17 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
   let scope: OutputScope | undefined = undefined;
   if (memberScope !== undefined) {
     scope = memberScope.instanceMembers!;
-  }
-  else {
+  } else {
     scope = useScope();
   }
-  
+
   if (props.forceName) {
     name = props.name;
   }
   sym = new PythonOutputSymbol(name, {
     scope: scope,
     refkeys: props.refkey,
-    flags:
-      (props.flags ?? OutputSymbolFlags.None),
+    flags: props.flags ?? OutputSymbolFlags.None,
     module: module,
   });
   emitSymbol(sym);
@@ -77,11 +72,12 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
       <Declaration {...props} nameKind="function" symbol={sym}>
         {asyncKwd}def <Name />
         <Scope name={props.name} kind="function">
-          <CallSignature {...callSignatureProps} returnType={props.returnType} />
+          <CallSignature
+            {...callSignatureProps}
+            returnType={props.returnType}
+          />
           {":"}
-          <PythonBlock>
-            {props.children ?? "pass"}
-          </PythonBlock>
+          <PythonBlock>{props.children ?? "pass"}</PythonBlock>
         </Scope>
       </Declaration>
     </>
@@ -102,7 +98,7 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
  * def __init__(self: MyClass) -> None:
  *     self.attribute = "value"
  * ```
- * 
+ *
  * @remarks
  *
  * This is a convenience component that sets the name to `__init__`, marks it as
