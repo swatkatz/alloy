@@ -3,7 +3,6 @@ export * from "./ClassDeclaration.js";
 export * from "./Declaration.js";
 export * from "./EnumDeclaration.js";
 export * from "./EnumMember.js";
-export * from "./FunctionBase.js";
 export * from "./FunctionCallExpression.js";
 export * from "./FunctionDeclaration.js";
 export * from "./ImportStatement.js";

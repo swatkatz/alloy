@@ -59,9 +59,9 @@ it("renders a function with parameters", () => {
   );
 });
 
-it("correct formatting of instance parameters names", () => {
+it("correct formatting of call signature parameters names", () => {
   const result = toSourceText(
-    <py.FunctionParameters
+    <py.CallSignatureParameters
       parameters={[
         { name: "this-is-a-number", type: "int" },
         {

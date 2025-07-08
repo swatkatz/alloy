@@ -1,6 +1,5 @@
 import {
   childrenArray,
-  findKeyedChild,
   findUnkeyedChildren,
   Name,
   OutputSymbolFlags,
@@ -12,7 +11,6 @@ import { PythonOutputSymbol } from "../symbols/index.js";
 import { getCallSignatureProps } from "../utils.js";
 import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import { BaseDeclarationProps, Declaration } from "./Declaration.js";
-import { FunctionParameters } from "./FunctionBase.jsx";
 import { SourceFileContext } from "./SourceFile.js";
 import { PythonBlock } from "./PythonBlock.jsx";
 
@@ -31,14 +29,11 @@ export interface FunctionDeclarationProps
  *
  * @example
  * ```tsx
- * <FunctionDeclaration name="my_function" returnType="int">
- *   <FunctionDeclaration.Parameters>
- *     <Parameter name="a" type="int" />
- *     <Parameter name="b" type="str" />
- *   </FunctionDeclaration.Parameters>
- *   <FunctionDeclaration.Body>
- *     return a + b
- *   </FunctionDeclaration.Body>
+ * <FunctionDeclaration
+ *  name="my_function"
+ *  returnType="int"
+ *  parameters=[{name: "a", type: "int"},{name: "b", type: "str"}]>
+ *   return a + b
  * </FunctionDeclaration>
  * ```
  * This will generate:
@@ -102,20 +97,13 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
   );
 }
 
-FunctionDeclaration.Parameters = FunctionParameters;
-
 /**
  * A Python `__init__` function declaration.
  *
  * @example
  * ```tsx
  * <InitFunctionDeclaration>
- *   <FunctionDeclaration.Parameters>
- *     <Parameter name="self" type="MyClass" />
- *   </FunctionDeclaration.Parameters>
- *   <FunctionDeclaration.Body>
- *     self.attribute = "value"
- *   </FunctionDeclaration.Body>
+ *   self.attribute = "value"
  * </InitFunctionDeclaration>
  * ```
  * This will generate:
