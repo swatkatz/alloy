@@ -170,32 +170,29 @@ describe("Function Declaration", () => {
       { name: "x", type: "int" },
     ];
     const decl = (
-      <py.FunctionDeclaration name="foo" instanceFunction={true}>
-        <py.FunctionDeclaration.Parameters parameters={parameters} />
+      <py.FunctionDeclaration name="foo" instanceFunction={true} parameters={parameters}>
         self.attribute = "value"
       </py.FunctionDeclaration>
     );
 
     expect(toSourceText(decl)).toBe(d`
-      def foo(self):
+      def foo(self, x: int):
         self.attribute = "value"
 
     `);
   });
   it("renders __init__ function with Parameters component", () => {
     const parameters = [
-      { name: "self" },
       { name: "x", type: "int" },
     ];
     const decl = (
-      <py.InitFunctionDeclaration>
-        <py.FunctionDeclaration.Parameters parameters={parameters} />
+      <py.InitFunctionDeclaration parameters={parameters}>
         self.attribute = "value"
       </py.InitFunctionDeclaration>
     );
 
     expect(toSourceText(decl)).toBe(d`
-      def __init__(self):
+      def __init__(self, x: int):
         self.attribute = "value"
 
     `);
