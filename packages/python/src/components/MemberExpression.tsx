@@ -1,6 +1,7 @@
 import {
   Children,
   childrenArray,
+  code,
   computed,
   For,
   isComponentCreator,
@@ -22,17 +23,29 @@ interface PartDescriptorWithId extends PartDescriptorBase {
   id: Children;
 }
 
-interface PartDescriptorWithIndex extends PartDescriptorBase {
-  index: number;
-}
-interface PartDescriptorBase {
-  accessStyle: "dot" | "bracket";
-  hasChildren: boolean;
-  mapAccess: boolean;
-  args?: Children[];
+interface PartDescriptorWithKey extends PartDescriptorBase {
+  key: Children;
 }
 
-type PartDescriptor = PartDescriptorWithId | PartDescriptorWithIndex;
+interface PartDescriptorWithKeys extends PartDescriptorBase {
+  keys: Children[];
+}
+
+interface PartDescriptorWithSlice extends PartDescriptorBase {
+  slice: {
+    start?: Children;
+    stop?: Children; 
+    step?: Children;
+  };
+}
+
+interface PartDescriptorBase {
+  accessStyle: "dot" | "bracket";
+  args?: Children[];
+  quoted: boolean;
+}
+
+type PartDescriptor = PartDescriptorWithId | PartDescriptorWithKey | PartDescriptorWithKeys | PartDescriptorWithSlice;
 
 /**
  * Create a member expression from parts. Each part can provide one of
@@ -43,11 +56,6 @@ type PartDescriptor = PartDescriptorWithId | PartDescriptorWithIndex;
  * * **symbol**: a symbol whose name becomes the identifier part
  * * **args**: create a method call with the given args
  * * **children**: arbitrary contents for the identifier part.
- *
- * Each part can also have a mapAccess prop, which indicates that the identifier
- * of the part should be quoted (i.e. `["foo"]` instead of `.foo`). This is only
- * necessary when providing the children prop, otherwise it is determined
- * automatically.
  *
  * @example
  *
@@ -69,7 +77,7 @@ type PartDescriptor = PartDescriptorWithId | PartDescriptorWithIndex;
  * ```
  */
 export function MemberExpression(props: MemberExpressionProps): Children {
-  const children = flattenMemberExpression(childrenArray(() => props.children));
+  const children = childrenArray(() => props.children);
   const parts = childrenToPartDescriptors(children);
   // any symbols emitted from the children won't be relevant to
   // parent scopes. TODO: emit the proper symbol if we know it?
@@ -78,15 +86,6 @@ export function MemberExpression(props: MemberExpressionProps): Children {
   if (parts.length === 0) {
     return <></>;
   }
-
-  const isCallChain = computed(() => {
-    let callCount = 0;
-    for (const part of parts) {
-      if (part.args !== undefined) callCount++;
-    }
-
-    return callCount > 1;
-  });
 
   // construct a member expression from the parts. accessStyle determines
   // whether we use dot or bracket notation.
@@ -116,11 +115,13 @@ function childrenToPartDescriptors(children: Children[]): PartDescriptor[] {
 }
 
 const exclusiveParts: (keyof MemberExpressionPartProps)[] = [
-  "children",
   "args",
   "refkey",
   "symbol",
   "id",
+  "key",
+  "keys",
+  "slice",
 ];
 /**
  * Creates a reactive part descriptor from the given part props.
@@ -155,10 +156,8 @@ function createPartDescriptorFromProps(
 
   const part: ToRefs<PartDescriptor> = {
     id: computed(() => {
-      if (partProps.args) {
+      if (partProps.key !== undefined || partProps.keys !== undefined || partProps.slice !== undefined) {
         return undefined;
-      } else if (partProps.children !== undefined) {
-        return partProps.children;
       } else if (first && partProps.refkey) {
         return partProps.refkey;
       } else if (partProps.id !== undefined) {
@@ -166,8 +165,6 @@ function createPartDescriptorFromProps(
           throw new Error(`Invalid identifier: ${partProps.id}`);
         }
         return partProps.id;
-      } else if (partProps.index !== undefined) {
-        return partProps.index;
       } else if (symbolSource.value) {
         return symbolSource.value.name;
       } else {
@@ -175,37 +172,42 @@ function createPartDescriptorFromProps(
       }
     }),
     accessStyle: computed(() => {
-      if (partProps.children !== undefined) {
-        if (typeof partProps.children === "string") {
-          return partProps.mapAccess ? "bracket" : "dot";
-        }
-
-        return "bracket";
-      } else if (partProps.args) {
-        // not used
-        return "dot";
-      } else if (partProps.mapAccess) {
-        return "bracket";
-      } else if (partProps.id !== undefined) {
-        return "dot";
-      } else if (partProps.index !== undefined) {
-        return "bracket";
+      if (partProps.key !== undefined || partProps.keys !== undefined || partProps.slice !== undefined) {
+        return "bracket"
       } else {
         return "dot";
       }
     }),
-    hasChildren: computed(() => {
-      if (partProps.children !== undefined) {
+    key: computed(() => {
+      if (partProps.key !== undefined) {
+        return partProps.key;
+      } else {
+        return undefined;
+      }
+    }),
+    keys: computed(() => {
+      if (partProps.keys !== undefined) {
+        return partProps.keys;
+      } else {
+        return [];
+      }
+    }),
+    slice: computed(() => {
+      if (partProps.slice !== undefined) {
+        return {
+          start: partProps.slice.start,
+          stop: partProps.slice.stop,
+          step: partProps.slice.step,
+        };
+      } else {
+        return {};
+      }
+    }),
+    quoted: computed(() => {
+      if (typeof partProps.key === "string") {
         return true;
       }
       return false;
-    }),
-    mapAccess: computed(() => {
-      if (partProps.mapAccess) {
-        return partProps.mapAccess;
-      } else {
-        return false;
-      }
     }),
     args: ref<any>(partProps.args === true ? [] : partProps.args),
   };
@@ -230,9 +232,13 @@ function formatChain(parts: PartDescriptor[]): Children {
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
-      const base = isIdPartDescriptor(part) ? part.id : part.index;
       if (i === 0) {
-        expression.push(base);
+        if (!isIdPartDescriptor(part)) {
+          throw new Error(
+            "The first part of a MemberExpression must be an id or refkey",
+          );
+        }
+        expression.push(part.id);
       } else {
         if (part.args !== undefined) {
           // For parts with only args (no name), append function call directly
@@ -260,9 +266,9 @@ function formatArrayAccess(part: PartDescriptor) {
       {""}[
       <indent>
         <sbr />
-        {part.mapAccess && !part.hasChildren && '"'}
-        {isIdPartDescriptor(part) ? part.id : part.index}
-        {part.mapAccess && !part.hasChildren && '"'}
+        { part.quoted && '"' }
+        { getBaseValue(part) }
+        { part.quoted && '"' }
       </indent>
       <sbr />]
     </group>
@@ -280,7 +286,7 @@ function formatDotAccess(part: PartDescriptor) {
         <ifBreak> \</ifBreak>
         <sbr />
         {"."}
-        {isIdPartDescriptor(part) ? part.id : part.index}
+        { getBaseValue(part) }
       </indent>
     </group>
   );
@@ -312,40 +318,34 @@ function formatCallExpr(part: PartDescriptor) {
   );
 }
 
-/**
- * Flattens a member expression by recursively expanding MemberExpression
- * components and collecting their children.
- */
-function flattenMemberExpression(children: Children[]): Children[] {
-  const flattened: Children[] = [];
-  for (const child of children) {
-    if (isComponentCreator(child, MemberExpression)) {
-      flattened.push(
-        ...flattenMemberExpression(childrenArray(() => child.props.children)),
-      );
-    } else {
-      flattened.push(child);
-    }
-  }
-  return flattened;
-}
-
 export interface MemberExpressionPartProps {
   /**
-   * The identifier for this part of the member expression.
+   * The identifier for attribute access (obj.attr).
+   * Use this for Python attribute references.
    */
   id?: string | number;
 
   /**
-   * The index for this part of the member expression. This is used when
-   * the part is an array access (i.e. `foo[0]`).
+   * Single key for subscription access (obj[key] or obj[0]).
+   * Use this for single subscription access.
    */
-  index?: number;
+  key?: Children;
 
   /**
-   * Whether the identifier is the key of a map.
+   * Multiple keys for tuple subscription access (obj[a, b] -> obj[(a, b)]).
+   * Use this when you need tuple key access.
    */
-  mapAccess?: boolean;
+  keys?: Children[];
+
+  /**
+   * Slice notation for subscription access (obj[start:stop:step]).
+   * Use this for Python slice syntax.
+   */
+  slice?: {
+    start?: Children;
+    stop?: Children; 
+    step?: Children;
+  };
 
   /**
    * A refkey for a symbol whose name becomes the identifier.
@@ -361,11 +361,6 @@ export interface MemberExpressionPartProps {
    * Arguments to construct a call expression.
    */
   args?: Children[] | boolean;
-
-  /**
-   * The contents of this part. When passed, overrides the other props.
-   */
-  children?: Children;
 }
 /**
  * A part of a member expression. Each part can provide one of the following
@@ -375,12 +370,6 @@ export interface MemberExpressionPartProps {
  * * **refkey**: A refkey for a symbol whose name becomes the identifier
  * * **symbol**: a symbol whose name becomes the identifier part
  * * **args**: create a method call with the given args
- * * **children**: arbitrary contents for the identifier part.
- *
- * Each part can also have a mapAccess prop, which indicates that we
- * are trying to access a map key, and the identifier should be quoted.
- * Finally, there's the index prop, which is used when the part is an
- * array access (i.e. `foo[0]`).
  */
 MemberExpression.Part = function (props: MemberExpressionPartProps) {
   /**
@@ -399,5 +388,72 @@ function isValidIdentifier(id: Children) {
 function isIdPartDescriptor(
   part: PartDescriptor,
 ): part is PartDescriptorWithId {
-  return "id" in part;
+  return "id" in part && part.id !== undefined;
+}
+
+function isKeyPartDescriptor(
+  part: PartDescriptor,
+): part is PartDescriptorWithKey {
+  return "key" in part && part.key !== undefined;
+}
+
+function isKeysPartDescriptor(
+  part: PartDescriptor,
+): part is PartDescriptorWithKeys {
+  return "keys" in part && part.keys !== undefined && part.keys.length > 0;
+}
+
+function isSlicePartDescriptor(
+  part: PartDescriptor,
+): part is PartDescriptorWithSlice {
+  return (
+    "slice" in part &&
+    part.slice !== undefined &&
+    Object.keys(part.slice).length > 0
+  );
+}
+
+function getNameForRefkey(refkey: Children): Children {
+  const parsedValue = getSymbolForRefkey(refkey as Refkey).value;
+  return parsedValue !== undefined ? parsedValue.name : refkey;
+}
+
+function getBaseValue(part: PartDescriptor): Children | undefined {
+  if (isIdPartDescriptor(part)) {
+    return part.id;
+  }
+  if (isKeyPartDescriptor(part)) {
+    return getNameForRefkey(part.key as Refkey);
+  }
+  if (isKeysPartDescriptor(part)) {
+    let parsedKeys = [];
+    for (const key of part.keys) {
+      parsedKeys.push(getNameForRefkey(key as Refkey));
+    }
+    return code`${parsedKeys.join(", ")}`;
+  }
+  if (isSlicePartDescriptor(part)) {
+    let parts = [];
+    if (part.slice.start !== undefined) {
+      parts.push(getNameForRefkey(part.slice.start as Refkey));
+      parts.push(":");
+    }
+    if (part.slice.stop !== undefined) {
+      if (part.slice.start === undefined) {
+        parts.push(":");
+      }
+      parts.push(getNameForRefkey(part.slice.stop as Refkey));
+    }
+    if (part.slice.step !== undefined) {
+      if (part.slice.start === undefined && part.slice.stop === undefined) {
+        parts.push(":");
+        parts.push(":");
+      }
+      else {
+        parts.push(":");
+      }
+      parts.push(getNameForRefkey(part.slice.step as Refkey));
+    }
+    return code`${parts.join("")}`;
+  }
 }

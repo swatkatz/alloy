@@ -16,42 +16,179 @@ it("renders basic member expression with dot notation", () => {
       <py.MemberExpression>
         <py.MemberExpression.Part id="obj" />
         <py.MemberExpression.Part id="property" />
-      </py.MemberExpression>,
+      </py.MemberExpression>, 
     ),
   ).toBe(d`
     obj.property
   `);
 });
 
-it("renders basic member expression with index", () => {
+it("renders basic member expression with key", () => {
   expect(
     toSourceText(
       <py.MemberExpression>
         <py.MemberExpression.Part id="arr" />
-        <py.MemberExpression.Part index={0} />
+        <py.MemberExpression.Part key={12345} />
         <py.MemberExpression.Part id="foo-bar" />
       </py.MemberExpression>,
     ),
   ).toBe(d`
-    arr[0].foo-bar
+    arr[12345].foo-bar
   `);
 });
 
-it("renders basic member expression with children", () => {
+it("renders basic member expression with key with reference", () => {
+  const rk1 = refkey();
+  const rk2 = refkey();
+  expect(
+    toSourceText(
+      <py.StatementList>
+        <py.VariableDeclaration name="test1" refkey={rk1} initializer={1} />
+        <py.MemberExpression>
+          <py.MemberExpression.Part id="arr" />
+          <py.MemberExpression.Part key={rk1} />
+          <py.MemberExpression.Part id="foo-bar" />
+        </py.MemberExpression>
+      </py.StatementList>
+    ),
+  ).toBe(d`
+    test1 = 1
+    arr[test1].foo-bar
+  `);
+});
+
+it("renders basic member expression with keys", () => {
   expect(
     toSourceText(
       <py.MemberExpression>
         <py.MemberExpression.Part id="arr" />
-        <py.MemberExpression.Part>anything</py.MemberExpression.Part>
+        <py.MemberExpression.Part keys={[1, 2]} />
         <py.MemberExpression.Part id="foo-bar" />
       </py.MemberExpression>,
     ),
   ).toBe(d`
-    arr.anything.foo-bar
+    arr[1, 2].foo-bar
   `);
 });
 
-it("renders basic member expression with an expression index", () => {
+it("renders basic member expression with keys with references", () => {
+  const rk1 = refkey();
+  const rk2 = refkey();
+  expect(
+    toSourceText(
+      <py.StatementList>
+        <py.VariableDeclaration name="test1" refkey={rk1} initializer={1} />
+        <py.VariableDeclaration name="test2" refkey={rk2} initializer={2} />
+        <py.MemberExpression>
+          <py.MemberExpression.Part id="arr" />
+          <py.MemberExpression.Part keys={[rk1, rk2]} />
+          <py.MemberExpression.Part id="foo-bar" />
+        </py.MemberExpression>
+      </py.StatementList>
+    ),
+  ).toBe(d`
+    test1 = 1
+    test2 = 2
+    arr[test1, test2].foo-bar
+  `);
+});
+
+it("renders basic member expression with slice - 1", () => {
+  expect(
+    toSourceText(
+      <py.MemberExpression>
+        <py.MemberExpression.Part id="arr" />
+        <py.MemberExpression.Part slice={{ start: 1, stop: 3, step: 2 }} />
+        <py.MemberExpression.Part id="foo-bar" />
+      </py.MemberExpression>,
+    ),
+  ).toBe(d`
+    arr[1:3:2].foo-bar
+  `);
+});
+
+it("renders basic member expression with slice - 1 with references", () => {
+  const rk1 = refkey();
+  const rk2 = refkey();
+  const rk3 = refkey();
+  expect(
+    toSourceText(
+      <py.StatementList>
+        <py.VariableDeclaration name="test1" refkey={rk1} initializer={1} />
+        <py.VariableDeclaration name="test2" refkey={rk2} initializer={3} />
+        <py.VariableDeclaration name="test3" refkey={rk3} initializer={2} />
+        <py.MemberExpression>
+          <py.MemberExpression.Part id="arr" />
+          <py.MemberExpression.Part slice={{ start: rk1, stop: rk2, step: rk3 }} />
+          <py.MemberExpression.Part id="foo-bar" />
+        </py.MemberExpression>
+      </py.StatementList>
+    ),
+  ).toBe(d`
+    test1 = 1
+    test2 = 3
+    test3 = 2
+    arr[test1:test2:test3].foo-bar
+  `);
+});
+
+it("renders basic member expression with slice - 2", () => {
+  expect(
+    toSourceText(
+      <py.MemberExpression>
+        <py.MemberExpression.Part id="arr" />
+        <py.MemberExpression.Part slice={{ stop: 3}} />
+        <py.MemberExpression.Part id="foo-bar" />
+      </py.MemberExpression>,
+    ),
+  ).toBe(d`
+    arr[:3].foo-bar
+  `);
+});
+
+it("renders basic member expression with slice - 3", () => {
+  expect(
+    toSourceText(
+      <py.MemberExpression>
+        <py.MemberExpression.Part id="arr" />
+        <py.MemberExpression.Part slice={{ step: 2 }} />
+        <py.MemberExpression.Part id="foo-bar" />
+      </py.MemberExpression>,
+    ),
+  ).toBe(d`
+    arr[::2].foo-bar
+  `);
+});
+
+it("renders basic member expression with slice - 4", () => {
+  expect(
+    toSourceText(
+      <py.MemberExpression>
+        <py.MemberExpression.Part id="arr" />
+        <py.MemberExpression.Part slice={{ start: 1 }} />
+        <py.MemberExpression.Part id="foo-bar" />
+      </py.MemberExpression>,
+    ),
+  ).toBe(d`
+    arr[1:].foo-bar
+  `);
+});
+
+it("renders basic member expression with slice - 5", () => {
+  expect(
+    toSourceText(
+      <py.MemberExpression>
+        <py.MemberExpression.Part id="arr" />
+        <py.MemberExpression.Part slice={{ start: 1, step: 2 }} />
+        <py.MemberExpression.Part id="foo-bar" />
+      </py.MemberExpression>,
+    ),
+  ).toBe(d`
+    arr[1::2].foo-bar
+  `);
+});
+
+it("renders basic member expression with an expression index - 1", () => {
   const xRefkey = refkey();
   expect(
     toSourceText(
@@ -59,9 +196,7 @@ it("renders basic member expression with an expression index", () => {
         <py.VariableDeclaration name="x" initializer={1} refkey={xRefkey} />
         <py.MemberExpression>
           <py.MemberExpression.Part id="arr" />
-          <py.MemberExpression.Part mapAccess>
-            {xRefkey} + 1
-          </py.MemberExpression.Part>
+          <py.MemberExpression.Part key={code`${xRefkey} + 1`} />
           <py.MemberExpression.Part id="foo-bar" />
         </py.MemberExpression>
       </py.StatementList>,
@@ -78,9 +213,7 @@ it("renders basic member expression with an expression index - 2", () => {
       <py.StatementList>
         <py.MemberExpression>
           <py.MemberExpression.Part id="arr" />
-          <py.MemberExpression.Part mapAccess>
-            "foo" + 1
-          </py.MemberExpression.Part>
+          <py.MemberExpression.Part key={code`"foo" + 1`} />
           <py.MemberExpression.Part id="foo-bar" />
         </py.MemberExpression>
       </py.StatementList>,
@@ -116,31 +249,14 @@ it("supports multiple levels of nesting", () => {
   `);
 });
 
-it("flattens nested member expressions", () => {
-  expect(
-    toSourceText(
-      <py.MemberExpression>
-        <py.MemberExpression.Part id="outer" />
-        <py.MemberExpression>
-          <py.MemberExpression.Part id="inner" />
-          <py.MemberExpression.Part id="prop" />
-        </py.MemberExpression>
-        <py.MemberExpression.Part id="last" />
-      </py.MemberExpression>,
-    ),
-  ).toBe(d`
-    outer.inner.prop.last
-  `);
-});
-
 it("handles a mix of dot and bracket notation", () => {
   expect(
     toSourceText(
       <py.MemberExpression>
         <py.MemberExpression.Part id="obj" />
         <py.MemberExpression.Part id="normalProp" />
-        <py.MemberExpression.Part mapAccess id="special-prop" />
-        <py.MemberExpression.Part mapAccess id="123" />
+        <py.MemberExpression.Part key={"special-prop"} />
+        <py.MemberExpression.Part key={"123"} />
       </py.MemberExpression>,
     ),
   ).toBe(d`
@@ -166,33 +282,22 @@ it("takes children for the id part", () => {
     toSourceText(
       <py.StatementList>
         <py.MemberExpression>
-          <py.MemberExpression.Part>child1</py.MemberExpression.Part>
-          <py.MemberExpression.Part
-            id="child2"
-            mapAccess
-          ></py.MemberExpression.Part>
+          <py.MemberExpression.Part id="child1" />
+          <py.MemberExpression.Part key={"child1"} />
         </py.MemberExpression>
         <py.MemberExpression>
-          <py.MemberExpression.Part>child1</py.MemberExpression.Part>
-          <py.MemberExpression.Part
-            id="child2"
-            mapAccess
-          ></py.MemberExpression.Part>
+          <py.MemberExpression.Part id="child1" />
+          <py.MemberExpression.Part key={"child2"} />
           <py.MemberExpression.Part args />
-          <py.MemberExpression.Part
-            id="child3"
-            mapAccess
-          ></py.MemberExpression.Part>
+          <py.MemberExpression.Part key={"child3"} />
           <py.MemberExpression.Part args />
-          <py.MemberExpression.Part mapAccess>
-            "foo" + 1
-          </py.MemberExpression.Part>
+          <py.MemberExpression.Part key={code`"foo" + 1`} />
           <py.MemberExpression.Part args />
         </py.MemberExpression>
       </py.StatementList>,
     ),
   ).toBe(d`
-    child1["child2"]
+    child1["child1"]
     child1["child2"]()["child3"]()["foo" + 1]()
   `);
 });
@@ -430,10 +535,6 @@ describe("with refkeys", () => {
               <py.MemberExpression.Part refkey={rk1} />
               <py.MemberExpression.Part id="foo" />
             </py.MemberExpression>
-            <py.MemberExpression>
-              <py.MemberExpression.Part>{rk1}</py.MemberExpression.Part>
-              <py.MemberExpression.Part id="foo" />
-            </py.MemberExpression>
           </py.StatementList>
         </SourceFile>
       </Output>,
@@ -443,7 +544,6 @@ describe("with refkeys", () => {
       "index.py": d`
         from source import importMe
 
-        importMe.foo
         importMe.foo
       `,
     });
@@ -461,6 +561,27 @@ describe("with function calls", () => {
       ),
     ).toBe(d`
       myFunction(1, 2)
+    `);
+  });
+
+  it("handles function calls with references correctly", () => {
+    const xRefkey = refkey();
+    const yRefkey = refkey();
+    expect(
+      toSourceText(
+        <py.StatementList>
+          <py.VariableDeclaration name="x" initializer={1} refkey={xRefkey} />
+          <py.VariableDeclaration name="y" initializer={2} refkey={yRefkey} />
+          <py.MemberExpression>
+            <py.MemberExpression.Part id="myFunction" />
+            <py.MemberExpression.Part args={[xRefkey, yRefkey]} />
+          </py.MemberExpression>
+        </py.StatementList>,
+      ),
+    ).toBe(d`
+      x = 1
+      y = 2
+      myFunction(x, y)
     `);
   });
 
@@ -537,7 +658,7 @@ describe("formatting", () => {
         toSourceText(
           <py.MemberExpression>
             <py.MemberExpression.Part id="obj" />
-            <py.MemberExpression.Part mapAccess id="property-name" />
+            <py.MemberExpression.Part key={"property-name"} />
             <py.MemberExpression.Part id="prop" />
           </py.MemberExpression>,
           { printOptions: { printWidth: 12 } },
