@@ -9,7 +9,6 @@ import { usePythonNamePolicy } from "../name-policy.js";
 import { ParameterDescriptor } from "../parameter-descriptor.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { SourceFileContext } from "./SourceFile.jsx";
-import { TypeRefContext } from "./TypeRefContext.jsx";
 import { Value } from "./Value.jsx";
 
 export interface CallSignatureParametersProps {
@@ -90,10 +89,7 @@ function parameter(param: DeclaredParameterDescriptor) {
     <group>
       {param.symbol.name}
       <Show when={!!param.type}>
-        :{" "}
-        <SymbolSlot>
-          <TypeRefContext>{param.type}</TypeRefContext>
-        </SymbolSlot>
+        :{" "}<SymbolSlot>{param.type}</SymbolSlot>
       </Show>
       <Show when={!!param.optional}>
         <Show when={!param.type}>=</Show>
