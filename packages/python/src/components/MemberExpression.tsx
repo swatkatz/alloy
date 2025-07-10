@@ -19,33 +19,27 @@ export interface MemberExpressionProps {
   children: Children;
 }
 
-interface PartDescriptorWithId extends PartDescriptorBase {
-  id: Children;
+interface AttributeDescriptor extends PartDescriptorBase {
+  type: "attribute";
+  name: Children;
 }
 
-interface PartDescriptorWithKey extends PartDescriptorBase {
-  key: Children;
-}
-
-interface PartDescriptorWithKeys extends PartDescriptorBase {
-  keys: Children[];
-}
-
-interface PartDescriptorWithSlice extends PartDescriptorBase {
-  slice: {
-    start?: Children;
-    stop?: Children; 
-    step?: Children;
-  };
-}
-
-interface PartDescriptorBase {
-  accessStyle: "dot" | "bracket";
-  args?: Children[];
+interface SubscriptionDescriptor extends PartDescriptorBase {
+  type: "subscription";
+  expression: Children;
   quoted: boolean;
 }
 
-type PartDescriptor = PartDescriptorWithId | PartDescriptorWithKey | PartDescriptorWithKeys | PartDescriptorWithSlice;
+interface CallDescriptor extends PartDescriptorBase {
+  type: "call";
+  args: Children[];
+}
+
+interface PartDescriptorBase {
+  type: "call" | "subscription" | "attribute";
+}
+
+type PartDescriptor = AttributeDescriptor | SubscriptionDescriptor | CallDescriptor;
 
 /**
  * Create a member expression from parts. Each part can provide one of
@@ -86,9 +80,6 @@ export function MemberExpression(props: MemberExpressionProps): Children {
   if (parts.length === 0) {
     return <></>;
   }
-
-  // construct a member expression from the parts. accessStyle determines
-  // whether we use dot or bracket notation.
 
   return computed(() => {
     return formatChain(parts);
@@ -154,65 +145,41 @@ function createPartDescriptorFromProps(
     }
   });
 
-  const part: ToRefs<PartDescriptor> = {
-    id: computed(() => {
-      if (partProps.key !== undefined || partProps.keys !== undefined || partProps.slice !== undefined) {
-        return undefined;
-      } else if (first && partProps.refkey) {
-        return partProps.refkey;
-      } else if (partProps.id !== undefined) {
-        if (!isValidIdentifier(partProps.id)) {
-          throw new Error(`Invalid identifier: ${partProps.id}`);
-        }
-        return partProps.id;
-      } else if (symbolSource.value) {
-        return symbolSource.value.name;
-      } else {
-        return "<unresolved symbol>";
+  // Return different descriptor types based on what props are provided
+  if (partProps.args !== undefined) {
+    // CallDescriptor
+    return {
+      type: "call" as const,
+      args: partProps.args === true ? [] : partProps.args,
+    } as CallDescriptor;
+  } else if (partProps.key !== undefined || partProps.keys !== undefined || partProps.slice !== undefined) {
+    // SubscriptionDescriptor
+    return {
+      type: "subscription" as const,
+      expression: getSubscriptionValue(partProps),
+      quoted: partProps.key !== undefined && typeof partProps.key === "string",
+    } as SubscriptionDescriptor;
+  } else {
+    // IdentifierDescriptor
+    let id: Children | undefined;
+    if (first && partProps.refkey) {
+      id = partProps.refkey;
+    } else if (partProps.id !== undefined) {
+      if (!isValidIdentifier(partProps.id)) {
+        throw new Error(`Invalid identifier: ${partProps.id}`);
       }
-    }),
-    accessStyle: computed(() => {
-      if (partProps.key !== undefined || partProps.keys !== undefined || partProps.slice !== undefined) {
-        return "bracket"
-      } else {
-        return "dot";
-      }
-    }),
-    key: computed(() => {
-      if (partProps.key !== undefined) {
-        return partProps.key;
-      } else {
-        return undefined;
-      }
-    }),
-    keys: computed(() => {
-      if (partProps.keys !== undefined) {
-        return partProps.keys;
-      } else {
-        return [];
-      }
-    }),
-    slice: computed(() => {
-      if (partProps.slice !== undefined) {
-        return {
-          start: partProps.slice.start,
-          stop: partProps.slice.stop,
-          step: partProps.slice.step,
-        };
-      } else {
-        return {};
-      }
-    }),
-    quoted: computed(() => {
-      if (typeof partProps.key === "string") {
-        return true;
-      }
-      return false;
-    }),
-    args: ref<any>(partProps.args === true ? [] : partProps.args),
-  };
-
-  return reactive(part);
+      id = partProps.id;
+    } else if (symbolSource.value) {
+      id = symbolSource.value.name;
+    } else {
+      id = "<unresolved symbol>";
+    }
+    return {
+      type: "attribute" as const,
+      name: id,
+      symbol: symbolSource,
+    } as AttributeDescriptor;
+  }
 }
 
 /**
@@ -233,21 +200,19 @@ function formatChain(parts: PartDescriptor[]): Children {
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
       if (i === 0) {
-        if (!isIdPartDescriptor(part)) {
+        if (!isAttributeDescriptor(part)){
           throw new Error(
             "The first part of a MemberExpression must be an id or refkey",
           );
         }
-        expression.push(part.id);
+        expression.push(part.name);
       } else {
-        if (part.args !== undefined) {
-          // For parts with only args (no name), append function call directly
-          expression.push(formatCallExpr(part));
-        } else if (part.accessStyle === "dot") {
-          expression.push(formatDotAccess(part));
+        if (isCallDescriptor(part)) {
+          expression.push(formatCallOutput(part));
+        } else if (isAttributeDescriptor(part)) {
+          expression.push(formatAttributeOutput(part));
         } else {
-          // bracket notation - don't include the dot
-          expression.push(formatArrayAccess(part));
+          expression.push(formatSubscriptionOutput(part));
         }
       }
     }
@@ -260,14 +225,14 @@ function formatChain(parts: PartDescriptor[]): Children {
  * Format a part of a member expression that is an array access.
  * This is used for parts like `foo[0]` or `foo["bar"]`.
  */
-function formatArrayAccess(part: PartDescriptor) {
+function formatSubscriptionOutput(part: SubscriptionDescriptor) {
   return (
     <group>
       {""}[
       <indent>
         <sbr />
         { part.quoted && '"' }
-        { getBaseValue(part) }
+        { part.expression }
         { part.quoted && '"' }
       </indent>
       <sbr />]
@@ -275,28 +240,20 @@ function formatArrayAccess(part: PartDescriptor) {
   );
 }
 
-/**
- * Format a part of a member expression that is a dot access.
- * This is used for parts like `foo.bar` or `foo.baz()`.
- */
-function formatDotAccess(part: PartDescriptor) {
+function formatAttributeOutput(part: AttributeDescriptor) {
   return (
     <group>
       <indent>
         <ifBreak> \</ifBreak>
         <sbr />
         {"."}
-        { getBaseValue(part) }
+        { part.name }
       </indent>
     </group>
   );
 }
 
-/**
- * Format a part of a member expression that is a function call.
- * This is used for parts like `foo.bar()` or `foo.baz(arg1, arg2)`.
- */
-function formatCallExpr(part: PartDescriptor) {
+function formatCallOutput(part: CallDescriptor) {
   const args = computed(() => {
     return typeof part.args === "boolean" ? [] : (part.args ?? []);
   });
@@ -384,33 +341,22 @@ function isValidIdentifier(id: Children) {
   }
   return true;
 }
-
-function isIdPartDescriptor(
+function isCallDescriptor(
   part: PartDescriptor,
-): part is PartDescriptorWithId {
-  return "id" in part && part.id !== undefined;
+): part is CallDescriptor {
+  return "type" in part && part.type === "call";
 }
 
-function isKeyPartDescriptor(
+function isAttributeDescriptor(
   part: PartDescriptor,
-): part is PartDescriptorWithKey {
-  return "key" in part && part.key !== undefined;
+): part is AttributeDescriptor {
+  return "type" in part && part.type === "attribute";
 }
 
-function isKeysPartDescriptor(
+function isSubscriptionDescriptor(
   part: PartDescriptor,
-): part is PartDescriptorWithKeys {
-  return "keys" in part && part.keys !== undefined && part.keys.length > 0;
-}
-
-function isSlicePartDescriptor(
-  part: PartDescriptor,
-): part is PartDescriptorWithSlice {
-  return (
-    "slice" in part &&
-    part.slice !== undefined &&
-    Object.keys(part.slice).length > 0
-  );
+): part is SubscriptionDescriptor {
+  return "type" in part && part.type === "subscription";
 }
 
 function getNameForRefkey(refkey: Children): Children {
@@ -418,42 +364,65 @@ function getNameForRefkey(refkey: Children): Children {
   return parsedValue !== undefined ? parsedValue.name : refkey;
 }
 
-function getBaseValue(part: PartDescriptor): Children | undefined {
-  if (isIdPartDescriptor(part)) {
-    return part.id;
-  }
-  if (isKeyPartDescriptor(part)) {
-    return getNameForRefkey(part.key as Refkey);
-  }
-  if (isKeysPartDescriptor(part)) {
+export interface SubscriptionProps {
+  /**
+   * Single key for subscription access (obj[key] or obj[0]).
+   * Use this for single subscription access.
+   */
+  key?: Children;
+
+  /**
+   * Multiple keys for tuple subscription access (obj[a, b] -> obj[(a, b)]).
+   * Use this when you need tuple key access.
+   */
+  keys?: Children[];
+
+  /**
+   * Slice notation for subscription access (obj[start:stop:step]).
+   * Use this for Python slice syntax.
+   */
+  slice?: {
+    start?: Children;
+    stop?: Children; 
+    step?: Children;
+  };
+}
+
+function getSubscriptionValue(partProps: SubscriptionProps): Children {
+  if ("keys" in partProps && partProps.keys !== undefined && partProps.keys.length > 0) {
     let parsedKeys = [];
-    for (const key of part.keys) {
+    for (const key of partProps.keys) {
       parsedKeys.push(getNameForRefkey(key as Refkey));
     }
     return code`${parsedKeys.join(", ")}`;
   }
-  if (isSlicePartDescriptor(part)) {
+  else if ("slice" in partProps &&
+    partProps.slice !== undefined &&
+    Object.keys(partProps.slice).length > 0) {
     let parts = [];
-    if (part.slice.start !== undefined) {
-      parts.push(getNameForRefkey(part.slice.start as Refkey));
+    if (partProps.slice.start !== undefined) {
+      parts.push(getNameForRefkey(partProps.slice.start as Refkey));
       parts.push(":");
     }
-    if (part.slice.stop !== undefined) {
-      if (part.slice.start === undefined) {
+    if (partProps.slice.stop !== undefined) {
+      if (partProps.slice.start === undefined) {
         parts.push(":");
       }
-      parts.push(getNameForRefkey(part.slice.stop as Refkey));
+      parts.push(getNameForRefkey(partProps.slice.stop as Refkey));
     }
-    if (part.slice.step !== undefined) {
-      if (part.slice.start === undefined && part.slice.stop === undefined) {
+    if (partProps.slice.step !== undefined) {
+      if (partProps.slice.start === undefined && partProps.slice.stop === undefined) {
         parts.push(":");
         parts.push(":");
       }
       else {
         parts.push(":");
       }
-      parts.push(getNameForRefkey(part.slice.step as Refkey));
+      parts.push(getNameForRefkey(partProps.slice.step as Refkey));
     }
     return code`${parts.join("")}`;
+  }
+  else {
+    return getNameForRefkey(partProps.key as Refkey);
   }
 }
