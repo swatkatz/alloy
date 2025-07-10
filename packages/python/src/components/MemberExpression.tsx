@@ -153,7 +153,9 @@ function createPartDescriptorFromProps(
   if (partProps.args !== undefined) {
     // CallDescriptor
     part = {
-      type: computed(() => {return "call" as const}),
+      type: computed(() => {
+        return "call" as const;
+      }),
       args: ref<any>(partProps.args === true ? [] : partProps.args),
     };
   } else if (
@@ -163,14 +165,22 @@ function createPartDescriptorFromProps(
   ) {
     // SubscriptionDescriptor
     part = {
-      type: computed(() => {return "subscription" as const}),
-      expression: computed(() => {return getSubscriptionValue(partProps)}),
-      quoted: computed(() => {return partProps.key !== undefined && typeof partProps.key === "string"}),
+      type: computed(() => {
+        return "subscription" as const;
+      }),
+      expression: computed(() => {
+        return getSubscriptionValue(partProps);
+      }),
+      quoted: computed(() => {
+        return partProps.key !== undefined && typeof partProps.key === "string";
+      }),
     };
   } else {
     // IdentifierDescriptor
     part = {
-      type: computed(() => {return "attribute" as const}),
+      type: computed(() => {
+        return "attribute" as const;
+      }),
       name: computed(() => {
         if (first && partProps.refkey) {
           return partProps.refkey;

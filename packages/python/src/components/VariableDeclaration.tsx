@@ -97,7 +97,10 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   // Handle optional type annotation
   const type =
     props.type && !props.callStatementVar ?
-    <>: <TypeSymbolSlot>{props.type}</TypeSymbolSlot></> : undefined;
+      <>
+        : <TypeSymbolSlot>{props.type}</TypeSymbolSlot>
+      </>
+    : undefined;
 
   effect(() => {
     if (TypeSymbolSlot.ref.value) {

@@ -89,7 +89,7 @@ function parameter(param: DeclaredParameterDescriptor) {
     <group>
       {param.symbol.name}
       <Show when={!!param.type}>
-        :{" "}<SymbolSlot>{param.type}</SymbolSlot>
+        : <SymbolSlot>{param.type}</SymbolSlot>
       </Show>
       <Show when={!!param.optional}>
         <Show when={!param.type}>=</Show>
