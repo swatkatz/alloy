@@ -17,7 +17,6 @@ import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { BaseDeclarationProps } from "./Declaration.jsx";
 import { SourceFileContext } from "./SourceFile.jsx";
-import { TypeRefContext } from "./TypeRefContext.jsx";
 import { Value } from "./Value.jsx";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
@@ -98,10 +97,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   // Handle optional type annotation
   const type =
     props.type && !props.callStatementVar ?
-      <TypeRefContext>
-        : <TypeSymbolSlot>{props.type}</TypeSymbolSlot>
-      </TypeRefContext>
-    : undefined;
+    <>: <TypeSymbolSlot>{props.type}</TypeSymbolSlot></> : undefined;
 
   effect(() => {
     if (TypeSymbolSlot.ref.value) {
