@@ -6,9 +6,12 @@ import {
   For,
   isComponentCreator,
   OutputSymbol,
+  reactive,
+  ref,
   Refkey,
   Show,
   takeSymbols,
+  ToRefs,
   useBinder,
 } from "@alloy-js/core";
 
@@ -146,44 +149,45 @@ function createPartDescriptorFromProps(
   });
 
   // Return different descriptor types based on what props are provided
+  let part: ToRefs<PartDescriptor>;
   if (partProps.args !== undefined) {
     // CallDescriptor
-    return {
-      type: "call" as const,
-      args: partProps.args === true ? [] : partProps.args,
-    } as CallDescriptor;
+    part = {
+      type: computed(() => {return "call" as const}),
+      args: ref<any>(partProps.args === true ? [] : partProps.args),
+    };
   } else if (
     partProps.key !== undefined ||
     partProps.keys !== undefined ||
     partProps.slice !== undefined
   ) {
     // SubscriptionDescriptor
-    return {
-      type: "subscription" as const,
-      expression: getSubscriptionValue(partProps),
-      quoted: partProps.key !== undefined && typeof partProps.key === "string",
-    } as SubscriptionDescriptor;
+    part = {
+      type: computed(() => {return "subscription" as const}),
+      expression: computed(() => {return getSubscriptionValue(partProps)}),
+      quoted: computed(() => {return partProps.key !== undefined && typeof partProps.key === "string"}),
+    };
   } else {
     // IdentifierDescriptor
-    let id: Children | undefined;
-    if (first && partProps.refkey) {
-      id = partProps.refkey;
-    } else if (partProps.id !== undefined) {
-      if (!isValidIdentifier(partProps.id)) {
-        throw new Error(`Invalid identifier: ${partProps.id}`);
-      }
-      id = partProps.id;
-    } else if (symbolSource.value) {
-      id = symbolSource.value.name;
-    } else {
-      id = "<unresolved symbol>";
-    }
-    return {
-      type: "attribute" as const,
-      name: id,
-      symbol: symbolSource,
-    } as AttributeDescriptor;
+    part = {
+      type: computed(() => {return "attribute" as const}),
+      name: computed(() => {
+        if (first && partProps.refkey) {
+          return partProps.refkey;
+        } else if (partProps.id !== undefined) {
+          if (!isValidIdentifier(partProps.id)) {
+            throw new Error(`Invalid identifier: ${partProps.id}`);
+          }
+          return partProps.id;
+        } else if (symbolSource.value) {
+          return symbolSource.value.name;
+        } else {
+          return "<unresolved symbol>";
+        }
+      }),
+    };
   }
+  return reactive(part);
 }
 
 /**
