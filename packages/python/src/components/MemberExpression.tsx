@@ -6,12 +6,9 @@ import {
   For,
   isComponentCreator,
   OutputSymbol,
-  reactive,
-  ref,
   Refkey,
   Show,
   takeSymbols,
-  ToRefs,
   useBinder,
 } from "@alloy-js/core";
 
@@ -39,7 +36,10 @@ interface PartDescriptorBase {
   type: "call" | "subscription" | "attribute";
 }
 
-type PartDescriptor = AttributeDescriptor | SubscriptionDescriptor | CallDescriptor;
+type PartDescriptor =
+  | AttributeDescriptor
+  | SubscriptionDescriptor
+  | CallDescriptor;
 
 /**
  * Create a member expression from parts. Each part can provide one of
@@ -152,7 +152,11 @@ function createPartDescriptorFromProps(
       type: "call" as const,
       args: partProps.args === true ? [] : partProps.args,
     } as CallDescriptor;
-  } else if (partProps.key !== undefined || partProps.keys !== undefined || partProps.slice !== undefined) {
+  } else if (
+    partProps.key !== undefined ||
+    partProps.keys !== undefined ||
+    partProps.slice !== undefined
+  ) {
     // SubscriptionDescriptor
     return {
       type: "subscription" as const,
@@ -200,7 +204,7 @@ function formatChain(parts: PartDescriptor[]): Children {
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
       if (i === 0) {
-        if (!isAttributeDescriptor(part)){
+        if (!isAttributeDescriptor(part)) {
           throw new Error(
             "The first part of a MemberExpression must be an id or refkey",
           );
@@ -231,9 +235,9 @@ function formatSubscriptionOutput(part: SubscriptionDescriptor) {
       {""}[
       <indent>
         <sbr />
-        { part.quoted && '"' }
-        { part.expression }
-        { part.quoted && '"' }
+        {part.quoted && '"'}
+        {part.expression}
+        {part.quoted && '"'}
       </indent>
       <sbr />]
     </group>
@@ -247,7 +251,7 @@ function formatAttributeOutput(part: AttributeDescriptor) {
         <ifBreak> \</ifBreak>
         <sbr />
         {"."}
-        { part.name }
+        {part.name}
       </indent>
     </group>
   );
@@ -300,7 +304,7 @@ export interface MemberExpressionPartProps {
    */
   slice?: {
     start?: Children;
-    stop?: Children; 
+    stop?: Children;
     step?: Children;
   };
 
@@ -341,9 +345,7 @@ function isValidIdentifier(id: Children) {
   }
   return true;
 }
-function isCallDescriptor(
-  part: PartDescriptor,
-): part is CallDescriptor {
+function isCallDescriptor(part: PartDescriptor): part is CallDescriptor {
   return "type" in part && part.type === "call";
 }
 
@@ -383,22 +385,27 @@ export interface SubscriptionProps {
    */
   slice?: {
     start?: Children;
-    stop?: Children; 
+    stop?: Children;
     step?: Children;
   };
 }
 
 function getSubscriptionValue(partProps: SubscriptionProps): Children {
-  if ("keys" in partProps && partProps.keys !== undefined && partProps.keys.length > 0) {
+  if (
+    "keys" in partProps &&
+    partProps.keys !== undefined &&
+    partProps.keys.length > 0
+  ) {
     let parsedKeys = [];
     for (const key of partProps.keys) {
       parsedKeys.push(getNameForRefkey(key as Refkey));
     }
     return code`${parsedKeys.join(", ")}`;
-  }
-  else if ("slice" in partProps &&
+  } else if (
+    "slice" in partProps &&
     partProps.slice !== undefined &&
-    Object.keys(partProps.slice).length > 0) {
+    Object.keys(partProps.slice).length > 0
+  ) {
     let parts = [];
     if (partProps.slice.start !== undefined) {
       parts.push(getNameForRefkey(partProps.slice.start as Refkey));
@@ -411,18 +418,19 @@ function getSubscriptionValue(partProps: SubscriptionProps): Children {
       parts.push(getNameForRefkey(partProps.slice.stop as Refkey));
     }
     if (partProps.slice.step !== undefined) {
-      if (partProps.slice.start === undefined && partProps.slice.stop === undefined) {
+      if (
+        partProps.slice.start === undefined &&
+        partProps.slice.stop === undefined
+      ) {
         parts.push(":");
         parts.push(":");
-      }
-      else {
+      } else {
         parts.push(":");
       }
       parts.push(getNameForRefkey(partProps.slice.step as Refkey));
     }
     return code`${parts.join("")}`;
-  }
-  else {
+  } else {
     return getNameForRefkey(partProps.key as Refkey);
   }
 }

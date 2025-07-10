@@ -16,7 +16,7 @@ it("renders basic member expression with dot notation", () => {
       <py.MemberExpression>
         <py.MemberExpression.Part id="obj" />
         <py.MemberExpression.Part id="property" />
-      </py.MemberExpression>, 
+      </py.MemberExpression>,
     ),
   ).toBe(d`
     obj.property
@@ -49,7 +49,7 @@ it("renders basic member expression with key with reference", () => {
           <py.MemberExpression.Part key={rk1} />
           <py.MemberExpression.Part id="foo-bar" />
         </py.MemberExpression>
-      </py.StatementList>
+      </py.StatementList>,
     ),
   ).toBe(d`
     test1 = 1
@@ -84,7 +84,7 @@ it("renders basic member expression with keys with references", () => {
           <py.MemberExpression.Part keys={[rk1, rk2]} />
           <py.MemberExpression.Part id="foo-bar" />
         </py.MemberExpression>
-      </py.StatementList>
+      </py.StatementList>,
     ),
   ).toBe(d`
     test1 = 1
@@ -119,10 +119,12 @@ it("renders basic member expression with slice - 1 with references", () => {
         <py.VariableDeclaration name="test3" refkey={rk3} initializer={2} />
         <py.MemberExpression>
           <py.MemberExpression.Part id="arr" />
-          <py.MemberExpression.Part slice={{ start: rk1, stop: rk2, step: rk3 }} />
+          <py.MemberExpression.Part
+            slice={{ start: rk1, stop: rk2, step: rk3 }}
+          />
           <py.MemberExpression.Part id="foo-bar" />
         </py.MemberExpression>
-      </py.StatementList>
+      </py.StatementList>,
     ),
   ).toBe(d`
     test1 = 1
@@ -137,7 +139,7 @@ it("renders basic member expression with slice - 2", () => {
     toSourceText(
       <py.MemberExpression>
         <py.MemberExpression.Part id="arr" />
-        <py.MemberExpression.Part slice={{ stop: 3}} />
+        <py.MemberExpression.Part slice={{ stop: 3 }} />
         <py.MemberExpression.Part id="foo-bar" />
       </py.MemberExpression>,
     ),

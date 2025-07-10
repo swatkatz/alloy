@@ -240,9 +240,17 @@ describe("Function Declaration", () => {
           >
             return z * 2
           </py.FunctionDeclaration>
-          return <py.FunctionCallExpression target={foobarRef} args={[<py.Value jsValue={2} />]} />
+          return{" "}
+          <py.FunctionCallExpression
+            target={foobarRef}
+            args={[<py.Value jsValue={2} />]}
+          />
         </py.FunctionDeclaration>
-        return <py.FunctionCallExpression target={barRef} args={[<py.Value jsValue={3} />]} />
+        return{" "}
+        <py.FunctionCallExpression
+          target={barRef}
+          args={[<py.Value jsValue={3} />]}
+        />
       </py.FunctionDeclaration>
     );
 
