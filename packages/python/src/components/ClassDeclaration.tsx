@@ -1,5 +1,4 @@
 import {
-  Block,
   Children,
   List,
   Name,
@@ -18,6 +17,7 @@ import {
   DeclarationProps,
 } from "./Declaration.js";
 import { SourceFileContext } from "./SourceFile.jsx";
+import { PythonBlock } from "./PythonBlock.jsx";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   /**
@@ -91,9 +91,9 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
       class <Name />
       <Scope name={updatedProps.name} kind="class">
         {basesPart}
-        <Block opener=":" closer="">
+        <PythonBlock opener=":">
           {hasChildren ? props.children : "pass"}
-        </Block>
+        </PythonBlock>
       </Scope>
     </Declaration>
   );
