@@ -2,6 +2,7 @@ import {
   Children,
   Declaration as CoreDeclaration,
   Name,
+  OutputScope,
   OutputSymbolFlags,
   createSymbolSlot,
   effect,
@@ -12,7 +13,6 @@ import {
   useMemberScope,
   useScope,
 } from "@alloy-js/core";
-import { CustomOutputScope } from "../symbols/custom-output-scope.js";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { BaseDeclarationProps } from "./Declaration.jsx";
@@ -80,7 +80,7 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   const module = sfContext?.module;
   const name = usePythonNamePolicy().getName(props.name, "variable");
   const memberScope = useMemberScope();
-  let scope: CustomOutputScope | undefined = undefined;
+  let scope: OutputScope | undefined = undefined;
   if (memberScope !== undefined) {
     scope = memberScope.instanceMembers!;
   } else {
