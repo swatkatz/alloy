@@ -1,5 +1,4 @@
 import {
-  Block,
   Children,
   Declaration as CoreDeclaration,
   For,
@@ -16,6 +15,7 @@ import { usePythonScope } from "../symbols/scopes.js";
 import { BaseDeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
 import { SourceFileContext } from "./SourceFile.jsx";
+import { PythonBlock } from "./PythonBlock.jsx";
 
 export interface EnumProps extends BaseDeclarationProps {
   /**
@@ -153,7 +153,7 @@ export function ClassEnumDeclaration(props: EnumProps) {
       class {props.name}({enumModule["."][baseType]})
       <MemberScope owner={sym}>
         <Scope name={props.name} kind="enum">
-          <Block opener=":" closer="" newline={false}>
+          <PythonBlock opener=":">
             <For each={memberList} hardline>
               {(member) => (
                 <EnumMember
@@ -165,7 +165,7 @@ export function ClassEnumDeclaration(props: EnumProps) {
               )}
             </For>
             {props.children}
-          </Block>
+          </PythonBlock>
         </Scope>
       </MemberScope>
     </CoreDeclaration>
