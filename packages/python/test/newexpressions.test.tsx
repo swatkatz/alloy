@@ -11,7 +11,6 @@ it("declaration of class instance with variables", () => {
   const result = toSourceText(
     <py.StatementList>
       <py.ClassDeclaration name="one-class" refkey={classRef} />
-      <hbr />
       <py.NewExpression
         target={classRef}
         args={[
@@ -25,8 +24,6 @@ it("declaration of class instance with variables", () => {
   const expected = d`
     class OneClass:
       pass
-
-
 
     OneClass("A name", 42, True)
   `;

@@ -26,7 +26,6 @@ describe("FunctionCallExpression", () => {
     const result = toSourceText(
       <py.StatementList>
         <py.FunctionDeclaration name="runFunc" refkey={methodRef} />
-        <hbr />
         <py.FunctionCallExpression
           target={methodRef}
           args={[
@@ -40,8 +39,6 @@ describe("FunctionCallExpression", () => {
     const expected = d`
       def run_func():
         pass
-
-
       
       run_func("A name", 42, True)
     `;
@@ -63,7 +60,6 @@ describe("FunctionCallExpression", () => {
             { name: "flag", type: "bool" },
           ]}
         />
-        <hbr />
         <py.VariableDeclaration
           name="result"
           type="str"
@@ -83,8 +79,6 @@ describe("FunctionCallExpression", () => {
     const expected = d`
       def run_func(name: str, number: int, flag: bool) -> str:
         pass
-      
-      
       
       result: str = run_func("A name", 42, True)
     `;

@@ -28,16 +28,15 @@ describe("Python Class", () => {
   });
 
   it("renders a class with base classes", () => {
-    const result = render(
-      <Output>
-        <py.SourceFile path="test.py">
-          {[
-            <py.ClassDeclaration name="Base1" />,
-            <py.ClassDeclaration name="Base2" />,
-            <py.ClassDeclaration name="Baz" bases={[refkey("Base1"), refkey("Base2")]} />,
-          ]}
-        </py.SourceFile>
-      </Output>,
+    const result = toSourceText(
+      <py.StatementList>
+        <py.ClassDeclaration name="Base1" />
+        <py.ClassDeclaration name="Base2" />
+        <py.ClassDeclaration
+          name="Baz"
+          bases={[refkey("Base1"), refkey("Base2")]}
+        />
+      </py.StatementList>,
     );
     const expected = d`
       class Base1:
@@ -110,18 +109,16 @@ describe("Python Class", () => {
   });
 
   it("renders a class with class variables like foo: str, and also bar: A where A is another class", () => {
-    const result = render(
-      <Output>
-        <py.SourceFile path="test.py">
-          <py.ClassDeclaration name="A" />
-          <py.ClassDeclaration name="B">
-            <List hardline>
-              <py.VariableDeclaration name="bar" type={refkey("A")} omitNone />
-              <py.VariableDeclaration name="foo" type="str" omitNone />
-            </List>
-          </py.ClassDeclaration>
-        </py.SourceFile>
-      </Output>,
+    const result = toSourceText(
+      <py.StatementList>
+        <py.ClassDeclaration name="A" />
+        <py.ClassDeclaration name="B">
+          <py.StatementList>
+            <py.VariableDeclaration name="bar" type={refkey("A")} omitNone />
+            <py.VariableDeclaration name="foo" type="str" omitNone />
+          </py.StatementList>
+        </py.ClassDeclaration>
+      </py.StatementList>,
     );
     const expected = d`
       class A:
@@ -138,19 +135,18 @@ describe("Python Class", () => {
 
   it("renders a class with class variables like foo: str, and another identical class", () => {
     const result = toSourceText(
-      <>
+      <py.StatementList>
         <py.ClassDeclaration name="A">
           <py.StatementList>
             <py.VariableDeclaration name="foo" type="str" omitNone />
           </py.StatementList>
         </py.ClassDeclaration>
-        <br />
         <py.ClassDeclaration name="B">
           <py.StatementList>
             <py.VariableDeclaration name="foo" type="str" omitNone />
           </py.StatementList>
         </py.ClassDeclaration>
-      </>,
+      </py.StatementList>,
     );
     const expected = d`
       class A:
@@ -168,10 +164,8 @@ describe("Python Class", () => {
 describe("Python Class - VariableDeclaration", () => {
   it("renders a class with class fields", () => {
     const result = toSourceText(
-      <>
+      <py.StatementList>
         <py.ClassDeclaration name="Base"></py.ClassDeclaration>
-        <hbr />
-        <hbr />
         <py.ClassDeclaration name="A">
           <py.StatementList>
             <py.VariableDeclaration name="just_name" />
@@ -184,12 +178,11 @@ describe("Python Class - VariableDeclaration", () => {
             <py.VariableDeclaration name="class_based" type={refkey("Base")} />
           </py.StatementList>
         </py.ClassDeclaration>
-      </>,
+      </py.StatementList>,
     );
     const expected = d`
       class Base:
         pass
-
 
       class A:
         just_name = None
