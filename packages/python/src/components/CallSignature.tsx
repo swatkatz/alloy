@@ -17,7 +17,6 @@ export interface CallSignatureParametersProps {
   readonly kwargs?: boolean;
   readonly instanceFunction?: boolean;
   readonly classFunction?: boolean;
-  readonly children?: Children;
 }
 
 /**
@@ -26,16 +25,13 @@ export interface CallSignatureParametersProps {
  *
  * @example
  * ```tsx
- * <py.CallSignatureParameters>a, b</py.CallSignatureParameters>
+ * <py.CallSignatureParameters parameters={[ "a", "b" ]} />
  * This will generate:
  * ```python
  * a, b
  * ```
  */
 export function CallSignatureParameters(props: CallSignatureParametersProps) {
-  if (props.children) {
-    return props.children;
-  }
   // Validate that only one of instanceFunction or classFunction is true
   if (props.instanceFunction && props.classFunction) {
     throw new Error("Cannot be both an instance function and a class function");

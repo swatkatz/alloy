@@ -60,11 +60,9 @@ describe("Python Enum", () => {
 
   it("classic enum with a refkey as jsValue", () => {
     const result = toSourceText(
-      <>
+      <py.StatementList>
         <py.ClassDeclaration name="Dog" />
-        <hbr />
         <py.ClassDeclaration name="Cat" />
-        <hbr />
         <py.EnumDeclaration
           name="Animal"
           baseType="Enum"
@@ -73,7 +71,7 @@ describe("Python Enum", () => {
             { name: "CAT", value: refkey("Cat") },
           ]}
         />
-      </>,
+      </py.StatementList>,
       { externals: [enumModule] },
     );
     const expected = d`

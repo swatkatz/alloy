@@ -141,11 +141,11 @@ describe("Imports being used", () => {
           <py.VariableDeclaration name="conflict" refkey={rk2} />
         </py.SourceFile>
         <py.SourceFile path="test.py">
-          <py.VariableDeclaration name="one" initializer={rk1} />
-          <hbr />
-          <py.VariableDeclaration name="three" initializer={rk3} />
-          <hbr />
-          <py.VariableDeclaration name="two" initializer={rk2} />
+          <py.StatementList>
+            <py.VariableDeclaration name="one" initializer={rk1} />
+            <py.VariableDeclaration name="three" initializer={rk3} />
+            <py.VariableDeclaration name="two" initializer={rk2} />
+          </py.StatementList>
         </py.SourceFile>
       </Output>,
     );
@@ -185,19 +185,15 @@ describe("Imports being used", () => {
           <py.VariableDeclaration name="something" refkey={rk7} />
         </py.SourceFile>
         <py.SourceFile path="test.py">
-          <py.VariableDeclaration name="one" initializer={rk1} />
-          <hbr />
-          <py.VariableDeclaration name="two" initializer={rk2} />
-          <hbr />
-          <py.VariableDeclaration name="three" initializer={rk3} />
-          <hbr />
-          <py.VariableDeclaration name="something_else" initializer={rk4} />
-          <hbr />
-          <py.VariableDeclaration name="something_else_two" initializer={rk5} />
-          <hbr />
-          <py.VariableDeclaration name="something" initializer={rk6} />
-          <hbr />
-          <py.VariableDeclaration name="something_two" initializer={rk7} />
+          <py.StatementList>
+            <py.VariableDeclaration name="one" initializer={rk1} />
+            <py.VariableDeclaration name="two" initializer={rk2} />
+            <py.VariableDeclaration name="three" initializer={rk3} />
+            <py.VariableDeclaration name="something_else" initializer={rk4} />
+            <py.VariableDeclaration name="something_else_two" initializer={rk5} />
+            <py.VariableDeclaration name="something" initializer={rk6} />
+            <py.VariableDeclaration name="something_two" initializer={rk7} />
+          </py.StatementList>
         </py.SourceFile>
       </Output>,
     );

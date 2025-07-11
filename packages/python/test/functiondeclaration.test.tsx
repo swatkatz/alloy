@@ -32,14 +32,13 @@ describe("Function Declaration", () => {
   it("renders a function that calls another function", () => {
     const refkeyFoo = refkey();
     const result = toSourceText(
-      <>
+      <py.StatementList>
         <py.FunctionDeclaration
           name="foo"
           instanceFunction={true}
           returnType="int"
           refkey={refkeyFoo}
         />
-        <hbr />
         <py.FunctionDeclaration
           name="bar"
           instanceFunction={true}
@@ -53,7 +52,7 @@ describe("Function Declaration", () => {
             }
           />
         </py.FunctionDeclaration>
-      </>,
+      </py.StatementList>,
     );
     expect(result).toRenderTo(d`
       def foo(self) -> int:
