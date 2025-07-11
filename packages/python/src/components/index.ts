@@ -6,6 +6,7 @@ export * from "./EnumMember.js";
 export * from "./ImportStatement.js";
 export * from "./MethodDeclaration.js";
 export * from "./Parameters.js";
+export * from "./PythonBlock.js";
 export * from "./Reference.js";
 export * from "./SourceFile.js";
 export * from "./StatementList.js";
