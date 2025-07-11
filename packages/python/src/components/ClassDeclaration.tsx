@@ -11,7 +11,7 @@ import {
   useContext,
 } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
-import { PythonOutputSymbol } from "../symbols/index.js";
+import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import {
   BaseDeclarationProps,
   Declaration,
@@ -68,6 +68,7 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
     flags:
       (props.flags ?? OutputSymbolFlags.None) |
       OutputSymbolFlags.MemberContainer,
+    pythonFlags: PythonSymbolFlags.ClassSymbol,
     module: module,
   });
 
