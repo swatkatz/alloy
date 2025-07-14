@@ -32,6 +32,12 @@ it("correct formatting of source file", () => {
               type="int"
               initializer={<py.Value jsValue={42} />}
             />
+            <py.FunctionCallExpression target="foo" args={["a", "b"]} />
+            <py.MemberExpression>
+              <py.MemberExpression.Part id="a" />
+              <py.MemberExpression.Part id="b" />
+              <py.MemberExpression.Part key={"special-prop"} />
+            </py.MemberExpression>
             <py.VariableDeclaration
               name="z"
               type="int"
@@ -64,6 +70,12 @@ it("correct formatting of source file", () => {
           type="int"
           initializer={<py.Value jsValue={42} />}
         />
+        <py.FunctionCallExpression target="foo" args={["a", "b"]} />
+        <py.MemberExpression>
+          <py.MemberExpression.Part id="a" />
+          <py.MemberExpression.Part id="b" />
+          <py.MemberExpression.Part key={"special-prop"} />
+        </py.MemberExpression>
         <py.VariableDeclaration
           name="z"
           type="int"
@@ -76,12 +88,19 @@ it("correct formatting of source file", () => {
         <py.FunctionDeclaration name="someMethod" returnType="str" />
       </py.StatementList>
     </py.ClassDeclaration>,
+    <py.MemberExpression>
+      <py.MemberExpression.Part id="a" />
+      <py.MemberExpression.Part id="b" />
+      <py.MemberExpression.Part key={"special-prop"} />
+    </py.MemberExpression>
   ]);
   const expected = d`
     class SomeClass:
         def some_method() -> str:
             x: int = 42
             y: int = 42
+            foo(a, b)
+            a.b["special-prop"]
             z: int = 42
 
         some_var: int = 42
@@ -94,6 +113,8 @@ it("correct formatting of source file", () => {
     def some_function():
         x: int = 42
         y: int = 42
+        foo(a, b)
+        a.b["special-prop"]
         z: int = 42
 
 
@@ -102,6 +123,8 @@ it("correct formatting of source file", () => {
             pass
 
 
+
+    a.b["special-prop"]
 
   `;
   expect(result).toRenderTo(expected);
