@@ -24,9 +24,7 @@ it("declaration of class instance with variables", () => {
         pass
 
 
-
     OneClass("A name", 42, True)
-
 
   `;
   expect(result).toRenderTo(expected);
@@ -48,7 +46,6 @@ it("correct resolving of external module", () => {
 
     Request()
 
-
   `;
   expect(result).toRenderTo(expected);
 });
@@ -66,7 +63,6 @@ it("Class instantiation without a reference", () => {
   ]);
   const expected = d`
     ExampleClass("A name", 42, True)
-
 
   `;
   expect(result).toRenderTo(expected);
@@ -98,7 +94,6 @@ it("Class instantiation without a reference and with call statement vars", () =>
   const expected = d`
     ExampleClass(name="A name", number=42, flag=True)
 
-
   `;
   expect(result).toRenderTo(expected);
 });
@@ -120,11 +115,10 @@ it("Class instantiation without a reference mixing unnamed and named vars", () =
           callStatementVar
         />,
       ]}
-    />
+    />,
   ]);
   const expected = d`
     ExampleClass("A name", number=42, flag=True)
-
 
   `;
   expect(result).toRenderTo(expected);

@@ -1,7 +1,7 @@
 import { d } from "@alloy-js/core/testing";
 import { expect, it } from "vitest";
-import { createModule } from "../src/index.js";
 import * as py from "../src/components/index.js";
+import { createModule } from "../src/index.js";
 import { toSourceText } from "./utils.js";
 
 it("uses import from external library", () => {
@@ -13,14 +13,16 @@ it("uses import from external library", () => {
       "models.anothermodule": ["something"],
     },
   });
-  const result = toSourceText([
-    <py.StatementList>
-      {requestsLib["."].get}
-      {requestsLib["."].post}
-      {requestsLib["models"].Request}
-      {requestsLib["models"].Response}
-      {requestsLib["models.anothermodule"].something}
-    </py.StatementList>],
+  const result = toSourceText(
+    [
+      <py.StatementList>
+        {requestsLib["."].get}
+        {requestsLib["."].post}
+        {requestsLib["models"].Request}
+        {requestsLib["models"].Response}
+        {requestsLib["models.anothermodule"].something}
+      </py.StatementList>,
+    ],
     { externals: [requestsLib] },
   );
   const expected = d`
@@ -35,7 +37,6 @@ it("uses import from external library", () => {
     Request
     Response
     something
-
 
   `;
   expect(result).toRenderTo(expected);

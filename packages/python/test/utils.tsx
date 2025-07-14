@@ -78,11 +78,14 @@ export function toSourceTextMultiple(
       printWidth: 80,
       tabWidth: 4,
     };
-  }
-  else {
+  } else {
     printOptions.tabWidth = 4;
   }
-  const content = <Output externals={mergedExternals} namePolicy={policy}>{sourceFiles}</Output>
+  const content = (
+    <Output externals={mergedExternals} namePolicy={policy}>
+      {sourceFiles}
+    </Output>
+  );
   return render(content, printOptions);
 }
 

@@ -1,4 +1,5 @@
 import { refkey } from "@alloy-js/core";
+import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import { ImportStatement } from "../src/components/ImportStatement.jsx";
 import * as py from "../src/components/index.js";
@@ -13,14 +14,12 @@ import {
   toSourceText,
   toSourceTextMultiple,
 } from "./utils.jsx";
-import { d } from "@alloy-js/core/testing";
 
 describe("ImportStatement", () => {
   it("renders module import", () => {
     const result = toSourceText([<ImportStatement path="sys" />]);
     const expected = d`
     import sys
-
 
     `;
     expect(result).toRenderTo(expected);
@@ -39,10 +38,11 @@ describe("ImportStatement", () => {
       new ImportedSymbol(sqrtSymbol, sqrtSymbol),
       new ImportedSymbol(piSymbol, piSymbol),
     ]);
-    const result = toSourceText([<ImportStatement path="math" symbols={symbols} />]);
+    const result = toSourceText([
+      <ImportStatement path="math" symbols={symbols} />,
+    ]);
     const expected = d`
     from math import pi, sqrt
-
 
     `;
     expect(result).toRenderTo(expected);
@@ -85,7 +85,6 @@ describe("ImportStatements", () => {
     from math import sqrt
     from requests import get
     import sys
-
 
     `;
     expect(result).toRenderTo(expected);
@@ -132,7 +131,6 @@ describe("ImportStatements", () => {
     from math import pi, sqrt
     from requests import get, post
 
-
     `;
     expect(result).toRenderTo(expected);
   });
@@ -159,7 +157,7 @@ describe("Imports being used", () => {
           <py.VariableDeclaration name="three" initializer={rk3} />
           <py.VariableDeclaration name="two" initializer={rk2} />
         </py.StatementList>
-      </py.SourceFile>
+      </py.SourceFile>,
     ]);
     assertFileContents(result, {
       "test.py": d`
@@ -170,7 +168,6 @@ describe("Imports being used", () => {
         one = conflict
         three = conflict_2_test_3
         two = conflict_3_test_2
-
 
       `,
     });
@@ -207,7 +204,7 @@ describe("Imports being used", () => {
           <py.VariableDeclaration name="something" initializer={rk6} />
           <py.VariableDeclaration name="something_two" initializer={rk7} />
         </py.StatementList>
-      </py.SourceFile>
+      </py.SourceFile>,
     ]);
     assertFileContents(result, {
       "test.py": d`
@@ -226,7 +223,6 @@ describe("Imports being used", () => {
         something_else_two = something_else_3_test_2
         something = something_2_test_2
         something_two = something_3_test_3
-
 
       `,
     });

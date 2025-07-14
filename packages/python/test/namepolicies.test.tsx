@@ -5,11 +5,12 @@ import * as py from "../src/components/index.js";
 import { toSourceText } from "./utils.jsx";
 
 it("correct formatting of class name", () => {
-  const result = toSourceText([<py.ClassDeclaration name="a-really-WeirdClass-name" />]);
+  const result = toSourceText([
+    <py.ClassDeclaration name="a-really-WeirdClass-name" />,
+  ]);
   const expected = d`
     class AReallyWeirdClassName:
         pass
-
 
 
   `;
@@ -17,23 +18,24 @@ it("correct formatting of class name", () => {
 });
 
 it("correct formatting of Enum name and EnumMember names", () => {
-  const result = toSourceText([
-    <py.EnumDeclaration
-      name="priority"
-      style="functional"
-      members={[
-        { name: "high", value: 1 },
-        { name: "Medium", value: 2 },
-        { name: "lowValue", value: 3 },
-      ]}
-    />],
+  const result = toSourceText(
+    [
+      <py.EnumDeclaration
+        name="priority"
+        style="functional"
+        members={[
+          { name: "high", value: 1 },
+          { name: "Medium", value: 2 },
+          { name: "lowValue", value: 3 },
+        ]}
+      />,
+    ],
     { externals: [enumModule] },
   );
   const expected = d`
     from enum import Enum
 
     Priority = Enum('Priority', {'HIGH' : 1, 'MEDIUM' : 2, 'LOW_VALUE' : 3})
-
 
   `;
   expect(result).toRenderTo(expected);
@@ -56,7 +58,6 @@ it("renders a function with parameters", () => {
           print(x, y)
 
 
-
     `,
   );
 });
@@ -64,7 +65,6 @@ it("renders a function with parameters", () => {
 it("correct formatting of call signature parameters names", () => {
   const expected = d`
   this_is_a_number: int, and_this_is_a_dict: dict
-
 
   `;
 
@@ -103,16 +103,16 @@ it("correct formatting of call statement vars", () => {
   const expected = d`
   test(this_is_a_long_name="A name", and_this_is_a_number=42)
 
-
   `;
   expect(result).toRenderTo(expected);
 });
 
 it("correct formatting of variable name", () => {
-  const res = toSourceText([<py.VariableDeclaration name="myVar" type="int" initializer={42} />]);
+  const res = toSourceText([
+    <py.VariableDeclaration name="myVar" type="int" initializer={42} />,
+  ]);
   const expected = d`
   my_var: int = 42
-
   `;
   expect(res).toBe(expected);
 });

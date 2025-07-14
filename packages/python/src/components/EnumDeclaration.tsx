@@ -14,8 +14,8 @@ import { PythonOutputSymbol } from "../symbols/index.js";
 import { usePythonScope } from "../symbols/scopes.js";
 import { BaseDeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
-import { SourceFileContext } from "./SourceFile.jsx";
 import { PythonBlock } from "./PythonBlock.jsx";
+import { SourceFileContext } from "./SourceFile.jsx";
 
 export interface EnumProps extends BaseDeclarationProps {
   /**

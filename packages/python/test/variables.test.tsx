@@ -1,8 +1,8 @@
 import { refkey } from "@alloy-js/core";
+import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/index.js";
 import { toSourceText } from "./utils.jsx";
-import { d } from "@alloy-js/core/testing";
 
 describe("Python Variable", () => {
   it("declares a python variable", () => {
@@ -11,7 +11,6 @@ describe("Python Variable", () => {
     ]);
     const expected = d`
         my_var: int = 42
-
       `;
     expect(res).toBe(expected);
   });
@@ -22,7 +21,6 @@ describe("Python Variable", () => {
     ]);
     const expected = d`
         my_var: int
-
       `;
     expect(res).toBe(expected);
   });
@@ -33,7 +31,6 @@ describe("Python Variable", () => {
     ]);
     const expected = d`
         my_var = 42
-
       `;
     expect(res).toBe(expected);
   });
@@ -42,7 +39,6 @@ describe("Python Variable", () => {
     const res = toSourceText([<py.VariableDeclaration name="myVar" />]);
     const expected = d`
         my_var = None
-
       `;
     expect(res).toBe(expected);
   });
@@ -50,7 +46,6 @@ describe("Python Variable", () => {
   it("declares a python variable as None when null", () => {
     const expected = d`
         my_var = None
-
       `;
     const res = toSourceText([
       <py.VariableDeclaration
@@ -64,7 +59,6 @@ describe("Python Variable", () => {
   it("declares a python variable with a python value", () => {
     const expected = d`
         name_id_pairs = {"John": 123, "Doe": 234}
-
       `;
     const res = toSourceText([
       <py.VariableDeclaration
@@ -78,7 +72,6 @@ describe("Python Variable", () => {
   it("declares a python variable with omitNone", () => {
     const expected = d`
         omit_none_var: int
-
       `;
     const res = toSourceText([
       <py.VariableDeclaration name="omitNoneVar" type="int" omitNone={true} />,
@@ -89,7 +82,6 @@ describe("Python Variable", () => {
   it("declares a call statement python variable", () => {
     const expected = d`
         call_stmt_var=12
-
       `;
     const res = toSourceText([
       <py.VariableDeclaration
@@ -104,7 +96,6 @@ describe("Python Variable", () => {
   it("declares a call statement python variable without name", () => {
     const expected = d`
         12
-
       `;
     const res = toSourceText([
       <py.VariableDeclaration
@@ -120,7 +111,6 @@ describe("Python Variable", () => {
     const expected = d`
         my_var = 42
         my_other_var = my_var
-
       `;
     const res = toSourceText([
       <py.StatementList>

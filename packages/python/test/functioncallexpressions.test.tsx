@@ -10,7 +10,6 @@ describe("FunctionCallExpression", () => {
     expect(result).toRenderTo(d`
       foo()
 
-
     `);
   });
   it("renders with args", () => {
@@ -19,7 +18,6 @@ describe("FunctionCallExpression", () => {
     ]);
     expect(result).toRenderTo(d`
       foo(a, b)
-
 
     `);
   });
@@ -43,9 +41,7 @@ describe("FunctionCallExpression", () => {
           pass
 
 
-
       run_func("A name", 42, True)
-
 
     `;
     expect(result).toRenderTo(expected);
@@ -85,9 +81,7 @@ describe("FunctionCallExpression", () => {
           pass
 
 
-
       result: str = run_func("A name", 42, True)
-
 
     `;
     expect(result).toRenderTo(expected);
@@ -119,7 +113,6 @@ describe("FunctionCallExpression", () => {
     const expected = d`
       example_method(name="A name", number=42, flag=True)
 
-
     `;
     expect(result).toRenderTo(expected);
   });
@@ -145,7 +138,6 @@ describe("FunctionCallExpression", () => {
     ]);
     const expected = d`
       example_method("A name", number=42, flag=True)
-
 
     `;
     expect(result).toRenderTo(expected);

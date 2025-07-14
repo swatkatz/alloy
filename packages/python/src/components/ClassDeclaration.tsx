@@ -16,8 +16,8 @@ import {
   Declaration,
   DeclarationProps,
 } from "./Declaration.js";
-import { SourceFileContext } from "./SourceFile.jsx";
 import { PythonBlock } from "./PythonBlock.jsx";
+import { SourceFileContext } from "./SourceFile.jsx";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   /**

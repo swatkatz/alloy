@@ -3,7 +3,11 @@ import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
 import { ParameterDescriptor, SourceFile } from "../src/index.js";
-import { assertFileContents, toSourceText, toSourceTextMultiple } from "./utils.js";
+import {
+  assertFileContents,
+  toSourceText,
+  toSourceTextMultiple,
+} from "./utils.js";
 
 it("renders basic member expression with dot notation", () => {
   expect(
@@ -15,7 +19,6 @@ it("renders basic member expression with dot notation", () => {
     ]),
   ).toBe(d`
     obj.property
-
   `);
 });
 
@@ -30,7 +33,6 @@ it("renders basic member expression with key", () => {
     ]),
   ).toBe(d`
     arr[12345].foo-bar
-
   `);
 });
 
@@ -51,7 +53,6 @@ it("renders basic member expression with key with reference", () => {
   ).toBe(d`
     test1 = 1
     arr[test1].foo-bar
-
   `);
 });
 
@@ -66,7 +67,6 @@ it("renders basic member expression with keys", () => {
     ]),
   ).toBe(d`
     arr[1, 2].foo-bar
-
   `);
 });
 
@@ -89,7 +89,6 @@ it("renders basic member expression with keys with references", () => {
     test1 = 1
     test2 = 2
     arr[test1, test2].foo-bar
-
   `);
 });
 
@@ -104,7 +103,6 @@ it("renders basic member expression with slice - 1", () => {
     ]),
   ).toBe(d`
     arr[1:3:2].foo-bar
-
   `);
 });
 
@@ -132,7 +130,6 @@ it("renders basic member expression with slice - 1 with references", () => {
     test2 = 3
     test3 = 2
     arr[test1:test2:test3].foo-bar
-
   `);
 });
 
@@ -147,7 +144,6 @@ it("renders basic member expression with slice - 2", () => {
     ]),
   ).toBe(d`
     arr[:3].foo-bar
-
   `);
 });
 
@@ -162,7 +158,6 @@ it("renders basic member expression with slice - 3", () => {
     ]),
   ).toBe(d`
     arr[::2].foo-bar
-
   `);
 });
 
@@ -177,7 +172,6 @@ it("renders basic member expression with slice - 4", () => {
     ]),
   ).toBe(d`
     arr[1:].foo-bar
-
   `);
 });
 
@@ -192,7 +186,6 @@ it("renders basic member expression with slice - 5", () => {
     ]),
   ).toBe(d`
     arr[1::2].foo-bar
-
   `);
 });
 
@@ -212,7 +205,6 @@ it("renders basic member expression with an expression index - 1", () => {
   ).toBe(d`
     x = 1
     arr[x + 1].foo-bar
-
   `);
 });
 
@@ -229,7 +221,6 @@ it("renders basic member expression with an expression index - 2", () => {
     ]),
   ).toBe(d`
     arr["foo" + 1].foo-bar
-
   `);
 });
 
@@ -256,7 +247,6 @@ it("supports multiple levels of nesting", () => {
     ]),
   ).toBe(d`
     a.b.c.d
-
   `);
 });
 
@@ -272,7 +262,6 @@ it("handles a mix of dot and bracket notation", () => {
     ]),
   ).toBe(d`
     obj.normalProp["special-prop"]["123"]
-
   `);
 });
 
@@ -311,7 +300,6 @@ it("takes children for the id part", () => {
   ).toBe(d`
     child1["child1"]
     child1["child2"]()["child3"]()["foo" + 1]()
-
   `);
 });
 
@@ -334,7 +322,6 @@ describe("with refkeys", () => {
         test1 = 1
         test1_2_test = 2
         test1.test1_2_test
-
       `);
   });
 
@@ -387,7 +374,7 @@ describe("with refkeys", () => {
         />
         <>{memberRefkey(v1Rk, classMethod1Ref)}</>
         <>{memberRefkey(v2Rk, classMethod2Ref)}</>
-      </py.StatementList>
+      </py.StatementList>,
     ];
 
     expect(toSourceText(template)).toBe(d`
@@ -395,17 +382,14 @@ describe("with refkeys", () => {
           foo: str
 
 
-
       class Model2:
           bar: str
-
 
 
       model1_instance: Model1 = Model1()
       model2_instance: Model2 = Model2()
       model1_instance.foo
       model2_instance.bar
-
     `);
   });
 
@@ -439,7 +423,7 @@ describe("with refkeys", () => {
           />
           <>print({messageRef})</>
         </py.StatementList>
-      </py.FunctionDeclaration>
+      </py.FunctionDeclaration>,
     ];
 
     expect(toSourceText(template)).toBe(d`
@@ -447,11 +431,9 @@ describe("with refkeys", () => {
           bar: str
 
 
-
       def foo_function(foo: Model = None):
           message = foo.bar
           print(message)
-
 
     `);
   });
@@ -510,7 +492,6 @@ describe("with refkeys", () => {
            prop1: str
 
 
-
        class Foo:
            test1: Bar = None
            def test_method() -> Bar:
@@ -518,11 +499,9 @@ describe("with refkeys", () => {
 
 
 
-
        inst = Foo()
        inst.test1.prop1
        inst.test_method()
-
     `);
   });
 
@@ -544,7 +523,6 @@ describe("with refkeys", () => {
       test1.test1_2_test
       test1 = 1
       test1_2_test = 2
-
     `);
   });
 
@@ -561,7 +539,7 @@ describe("with refkeys", () => {
             <py.MemberExpression.Part id="foo" />
           </py.MemberExpression>
         </py.StatementList>
-      </SourceFile>
+      </SourceFile>,
     ]);
 
     assertFileContents(res, {
@@ -569,7 +547,6 @@ describe("with refkeys", () => {
         from source import import_me
 
         import_me.foo
-
 
       `,
     });
@@ -587,7 +564,6 @@ describe("with function calls", () => {
       ]),
     ).toBe(d`
       myFunction(1, 2)
-
     `);
   });
 
@@ -609,7 +585,6 @@ describe("with function calls", () => {
       x = 1
       y = 2
       myFunction(x, y)
-
     `);
   });
 
@@ -627,7 +602,6 @@ describe("with function calls", () => {
       ]),
     ).toBe(d`
       method1(1, 2)().method2().prop
-
     `);
   });
 
@@ -642,7 +616,6 @@ describe("with function calls", () => {
       ]),
     ).toBe(d`
       myFunction(1, 2).prop
-
     `);
   });
 
@@ -657,7 +630,6 @@ describe("with function calls", () => {
       ]),
     ).toBe(d`
       myFunction(1, 2).prop
-
     `);
   });
 });
@@ -666,40 +638,42 @@ describe("formatting", () => {
   describe("simple chains", () => {
     it("just dots", () => {
       expect(
-        toSourceText([
-          <py.MemberExpression>
-            <py.MemberExpression.Part id="four" />
-            <py.MemberExpression.Part id="four" />
-            <py.MemberExpression.Part id="two" />
-            <py.MemberExpression.Part id="two" />
-            <py.MemberExpression.Part id="two" />
-            <py.MemberExpression.Part id="two" />
-          </py.MemberExpression>],
+        toSourceText(
+          [
+            <py.MemberExpression>
+              <py.MemberExpression.Part id="four" />
+              <py.MemberExpression.Part id="four" />
+              <py.MemberExpression.Part id="two" />
+              <py.MemberExpression.Part id="two" />
+              <py.MemberExpression.Part id="two" />
+              <py.MemberExpression.Part id="two" />
+            </py.MemberExpression>,
+          ],
           { printOptions: { printWidth: 14 } },
         ),
       ).toBe(d`
         four.four \\
             .two.two \\
             .two.two
-
       `);
     });
 
     it("bracket breaks", () => {
       expect(
-        toSourceText([
-          <py.MemberExpression>
-            <py.MemberExpression.Part id="obj" />
-            <py.MemberExpression.Part key={"property-name"} />
-            <py.MemberExpression.Part id="prop" />
-          </py.MemberExpression>],
+        toSourceText(
+          [
+            <py.MemberExpression>
+              <py.MemberExpression.Part id="obj" />
+              <py.MemberExpression.Part key={"property-name"} />
+              <py.MemberExpression.Part id="prop" />
+            </py.MemberExpression>,
+          ],
           { printOptions: { printWidth: 12 } },
         ),
       ).toBe(d`
         obj[
             "property-name"
         ].prop
-
       `);
     });
   });
@@ -720,7 +694,6 @@ describe("formatting", () => {
         ]),
       ).toBe(d`
         z.object().partial().optional()
-
       `);
     });
   });

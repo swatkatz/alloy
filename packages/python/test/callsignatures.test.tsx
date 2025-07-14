@@ -11,7 +11,6 @@ describe("Call Signature Parameters", () => {
     expect(result).toRenderTo(d`
       a, b
 
-
     `);
   });
   it("renders ParameterDescriptor parameters", () => {
@@ -22,7 +21,6 @@ describe("Call Signature Parameters", () => {
     ]);
     expect(result).toRenderTo(d`
       a, b
-
 
     `);
   });
@@ -38,7 +36,6 @@ describe("Call Signature Parameters", () => {
     expect(result).toRenderTo(d`
       a: int, b: str
 
-
     `);
   });
   it("renders optional ParameterDescriptor parameters with types", () => {
@@ -52,7 +49,6 @@ describe("Call Signature Parameters", () => {
     ]);
     expect(result).toRenderTo(d`
       a: int = None, b: str = None
-
 
     `);
   });
@@ -68,7 +64,6 @@ describe("Call Signature Parameters", () => {
     expect(result).toRenderTo(d`
       a=5, b="hello"
 
-
     `);
   });
   it("renders optional ParameterDescriptor parameters with types and default", () => {
@@ -83,6 +78,15 @@ describe("Call Signature Parameters", () => {
     expect(result).toRenderTo(d`
       a: int = 5, b: str = "hello"
 
+    `);
+  });
+});
+
+describe("Call Signature", () => {
+  it("renders a simple call signature", () => {
+    const result = toSourceText([<py.CallSignature parameters={["a", "b"]} />]);
+    expect(result).toRenderTo(d`
+      (a, b)
 
     `);
   });
@@ -90,25 +94,9 @@ describe("Call Signature Parameters", () => {
 
 describe("Call Signature", () => {
   it("renders a simple call signature", () => {
-    const result = toSourceText([
-      <py.CallSignature parameters={["a", "b"]} />,
-    ]);
+    const result = toSourceText([<py.CallSignature parameters={["a", "b"]} />]);
     expect(result).toRenderTo(d`
       (a, b)
-
-
-    `);
-  });
-});
-
-describe("Call Signature", () => {
-  it("renders a simple call signature", () => {
-    const result = toSourceText([
-      <py.CallSignature parameters={["a", "b"]} />,
-    ]);
-    expect(result).toRenderTo(d`
-      (a, b)
-
 
     `);
   });
@@ -119,7 +107,6 @@ describe("Call Signature", () => {
     expect(result).toRenderTo(d`
       (a, b, *args, **kwargs)
 
-
     `);
   });
   it("renders a simple call signature with type parameters", () => {
@@ -128,7 +115,6 @@ describe("Call Signature", () => {
     ]);
     expect(result).toRenderTo(d`
       [T, U](a, b)
-
 
     `);
   });
@@ -139,7 +125,6 @@ describe("Call Signature", () => {
     expect(result).toRenderTo(d`
       (a, b) -> int
 
-
     `);
   });
   it("renders a simple call signature for a class function", () => {
@@ -148,7 +133,6 @@ describe("Call Signature", () => {
     ]);
     expect(result).toRenderTo(d`
       (cls, a, b)
-
 
     `);
   });
@@ -159,13 +143,16 @@ describe("Call Signature", () => {
     expect(result).toRenderTo(d`
       (self, a, b)
 
-
     `);
   });
   it("throws an error for a call signature that's instance and class function at the same time", () => {
     expect(() =>
       toSourceText([
-        <py.CallSignature parameters={["a", "b"]} instanceFunction classFunction />,
+        <py.CallSignature
+          parameters={["a", "b"]}
+          instanceFunction
+          classFunction
+        />,
       ]),
     ).toThrowError(/Cannot be both an instance function and a class function/);
   });
@@ -181,7 +168,6 @@ describe("Call Signature", () => {
     ]);
     expect(result).toRenderTo(d`
       (self, a, b, *args, **kwargs) -> int
-
 
     `);
   });
@@ -200,7 +186,6 @@ describe("Call Signature - Parameter Descriptors", () => {
     expect(result).toRenderTo(d`
       (a: int, b: str)
 
-
     `);
   });
   it("renders a call signature with parameter descriptors, args and kwargs", () => {
@@ -217,7 +202,6 @@ describe("Call Signature - Parameter Descriptors", () => {
     expect(result).toRenderTo(d`
       (a: int, b: str, *args, **kwargs)
 
-
     `);
   });
   it("renders a call signature with parameter descriptors and return type", () => {
@@ -232,7 +216,6 @@ describe("Call Signature - Parameter Descriptors", () => {
     ]);
     expect(result).toRenderTo(d`
       (a: int, b: str) -> int
-
 
     `);
   });
@@ -249,7 +232,6 @@ describe("Call Signature - Parameter Descriptors", () => {
     expect(result).toRenderTo(d`
       (cls, a: int, b: str)
 
-
     `);
   });
   it("renders a call signature with parameter descriptors for an instance function", () => {
@@ -264,7 +246,6 @@ describe("Call Signature - Parameter Descriptors", () => {
     ]);
     expect(result).toRenderTo(d`
       (self, a: int, b: str)
-
 
     `);
   });
@@ -284,7 +265,6 @@ describe("Call Signature - Parameter Descriptors", () => {
     expect(result).toRenderTo(d`
       (self, a: int, b: str, *args, **kwargs) -> int
 
-
     `);
   });
   it("renders a more complex call signature with parameter descriptors", () => {
@@ -300,7 +280,6 @@ describe("Call Signature - Parameter Descriptors", () => {
     ]);
     expect(result).toRenderTo(d`
       [T, U](a: int, b: str = "default_value") -> int
-
 
     `);
   });

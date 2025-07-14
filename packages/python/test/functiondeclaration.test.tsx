@@ -6,22 +6,24 @@ import { toSourceText } from "./utils.js";
 
 describe("Function Declaration", () => {
   it("renders a function with no body as 'pass'", () => {
-    const result = toSourceText([<py.FunctionDeclaration name="foo" instanceFunction={true} />]);
+    const result = toSourceText([
+      <py.FunctionDeclaration name="foo" instanceFunction={true} />,
+    ]);
     expect(result).toRenderTo(d`
       def foo(self):
           pass
-
 
 
     `);
   });
 
   it("renders a function with no body as 'pass' with return type", () => {
-    const result = toSourceText([<py.FunctionDeclaration name="foo" returnType="int" />]);
+    const result = toSourceText([
+      <py.FunctionDeclaration name="foo" returnType="int" />,
+    ]);
     expect(result).toRenderTo(d`
       def foo() -> int:
           pass
-
 
 
     `);
@@ -55,10 +57,8 @@ describe("Function Declaration", () => {
           pass
 
 
-
       def bar(self) -> int:
           result: int = foo()
-
 
 
     `);
@@ -73,7 +73,6 @@ describe("Function Declaration", () => {
     expect(result).toRenderTo(d`
       def bar(self):
           print('hi')
-
 
 
     `);
@@ -100,18 +99,18 @@ describe("Function Declaration", () => {
             print(x, y)
 
 
-
       `,
     );
   });
 
   // TODO: Investigate why there's an extra line after the block when compared to FunctionDeclaration
   it("renders an __init__ function with no body as 'pass'", () => {
-    const result = toSourceText([<py.InitFunctionDeclaration parameters={[{ name: "x" }]} />]);
+    const result = toSourceText([
+      <py.InitFunctionDeclaration parameters={[{ name: "x" }]} />,
+    ]);
     expect(result).toRenderTo(d`
       def __init__(self, x):
           pass
-
 
 
     `);
@@ -122,17 +121,17 @@ describe("Function Declaration", () => {
       async def foo():
           pass
 
-
     `);
   });
 
   it("can be an async function with returnType", () => {
     expect(
-      toSourceText([<py.FunctionDeclaration async name="foo" returnType="Foo" />]),
+      toSourceText([
+        <py.FunctionDeclaration async name="foo" returnType="Foo" />,
+      ]),
     ).toBe(d`
       async def foo() -> Foo:
           pass
-
 
     `);
   });
@@ -149,7 +148,6 @@ describe("Function Declaration", () => {
       async def foo() -> Foo:
           pass
 
-
     `);
   });
 
@@ -157,13 +155,12 @@ describe("Function Declaration", () => {
     const decl = [
       <py.FunctionDeclaration name="foo" parameters={["a", "b"]}>
         return a + b
-      </py.FunctionDeclaration>
+      </py.FunctionDeclaration>,
     ];
 
     expect(toSourceText(decl)).toBe(d`
       def foo(a, b):
           return a + b
-
 
     `);
   });
@@ -175,13 +172,12 @@ describe("Function Declaration", () => {
         typeParameters={["T", "U"]}
       >
         return a + b
-      </py.FunctionDeclaration>
+      </py.FunctionDeclaration>,
     ];
 
     expect(toSourceText(decl)).toBe(d`
       def foo[T, U](a, b):
           return a + b
-
 
     `);
   });
@@ -194,13 +190,12 @@ describe("Function Declaration", () => {
         parameters={parameters}
       >
         self.attribute = "value"
-      </py.FunctionDeclaration>
+      </py.FunctionDeclaration>,
     ];
 
     expect(toSourceText(decl)).toBe(d`
       def foo(self, x: int):
           self.attribute = "value"
-
 
     `);
   });
@@ -209,13 +204,12 @@ describe("Function Declaration", () => {
     const decl = [
       <py.InitFunctionDeclaration parameters={parameters}>
         self.attribute = "value"
-      </py.InitFunctionDeclaration>
+      </py.InitFunctionDeclaration>,
     ];
 
     expect(toSourceText(decl)).toBe(d`
       def __init__(self, x: int):
           self.attribute = "value"
-
 
     `);
   });
@@ -256,7 +250,7 @@ describe("Function Declaration", () => {
           target={barRef}
           args={[<py.Value jsValue={3} />]}
         />
-      </py.FunctionDeclaration>
+      </py.FunctionDeclaration>,
     ];
 
     expect(toSourceText(decl)).toBe(d`
@@ -266,7 +260,6 @@ describe("Function Declaration", () => {
                   return z * 2
               return foobar(2)
           return bar(3)
-
 
     `);
   });

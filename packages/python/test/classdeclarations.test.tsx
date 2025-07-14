@@ -2,7 +2,11 @@ import { memberRefkey, refkey } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { describe, expect, it } from "vitest";
 import * as py from "../src/components/index.js";
-import { assertFileContents, toSourceText, toSourceTextMultiple } from "./utils.jsx";
+import {
+  assertFileContents,
+  toSourceText,
+  toSourceTextMultiple,
+} from "./utils.jsx";
 
 describe("Python Class", () => {
   it("renders a class with no body as 'pass'", () => {
@@ -10,7 +14,6 @@ describe("Python Class", () => {
     expect(result).toRenderTo(d`
       class Foo:
           pass
-
 
 
     `);
@@ -23,7 +26,6 @@ describe("Python Class", () => {
     expect(result).toRenderTo(d`
       class Bar:
           print('hi')
-
 
 
     `);
@@ -43,15 +45,12 @@ describe("Python Class", () => {
           pass
 
 
-
       class Base2:
           pass
 
 
-
       class Baz(Base1, Base2):
           pass
-
 
 
     `;
@@ -69,7 +68,6 @@ describe("Python Class", () => {
           print('hello')
 
 
-
     `);
   });
 
@@ -83,12 +81,11 @@ describe("Python Class", () => {
       </py.SourceFile>,
       <py.SourceFile path="mod3.py">
         <py.ClassDeclaration name="C" bases={[refkey("B")]} />
-      </py.SourceFile>
+      </py.SourceFile>,
     ]);
     const mod1Expected = d`
       class A:
           pass
-
 
 
     `;
@@ -99,14 +96,12 @@ describe("Python Class", () => {
           pass
 
 
-
     `;
     const mod3Expected = d`
       from folder.mod2 import B
 
       class C(B):
           pass
-
 
 
     `;
@@ -130,11 +125,9 @@ describe("Python Class", () => {
           pass
 
 
-
       class B:
           bar: A
           foo: str
-
 
 
     `;
@@ -159,10 +152,8 @@ describe("Python Class", () => {
           foo: str
 
 
-
       class B:
           foo: str
-
 
 
     `;
@@ -192,13 +183,11 @@ describe("Python Class - VariableDeclaration", () => {
           pass
 
 
-
       class A:
           just_name = None
           name_and_type: number = None
           name_type_and_value: number = 12
           class_based: Base = None
-
 
 
     `;
@@ -245,7 +234,7 @@ describe("Python Class - VariableDeclaration", () => {
             />
           </py.StatementList>
         </py.ClassDeclaration>
-      </py.SourceFile>
+      </py.SourceFile>,
     ]);
 
     assertFileContents(res, {
@@ -255,14 +244,12 @@ describe("Python Class - VariableDeclaration", () => {
         one: Bar = Bar()
         one.instance_prop
         one.instance_method()
-
       `,
       "decl.py": `
         class Bar:
             instance_prop = 42
             def instance_method(self) -> int:
                 pass
-
 
 
       `,
@@ -320,7 +307,6 @@ describe("Python Class - FunctionDeclaration", () => {
 
           def my_standalone_function() -> int:
               pass
-
 
 
 
