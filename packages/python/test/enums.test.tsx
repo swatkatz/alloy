@@ -7,7 +7,7 @@ import { toSourceText } from "./utils.jsx";
 
 describe("Python Enum", () => {
   it("classic enum with explicit values", () => {
-    const result = toSourceText(
+    const result = toSourceText([
       <py.EnumDeclaration
         name="Color"
         baseType="IntEnum"
@@ -16,24 +16,25 @@ describe("Python Enum", () => {
           { name: "GREEN", value: "2" },
           { name: "BLUE", value: "3" },
         ]}
-      />,
+      />],
       { externals: [enumModule] },
     );
     const expected = d`
       from enum import IntEnum
 
       class Color(IntEnum):
-        RED = 1
-        GREEN = 2
-        BLUE = 3
+          RED = 1
+          GREEN = 2
+          BLUE = 3
 
-        
+
+
     `;
     expect(result).toRenderTo(expected);
   });
 
   it("classic enum with jsValues", () => {
-    const result = toSourceText(
+    const result = toSourceText([
       <py.EnumDeclaration
         name="Color"
         baseType="IntEnum"
@@ -42,16 +43,17 @@ describe("Python Enum", () => {
           { name: "GREEN", jsValue: 2 },
           { name: "BLUE", jsValue: "3" },
         ]}
-      />,
+      />],
       { externals: [enumModule] },
     );
     const expected = d`
       from enum import IntEnum
 
       class Color(IntEnum):
-        RED = "1"
-        GREEN = 2
-        BLUE = "3"
+          RED = "1"
+          GREEN = 2
+          BLUE = "3"
+
 
 
     `;
@@ -59,33 +61,36 @@ describe("Python Enum", () => {
   });
 
   it("classic enum with a refkey as jsValue", () => {
-    const result = toSourceText(
-      <py.StatementList>
-        <py.ClassDeclaration name="Dog" />
-        <py.ClassDeclaration name="Cat" />
-        <py.EnumDeclaration
-          name="Animal"
-          baseType="Enum"
-          members={[
-            { name: "DOG", value: refkey("Dog") },
-            { name: "CAT", value: refkey("Cat") },
-          ]}
-        />
-      </py.StatementList>,
+    const result = toSourceText([
+      <py.ClassDeclaration name="Dog" />,
+      <py.ClassDeclaration name="Cat" />,
+      <py.EnumDeclaration
+        name="Animal"
+        baseType="Enum"
+        members={[
+          { name: "DOG", value: refkey("Dog") },
+          { name: "CAT", value: refkey("Cat") },
+        ]}
+      />],
       { externals: [enumModule] },
     );
     const expected = d`
       from enum import Enum
 
       class Dog:
-        pass
+          pass
+
+
 
       class Cat:
-        pass
+          pass
+
+
 
       class Animal(Enum):
-        DOG = Dog
-        CAT = Cat
+          DOG = Dog
+          CAT = Cat
+
 
 
     `;
@@ -93,12 +98,12 @@ describe("Python Enum", () => {
   });
 
   it("enum with auto() values", () => {
-    const result = toSourceText(
+    const result = toSourceText([
       <py.EnumDeclaration
         name="Animal"
         style="auto"
         members={[{ name: "DOG" }, { name: "CAT" }, { name: "RABBIT" }]}
-      />,
+      />],
       { externals: [enumModule] },
     );
     const expected = d`
@@ -106,9 +111,10 @@ describe("Python Enum", () => {
       from enum import Enum
 
       class Animal(Enum):
-        DOG = auto()
-        CAT = auto()
-        RABBIT = auto()
+          DOG = auto()
+          CAT = auto()
+          RABBIT = auto()
+
 
 
     `;
@@ -116,7 +122,7 @@ describe("Python Enum", () => {
   });
 
   it("enum with mixed manual and auto() values", () => {
-    const result = toSourceText(
+    const result = toSourceText([
       <py.EnumDeclaration
         name="Permission"
         baseType="Flag"
@@ -126,7 +132,7 @@ describe("Python Enum", () => {
           { name: "WRITE" },
           { name: "EXECUTE" },
         ]}
-      />,
+      />],
       { externals: [enumModule] },
     );
 
@@ -135,9 +141,10 @@ describe("Python Enum", () => {
       from enum import Flag
 
       class Permission(Flag):
-        READ = 1
-        WRITE = auto()
-        EXECUTE = auto()
+          READ = 1
+          WRITE = auto()
+          EXECUTE = auto()
+
 
 
     `;
@@ -145,7 +152,7 @@ describe("Python Enum", () => {
   });
 
   it("functional enum with list", () => {
-    const result = toSourceText(
+    const result = toSourceText([
       <py.EnumDeclaration
         name="Direction"
         style="functional"
@@ -155,19 +162,21 @@ describe("Python Enum", () => {
           { name: "EAST" },
           { name: "WEST" },
         ]}
-      />,
+      />],
       { externals: [enumModule] },
     );
     const expected = d`
       from enum import Enum
 
       Direction = Enum('Direction', ['NORTH', 'SOUTH', 'EAST', 'WEST'])
+
+
     `;
     expect(result).toRenderTo(expected);
   });
 
   it("functional enum with mapping", () => {
-    const result = toSourceText(
+    const result = toSourceText([
       <py.EnumDeclaration
         name="Priority"
         style="functional"
@@ -176,13 +185,15 @@ describe("Python Enum", () => {
           { name: "MEDIUM", value: 2 },
           { name: "LOW", value: 3 },
         ]}
-      />,
+      />],
       { externals: [enumModule] },
     );
     const expected = d`
       from enum import Enum
 
       Priority = Enum('Priority', {'HIGH' : 1, 'MEDIUM' : 2, 'LOW' : 3})
+
+
     `;
     expect(result).toRenderTo(expected);
   });

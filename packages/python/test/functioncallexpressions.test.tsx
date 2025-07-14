@@ -6,41 +6,47 @@ import { toSourceText } from "./utils.jsx";
 
 describe("FunctionCallExpression", () => {
   it("renders", () => {
-    const result = toSourceText(<py.FunctionCallExpression target="foo" />);
+    const result = toSourceText([<py.FunctionCallExpression target="foo" />]);
     expect(result).toRenderTo(d`
       foo()
+
+
     `);
   });
   it("renders with args", () => {
-    const result = toSourceText(
+    const result = toSourceText([
       <py.FunctionCallExpression target="foo" args={["a", "b"]} />,
-    );
+    ]);
     expect(result).toRenderTo(d`
       foo(a, b)
+
+
     `);
   });
 
   it("function call with variables", () => {
     // Creating the reference separately so the naming policy doesn't interfere
     const methodRef = refkey();
-    const result = toSourceText(
-      <py.StatementList>
-        <py.FunctionDeclaration name="runFunc" refkey={methodRef} />
-        <py.FunctionCallExpression
-          target={methodRef}
-          args={[
-            <py.Value jsValue={"A name"} />,
-            <py.Value jsValue={42} />,
-            <py.Value jsValue={true} />,
-          ]}
-        />
-      </py.StatementList>,
-    );
+    const result = toSourceText([
+      <py.FunctionDeclaration name="runFunc" refkey={methodRef} />,
+      <py.FunctionCallExpression
+        target={methodRef}
+        args={[
+          <py.Value jsValue={"A name"} />,
+          <py.Value jsValue={42} />,
+          <py.Value jsValue={true} />,
+        ]}
+      />,
+    ]);
     const expected = d`
       def run_func():
-        pass
-      
+          pass
+
+
+
       run_func("A name", 42, True)
+
+
     `;
     expect(result).toRenderTo(expected);
   });
@@ -48,97 +54,99 @@ describe("FunctionCallExpression", () => {
   it("function call with variables and assignment", () => {
     // Creating the reference separately so the naming policy doesn't interfere
     const methodRef = refkey();
-    const result = toSourceText(
-      <py.StatementList>
-        <py.FunctionDeclaration
-          name="runFunc"
-          returnType="str"
-          refkey={methodRef}
-          parameters={[
-            { name: "name", type: "str" },
-            { name: "number", type: "int" },
-            { name: "flag", type: "bool" },
-          ]}
-        />
-        <py.VariableDeclaration
-          name="result"
-          type="str"
-          initializer={
-            <py.FunctionCallExpression
-              target={methodRef}
-              args={[
-                <py.Value jsValue={"A name"} />,
-                <py.Value jsValue={42} />,
-                <py.Value jsValue={true} />,
-              ]}
-            />
-          }
-        />
-      </py.StatementList>,
-    );
+    const result = toSourceText([
+      <py.FunctionDeclaration
+        name="runFunc"
+        returnType="str"
+        refkey={methodRef}
+        parameters={[
+          { name: "name", type: "str" },
+          { name: "number", type: "int" },
+          { name: "flag", type: "bool" },
+        ]}
+      />,
+      <py.VariableDeclaration
+        name="result"
+        type="str"
+        initializer={
+          <py.FunctionCallExpression
+            target={methodRef}
+            args={[
+              <py.Value jsValue={"A name"} />,
+              <py.Value jsValue={42} />,
+              <py.Value jsValue={true} />,
+            ]}
+          />
+        }
+      />,
+    ]);
     const expected = d`
       def run_func(name: str, number: int, flag: bool) -> str:
-        pass
-      
+          pass
+
+
+
       result: str = run_func("A name", 42, True)
+
+
     `;
     expect(result).toRenderTo(expected);
   });
 
   it("Method call without a reference and with call statement vars", () => {
-    const result = toSourceText(
-      <py.StatementList>
-        <py.FunctionCallExpression
-          target={"example_method"}
-          args={[
-            <py.VariableDeclaration
-              name="name"
-              initializer={"A name"}
-              callStatementVar
-            />,
-            <py.VariableDeclaration
-              name="number"
-              initializer={42}
-              callStatementVar
-            />,
-            <py.VariableDeclaration
-              name="flag"
-              initializer={true}
-              callStatementVar
-            />,
-          ]}
-        />
-      </py.StatementList>,
-    );
+    const result = toSourceText([
+      <py.FunctionCallExpression
+        target={"example_method"}
+        args={[
+          <py.VariableDeclaration
+            name="name"
+            initializer={"A name"}
+            callStatementVar
+          />,
+          <py.VariableDeclaration
+            name="number"
+            initializer={42}
+            callStatementVar
+          />,
+          <py.VariableDeclaration
+            name="flag"
+            initializer={true}
+            callStatementVar
+          />,
+        ]}
+      />,
+    ]);
     const expected = d`
       example_method(name="A name", number=42, flag=True)
+
+
     `;
     expect(result).toRenderTo(expected);
   });
 
   it("Method call without a reference mixing unnamed and named vars", () => {
-    const result = toSourceText(
-      <py.StatementList>
-        <py.FunctionCallExpression
-          target={"example_method"}
-          args={[
-            <py.Value jsValue={"A name"} />,
-            <py.VariableDeclaration
-              name="number"
-              initializer={42}
-              callStatementVar
-            />,
-            <py.VariableDeclaration
-              name="flag"
-              initializer={true}
-              callStatementVar
-            />,
-          ]}
-        />
-      </py.StatementList>,
-    );
+    const result = toSourceText([
+      <py.FunctionCallExpression
+        target={"example_method"}
+        args={[
+          <py.Value jsValue={"A name"} />,
+          <py.VariableDeclaration
+            name="number"
+            initializer={42}
+            callStatementVar
+          />,
+          <py.VariableDeclaration
+            name="flag"
+            initializer={true}
+            callStatementVar
+          />,
+        ]}
+      />,
+    ]);
     const expected = d`
       example_method("A name", number=42, flag=True)
+
+
     `;
     expect(result).toRenderTo(expected);
   });

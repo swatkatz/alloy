@@ -8,24 +8,26 @@ import { toSourceText } from "./utils.jsx";
 it("declaration of class instance with variables", () => {
   // Creating the reference separately so the naming policy doesn't interfere
   const classRef = refkey();
-  const result = toSourceText(
-    <py.StatementList>
-      <py.ClassDeclaration name="one-class" refkey={classRef} />
-      <py.NewExpression
-        target={classRef}
-        args={[
-          <py.Value jsValue={"A name"} />,
-          <py.Value jsValue={42} />,
-          <py.Value jsValue={true} />,
-        ]}
-      />
-    </py.StatementList>,
-  );
+  const result = toSourceText([
+    <py.ClassDeclaration name="one-class" refkey={classRef} />,
+    <py.NewExpression
+      target={classRef}
+      args={[
+        <py.Value jsValue={"A name"} />,
+        <py.Value jsValue={42} />,
+        <py.Value jsValue={true} />,
+      ]}
+    />,
+  ]);
   const expected = d`
     class OneClass:
-      pass
+        pass
+
+
 
     OneClass("A name", 42, True)
+
+
   `;
   expect(result).toRenderTo(expected);
 });
@@ -38,92 +40,92 @@ it("correct resolving of external module", () => {
     },
   });
   const result = toSourceText(
-    <py.StatementList>
-      <py.NewExpression target={requestsLib["models"].Request} />
-    </py.StatementList>,
+    [<py.NewExpression target={requestsLib["models"].Request} />],
     { externals: [requestsLib] },
   );
   const expected = d`
     from requests.models import Request
 
     Request()
+
+
   `;
   expect(result).toRenderTo(expected);
 });
 
 it("Class instantiation without a reference", () => {
-  const result = toSourceText(
-    <py.StatementList>
-      <py.NewExpression
-        target={"ExampleClass"}
-        args={[
-          <py.Value jsValue={"A name"} />,
-          <py.Value jsValue={42} />,
-          <py.Value jsValue={true} />,
-        ]}
-      />
-    </py.StatementList>,
-  );
+  const result = toSourceText([
+    <py.NewExpression
+      target={"ExampleClass"}
+      args={[
+        <py.Value jsValue={"A name"} />,
+        <py.Value jsValue={42} />,
+        <py.Value jsValue={true} />,
+      ]}
+    />,
+  ]);
   const expected = d`
     ExampleClass("A name", 42, True)
+
+
   `;
   expect(result).toRenderTo(expected);
 });
 
 it("Class instantiation without a reference and with call statement vars", () => {
-  const result = toSourceText(
-    <py.StatementList>
-      <py.NewExpression
-        target={"ExampleClass"}
-        args={[
-          <py.VariableDeclaration
-            name="name"
-            initializer={"A name"}
-            callStatementVar
-          />,
-          <py.VariableDeclaration
-            name="number"
-            initializer={42}
-            callStatementVar
-          />,
-          <py.VariableDeclaration
-            name="flag"
-            initializer={true}
-            callStatementVar
-          />,
-        ]}
-      />
-    </py.StatementList>,
-  );
+  const result = toSourceText([
+    <py.NewExpression
+      target={"ExampleClass"}
+      args={[
+        <py.VariableDeclaration
+          name="name"
+          initializer={"A name"}
+          callStatementVar
+        />,
+        <py.VariableDeclaration
+          name="number"
+          initializer={42}
+          callStatementVar
+        />,
+        <py.VariableDeclaration
+          name="flag"
+          initializer={true}
+          callStatementVar
+        />,
+      ]}
+    />,
+  ]);
   const expected = d`
     ExampleClass(name="A name", number=42, flag=True)
+
+
   `;
   expect(result).toRenderTo(expected);
 });
 
 it("Class instantiation without a reference mixing unnamed and named vars", () => {
-  const result = toSourceText(
-    <py.StatementList>
-      <py.NewExpression
-        target={"ExampleClass"}
-        args={[
-          <py.Value jsValue={"A name"} />,
-          <py.VariableDeclaration
-            name="number"
-            initializer={42}
-            callStatementVar
-          />,
-          <py.VariableDeclaration
-            name="flag"
-            initializer={true}
-            callStatementVar
-          />,
-        ]}
-      />
-    </py.StatementList>,
-  );
+  const result = toSourceText([
+    <py.NewExpression
+      target={"ExampleClass"}
+      args={[
+        <py.Value jsValue={"A name"} />,
+        <py.VariableDeclaration
+          name="number"
+          initializer={42}
+          callStatementVar
+        />,
+        <py.VariableDeclaration
+          name="flag"
+          initializer={true}
+          callStatementVar
+        />,
+      ]}
+    />
+  ]);
   const expected = d`
     ExampleClass("A name", number=42, flag=True)
+
+
   `;
   expect(result).toRenderTo(expected);
 });

@@ -1,10 +1,16 @@
 import {
+  childrenArray,
   ComponentContext,
   SourceFile as CoreSourceFile,
   createNamedContext,
+  For,
+  List,
+  ListProps,
+  memo,
   Scope,
   Show,
   SourceDirectoryContext,
+  splitProps,
   useContext,
   type Children,
 } from "@alloy-js/core";
@@ -12,6 +18,7 @@ import { join } from "pathe";
 import { PythonModuleScope } from "../symbols/index.js";
 import { ImportStatements } from "./ImportStatement.js";
 import { Reference } from "./Reference.js";
+import { hbr } from "@alloy-js/core/stc";
 
 export interface SourceFileContext {
   scope: PythonModuleScope;
@@ -81,9 +88,31 @@ export function SourceFile(props: SourceFileProps) {
       </Show>
       <SourceFileContext.Provider value={sfContext}>
         <Scope value={scope} kind="source-file">
-          {props.children}
+          <SourceFileList doubleHardline>
+            {props.children}
+          </SourceFileList>
         </Scope>
       </SourceFileContext.Provider>
     </CoreSourceFile>
+  );
+}
+
+/**
+ * Custom List that adds an extra <hbr /> after each child.
+ * This is used along with doubleHardline in the For component to ensure
+ * that there are two lines after each item in the list.
+ */
+export function SourceFileList(props: ListProps) {
+  const [rest, forProps] = splitProps(props, ["children"]);
+  const resolvedChildren = memo(() =>
+    childrenArray(() => rest.children, {
+      preserveFragments: true,
+    }),
+  );
+  
+  return (
+    <For each={resolvedChildren} {...forProps} skipFalsy>
+      {(child) => <>{child}<hbr /></>}
+    </For>
   );
 }
