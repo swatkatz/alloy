@@ -1,9 +1,11 @@
 import {
   Children,
+  Indent,
   List,
   Name,
   OutputSymbolFlags,
   Scope,
+  Show,
   childrenArray,
   refkey,
   takeSymbols,
@@ -18,6 +20,7 @@ import {
 } from "./Declaration.js";
 import { SourceFileContext } from "./SourceFile.jsx";
 import { PythonBlock } from "./PythonBlock.jsx";
+import { PyDoc } from "./index.js";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
   /**
@@ -92,6 +95,9 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
       <Scope name={updatedProps.name} kind="class">
         {basesPart}
         <PythonBlock opener=":">
+          <Show when={Boolean(props.doc)}>
+            <PyDoc children={props.doc} />
+          </Show>
           {hasChildren ? props.children : "pass"}
         </PythonBlock>
       </Scope>

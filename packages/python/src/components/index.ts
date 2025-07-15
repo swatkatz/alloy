@@ -8,6 +8,7 @@ export * from "./FunctionDeclaration.js";
 export * from "./ImportStatement.js";
 export * from "./MemberExpression.js";
 export * from "./NewExpression.js";
+export * from "./PyDoc.js";
 export * from "./PropertyName.js";
 export * from "./PythonBlock.js";
 export * from "./Reference.js";
