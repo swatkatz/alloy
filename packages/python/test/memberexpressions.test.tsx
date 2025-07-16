@@ -279,6 +279,32 @@ it("throws an error when providing conflicting part props", () => {
   );
 });
 
+it("throws an error when providing an empty slice", () => {
+  expect(() =>
+    toSourceText(
+      <py.MemberExpression>
+        <py.MemberExpression.Part id="obj" />
+        <py.MemberExpression.Part slice={{}} />
+      </py.MemberExpression>,
+    ),
+  ).toThrowError(
+    `MemberExpression.Part: slice object cannot be empty`,
+  );
+});
+
+it("throws an error when providing an empty slice", () => {
+  expect(() =>
+    toSourceText(
+      <py.MemberExpression>
+        <py.MemberExpression.Part id="obj" />
+        <py.MemberExpression.Part keys={[]} />
+      </py.MemberExpression>,
+    ),
+  ).toThrowError(
+    `MemberExpression.Part: keys array cannot be empty`,
+  );
+});
+
 it("takes children for the id part", () => {
   expect(
     toSourceText(
