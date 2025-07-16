@@ -8,7 +8,7 @@ import {
 import { usePythonNamePolicy } from "../name-policy.js";
 import { ParameterDescriptor } from "../parameter-descriptor.js";
 import { createPythonSymbol } from "../symbol-creation.js";
-import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
+import { PythonOutputSymbol } from "../symbols/index.js";
 import { PythonSourceFileContext } from "./SourceFile.jsx";
 import { Value } from "./Value.jsx";
 
@@ -115,7 +115,6 @@ interface DeclaredParameterDescriptor
 
 function normalizeAndDeclareParameters(
   parameters: ParameterDescriptor[] | string[],
-  flags: PythonSymbolFlags = PythonSymbolFlags.ParameterSymbol,
 ): DeclaredParameterDescriptor[] {
   const namePolicy = usePythonNamePolicy();
   const sfContext = useContext(PythonSourceFileContext);
@@ -128,7 +127,6 @@ function normalizeAndDeclareParameters(
       const symbol = createPythonSymbol(
         paramName,
         {
-          pythonFlags: flags,
           module: module,
         },
         "parameter",
@@ -139,14 +137,10 @@ function normalizeAndDeclareParameters(
     });
   } else {
     return (parameters as ParameterDescriptor[]).map((param) => {
-      const nullishFlag =
-        param.optional ? PythonSymbolFlags.Nullish : PythonSymbolFlags.None;
-
       const symbol = createPythonSymbol(
         param.name,
         {
           refkeys: param.refkey,
-          pythonFlags: flags | nullishFlag,
           module: module,
         },
         "parameter",

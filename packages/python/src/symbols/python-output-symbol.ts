@@ -8,22 +8,8 @@ import {
 } from "@alloy-js/core";
 import { PythonMemberScope } from "./python-member-scope.js";
 
-export enum PythonSymbolFlags {
-  None = 0,
-  LocalImportSymbol = 1 << 0, // from foo import >Bar<
-  ClassSymbol = 1 << 1, // class >MyClass<
-  FunctionSymbol = 1 << 2, // def >func<()
-  ParameterSymbol = 1 << 3, // def foo(>x<):
-  InstanceMember = 1 << 4, // self.>value< = 42
-  NonInstanceScopeMember = 1 << 5, // >value< = 42, but inside a member scope
-  StaticMember = 1 << 6, // @staticmethod / @classFunction decorated methods or class variables
-  PrivateMember = 1 << 7, // _hidden or __hidden__-named variables
-  Nullish = 1 << 8, // >foo<: Optional[str] = None
-}
-
 export interface CreatePythonSymbolOptions extends OutputSymbolOptions {
   module?: string;
-  pythonFlags?: PythonSymbolFlags;
 }
 
 export interface CreatePythonSymbolFunctionOptions
@@ -38,21 +24,6 @@ export class PythonOutputSymbol extends OutputSymbol {
   constructor(name: string, options: CreatePythonSymbolOptions) {
     super(name, options);
     this.#module = options.module ?? undefined;
-    this.#pythonFlags = options.pythonFlags ?? PythonSymbolFlags.None;
-  }
-
-  #pythonFlags: PythonSymbolFlags;
-  get pythonFlags() {
-    track(this, TrackOpTypes.GET, "pythonFlags");
-    return this.#pythonFlags;
-  }
-  set pythonFlags(value: PythonSymbolFlags) {
-    const oldValue = this.#pythonFlags;
-    if (oldValue === value) {
-      return;
-    }
-    this.#pythonFlags = value;
-    trigger(this, TriggerOpTypes.SET, "pythonFlags", value, oldValue);
   }
 
   // The module in which the symbol is defined
