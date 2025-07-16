@@ -11,14 +11,14 @@ import {
 } from "./FunctionCallExpression.jsx";
 import { SourceFileContext } from "./SourceFile.jsx";
 
-export interface NewExpressionProps extends FunctionCallExpressionProps {}
+export interface ClassInstantiationProps extends FunctionCallExpressionProps {}
 
 /**
  * Used to create new instances of classes in Python.
  *
  * @example
  * ```tsx
- * <NewExpression target="MyClass" args={["arg1", "arg2"]} />
+ * <ClassInstantiation target="MyClass" args={["arg1", "arg2"]} />
  * ```
  * This will generate:
  * ```python
@@ -30,7 +30,7 @@ export interface NewExpressionProps extends FunctionCallExpressionProps {}
  * Args is a list arguments that can be either Values, which will render as positional arguments,
  * or VariableDeclarations, which will render as named arguments in the call statement.
  */
-export function NewExpression(props: NewExpressionProps) {
+export function ClassInstantiation(props: ClassInstantiationProps) {
   const sfContext = useContext(SourceFileContext);
   const module = sfContext?.module;
   const sym = new PythonOutputSymbol("", {

@@ -7,7 +7,7 @@ export * from "./FunctionCallExpression.js";
 export * from "./FunctionDeclaration.js";
 export * from "./ImportStatement.js";
 export * from "./MemberExpression.js";
-export * from "./NewExpression.js";
+export * from "./ClassInstantiation.js";
 export * from "./PythonBlock.js";
 export * from "./Reference.js";
 export * from "./SourceFile.js";
