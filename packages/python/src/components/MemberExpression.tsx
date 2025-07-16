@@ -144,6 +144,19 @@ function createPartDescriptorFromProps(
     );
   }
 
+  // Validate slice syntax
+  if (partProps.slice) {
+    const { start, stop, step } = partProps.slice;
+    if (!start && !stop && !step) {
+      throw new Error("MemberExpression.Part: slice object cannot be empty");
+    }
+  }
+  
+  // Validate keys array
+  if (partProps.keys?.length === 0) {
+    throw new Error("MemberExpression.Part: keys array cannot be empty");
+  }
+
   const symbolSource = computed(() => {
     if (partProps.refkey) {
       return getSymbolForRefkey(partProps.refkey).value;
