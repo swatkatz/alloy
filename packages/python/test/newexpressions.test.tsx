@@ -11,7 +11,7 @@ it("declaration of class instance with variables", () => {
   const result = toSourceText(
     <py.StatementList>
       <py.ClassDeclaration name="one-class" refkey={classRef} />
-      <py.NewExpression
+      <py.ClassInstantiation
         target={classRef}
         args={[
           <py.Value jsValue={"A name"} />,
@@ -39,7 +39,7 @@ it("correct resolving of external module", () => {
   });
   const result = toSourceText(
     <py.StatementList>
-      <py.NewExpression target={requestsLib["models"].Request} />
+      <py.ClassInstantiation target={requestsLib["models"].Request} />
     </py.StatementList>,
     { externals: [requestsLib] },
   );
@@ -54,7 +54,7 @@ it("correct resolving of external module", () => {
 it("Class instantiation without a reference", () => {
   const result = toSourceText(
     <py.StatementList>
-      <py.NewExpression
+      <py.ClassInstantiation
         target={"ExampleClass"}
         args={[
           <py.Value jsValue={"A name"} />,
@@ -73,7 +73,7 @@ it("Class instantiation without a reference", () => {
 it("Class instantiation without a reference and with call statement vars", () => {
   const result = toSourceText(
     <py.StatementList>
-      <py.NewExpression
+      <py.ClassInstantiation
         target={"ExampleClass"}
         args={[
           <py.VariableDeclaration
@@ -104,7 +104,7 @@ it("Class instantiation without a reference and with call statement vars", () =>
 it("Class instantiation without a reference mixing unnamed and named vars", () => {
   const result = toSourceText(
     <py.StatementList>
-      <py.NewExpression
+      <py.ClassInstantiation
         target={"ExampleClass"}
         args={[
           <py.Value jsValue={"A name"} />,

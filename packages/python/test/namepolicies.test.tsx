@@ -77,7 +77,7 @@ it("correct formatting of call signature parameters names", () => {
 it("correct formatting of call statement vars", () => {
   const result = toSourceText(
     <py.StatementList>
-      <py.NewExpression
+      <py.ClassInstantiation
         target={"test"}
         args={[
           <py.VariableDeclaration
