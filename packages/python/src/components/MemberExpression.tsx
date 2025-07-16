@@ -405,46 +405,28 @@ export interface SubscriptionProps {
 }
 
 function getSubscriptionValue(partProps: SubscriptionProps): Children {
-  if (
-    "keys" in partProps &&
-    partProps.keys !== undefined &&
-    partProps.keys.length > 0
-  ) {
-    let parsedKeys = [];
-    for (const key of partProps.keys) {
-      parsedKeys.push(getNameForRefkey(key as Refkey));
-    }
+  // Handle tuple keys: obj[a, b] → (a, b)
+  if (partProps.keys?.length) {
+    const parsedKeys = partProps.keys.map(key => getNameForRefkey(key as Refkey));
     return code`${parsedKeys.join(", ")}`;
-  } else if (
-    "slice" in partProps &&
-    partProps.slice !== undefined &&
-    Object.keys(partProps.slice).length > 0
-  ) {
-    let parts = [];
-    if (partProps.slice.start !== undefined) {
-      parts.push(getNameForRefkey(partProps.slice.start as Refkey));
-      parts.push(":");
-    }
-    if (partProps.slice.stop !== undefined) {
-      if (partProps.slice.start === undefined) {
-        parts.push(":");
-      }
-      parts.push(getNameForRefkey(partProps.slice.stop as Refkey));
-    }
-    if (partProps.slice.step !== undefined) {
-      if (
-        partProps.slice.start === undefined &&
-        partProps.slice.stop === undefined
-      ) {
-        parts.push(":");
-        parts.push(":");
-      } else {
-        parts.push(":");
-      }
-      parts.push(getNameForRefkey(partProps.slice.step as Refkey));
-    }
-    return code`${parts.join("")}`;
-  } else {
-    return getNameForRefkey(partProps.key as Refkey);
   }
+  
+  // Handle slice: obj[start:stop:step]
+  if (partProps.slice && Object.keys(partProps.slice).length > 0) {
+    const { start, stop, step } = partProps.slice;
+    const parts = [
+      start ? getNameForRefkey(start as Refkey) : "",
+      ":",
+      stop ? getNameForRefkey(stop as Refkey) : "",
+    ];
+    
+    if (step) {
+      parts.push(":", getNameForRefkey(step as Refkey));
+    }
+    
+    return code`${parts.join("")}`;
+  }
+  
+  // Handle single key: obj[key]
+  return getNameForRefkey(partProps.key as Refkey);
 }
