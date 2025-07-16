@@ -3,7 +3,6 @@ import { createPythonSymbol } from "../symbol-creation.js";
 import { CustomOutputScope } from "./custom-output-scope.js";
 import {
   PythonOutputSymbol,
-  PythonSymbolFlags,
 } from "./python-output-symbol.js";
 
 export class ImportedSymbol {
@@ -74,7 +73,6 @@ export class PythonModuleScope extends CustomOutputScope {
         binder: this.binder,
         scope: this,
         aliasTarget: targetSymbol,
-        pythonFlags: PythonSymbolFlags.LocalImportSymbol,
       },
       undefined,
       false,

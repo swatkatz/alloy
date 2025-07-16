@@ -8,7 +8,6 @@ import {
   takeSymbols,
 } from "@alloy-js/core";
 import { createPythonSymbol } from "../symbol-creation.js";
-import { PythonSymbolFlags } from "../symbols/index.js";
 import {
   BaseDeclarationProps,
   Declaration,
@@ -64,7 +63,6 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
       flags:
         (props.flags ?? OutputSymbolFlags.None) |
         OutputSymbolFlags.MemberContainer,
-      pythonFlags: PythonSymbolFlags.ClassSymbol,
     },
     "class",
     true,

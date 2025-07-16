@@ -12,7 +12,6 @@ import {
   useScope,
 } from "@alloy-js/core";
 import { createPythonSymbol } from "../symbol-creation.js";
-import { PythonSymbolFlags } from "../symbols/index.js";
 import { BaseDeclarationProps } from "./Declaration.jsx";
 import { Value } from "./Value.jsx";
 
@@ -86,7 +85,6 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
     {
       scope: scope,
       refkeys: props.refkey,
-      pythonFlags: PythonSymbolFlags.None,
     },
     "variable",
     true,

@@ -8,7 +8,7 @@ import {
   useScope,
 } from "@alloy-js/core";
 import { createPythonSymbol } from "../symbol-creation.js";
-import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
+import { PythonOutputSymbol } from "../symbols/index.js";
 import { getCallSignatureProps } from "../utils.js";
 import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import { BaseDeclarationProps, Declaration } from "./Declaration.js";
@@ -57,7 +57,6 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
       scope: scope,
       refkeys: props.refkey,
       flags: props.flags ?? OutputSymbolFlags.None,
-      pythonFlags: PythonSymbolFlags.FunctionSymbol,
     },
     "function",
     false,
