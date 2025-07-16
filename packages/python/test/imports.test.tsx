@@ -12,6 +12,7 @@ import {
   createPythonModuleScope,
   toSourceText,
 } from "./utils.jsx";
+import { createPythonSymbol } from "../src/symbol-creation.js";
 
 describe("ImportStatement", () => {
   it("renders module import", () => {
@@ -21,11 +22,11 @@ describe("ImportStatement", () => {
   });
 
   it("renders named imports", () => {
-    const sqrtSymbol = new PythonOutputSymbol("sqrt", {
+    const sqrtSymbol = createPythonSymbol("sqrt", {
       binder: undefined,
       scope: undefined,
     });
-    const piSymbol = new PythonOutputSymbol("pi", {
+    const piSymbol = createPythonSymbol("pi", {
       binder: undefined,
       scope: undefined,
     });
@@ -44,11 +45,11 @@ describe("ImportStatement", () => {
 describe("ImportStatements", () => {
   it("renders multiple import statements", () => {
     const pythonModuleScope = createPythonModuleScope("math", undefined);
-    const sqrtSymbol = new PythonOutputSymbol("sqrt", {
+    const sqrtSymbol = createPythonSymbol("sqrt", {
       binder: undefined,
       scope: undefined,
     });
-    const piSymbol = new PythonOutputSymbol("pi", {
+    const piSymbol = createPythonSymbol("pi", {
       binder: undefined,
       scope: undefined,
     });
@@ -58,7 +59,7 @@ describe("ImportStatements", () => {
     ]);
     const sysModuleScope = createPythonModuleScope("sys", undefined);
     const requestsScope = createPythonModuleScope("requests", undefined);
-    const getSymbol = new PythonOutputSymbol("get", {
+    const getSymbol = createPythonSymbol("get", {
       binder: undefined,
       scope: undefined,
     });
@@ -81,11 +82,11 @@ describe("ImportStatements", () => {
   });
   it("renders multiple import statements, but joining imports from the same module", () => {
     const pythonModuleScope = createPythonModuleScope("math", undefined);
-    const sqrtSymbol = new PythonOutputSymbol("sqrt", {
+    const sqrtSymbol = createPythonSymbol("sqrt", {
       binder: undefined,
       scope: undefined,
     });
-    const piSymbol = new PythonOutputSymbol("pi", {
+    const piSymbol = createPythonSymbol("pi", {
       binder: undefined,
       scope: undefined,
     });
@@ -94,11 +95,11 @@ describe("ImportStatements", () => {
       new ImportedSymbol(piSymbol, piSymbol),
     ]);
     const requestsScope = createPythonModuleScope("requests", undefined);
-    const getSymbol = new PythonOutputSymbol("get", {
+    const getSymbol = createPythonSymbol("get", {
       binder: undefined,
       scope: undefined,
     });
-    const postSymbol = new PythonOutputSymbol("post", {
+    const postSymbol = createPythonSymbol("post", {
       binder: undefined,
       scope: undefined,
     });
@@ -190,7 +191,10 @@ describe("Imports being used", () => {
             <py.VariableDeclaration name="two" initializer={rk2} />
             <py.VariableDeclaration name="three" initializer={rk3} />
             <py.VariableDeclaration name="something_else" initializer={rk4} />
-            <py.VariableDeclaration name="something_else_two" initializer={rk5} />
+            <py.VariableDeclaration
+              name="something_else_two"
+              initializer={rk5}
+            />
             <py.VariableDeclaration name="something" initializer={rk6} />
             <py.VariableDeclaration name="something_two" initializer={rk7} />
           </py.StatementList>

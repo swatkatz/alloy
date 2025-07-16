@@ -126,7 +126,11 @@ describe("Call Signature", () => {
   it("throws an error for a call signature that's instance and class function at the same time", () => {
     expect(() =>
       toSourceText(
-        <py.CallSignature parameters={["a", "b"]} instanceFunction classFunction />,
+        <py.CallSignature
+          parameters={["a", "b"]}
+          instanceFunction
+          classFunction
+        />,
       ),
     ).toThrowError(/Cannot be both an instance function and a class function/);
   });

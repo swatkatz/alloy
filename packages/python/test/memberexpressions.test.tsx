@@ -287,9 +287,7 @@ it("throws an error when providing an empty slice", () => {
         <py.MemberExpression.Part slice={{}} />
       </py.MemberExpression>,
     ),
-  ).toThrowError(
-    `MemberExpression.Part: slice object cannot be empty`,
-  );
+  ).toThrowError(`MemberExpression.Part: slice object cannot be empty`);
 });
 
 it("throws an error when providing an empty array", () => {
@@ -300,9 +298,7 @@ it("throws an error when providing an empty array", () => {
         <py.MemberExpression.Part keys={[]} />
       </py.MemberExpression>,
     ),
-  ).toThrowError(
-    `MemberExpression.Part: keys array cannot be empty`,
-  );
+  ).toThrowError(`MemberExpression.Part: keys array cannot be empty`);
 });
 
 it("takes children for the id part", () => {

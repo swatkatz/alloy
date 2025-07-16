@@ -7,8 +7,9 @@ import {
 } from "@alloy-js/core";
 import { usePythonNamePolicy } from "../name-policy.js";
 import { ParameterDescriptor } from "../parameter-descriptor.js";
+import { createPythonSymbol } from "../symbol-creation.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
-import { SourceFileContext } from "./SourceFile.jsx";
+import { PythonSourceFileContext } from "./SourceFile.jsx";
 import { Value } from "./Value.jsx";
 
 export interface CallSignatureParametersProps {
@@ -37,7 +38,7 @@ export function CallSignatureParameters(props: CallSignatureParametersProps) {
     throw new Error("Cannot be both an instance function and a class function");
   }
 
-  const sfContext = useContext(SourceFileContext);
+  const sfContext = useContext(PythonSourceFileContext);
   const module = sfContext?.module;
   const parameters = normalizeAndDeclareParameters(props.parameters ?? []);
   const additionalArgs =
@@ -51,7 +52,7 @@ export function CallSignatureParameters(props: CallSignatureParametersProps) {
           {(param) =>
             parameter({
               ...param,
-              symbol: new PythonOutputSymbol(param.name, { module: module }),
+              symbol: createPythonSymbol(param.name, { module: module }),
             })
           }
         </For>
@@ -117,19 +118,22 @@ function normalizeAndDeclareParameters(
   flags: PythonSymbolFlags = PythonSymbolFlags.ParameterSymbol,
 ): DeclaredParameterDescriptor[] {
   const namePolicy = usePythonNamePolicy();
-  const sfContext = useContext(SourceFileContext);
+  const sfContext = useContext(PythonSourceFileContext);
   const module = sfContext?.module;
   if (parameters.length === 0) {
     return [];
   }
   if (typeof parameters[0] === "string") {
     return (parameters as string[]).map((paramName) => {
-      const name = namePolicy.getName(paramName, "parameter");
-
-      const symbol = new PythonOutputSymbol(name, {
-        pythonFlags: flags,
-        module: module,
-      });
+      const symbol = createPythonSymbol(
+        paramName,
+        {
+          pythonFlags: flags,
+          module: module,
+        },
+        "parameter",
+        false,
+      );
 
       return { refkeys: symbol.refkeys, symbol };
     });
@@ -138,13 +142,15 @@ function normalizeAndDeclareParameters(
       const nullishFlag =
         param.optional ? PythonSymbolFlags.Nullish : PythonSymbolFlags.None;
 
-      const symbol = new PythonOutputSymbol(
-        namePolicy.getName(param.name, "parameter"),
+      const symbol = createPythonSymbol(
+        param.name,
         {
           refkeys: param.refkey,
           pythonFlags: flags | nullishFlag,
           module: module,
         },
+        "parameter",
+        false,
       );
 
       return {

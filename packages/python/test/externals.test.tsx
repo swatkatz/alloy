@@ -1,7 +1,7 @@
 import { d } from "@alloy-js/core/testing";
 import { expect, it } from "vitest";
-import { createModule } from "../src/index.js";
 import * as py from "../src/components/index.js";
+import { createModule } from "../src/index.js";
 import { toSourceText } from "./utils.js";
 
 it("uses import from external library", () => {

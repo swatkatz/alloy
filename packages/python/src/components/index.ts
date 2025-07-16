@@ -1,5 +1,6 @@
 export * from "./CallSignature.js";
 export * from "./ClassDeclaration.js";
+export * from "./ClassInstantiation.js";
 export * from "./Declaration.js";
 export * from "./EnumDeclaration.js";
 export * from "./EnumMember.js";
@@ -7,7 +8,6 @@ export * from "./FunctionCallExpression.js";
 export * from "./FunctionDeclaration.js";
 export * from "./ImportStatement.js";
 export * from "./MemberExpression.js";
-export * from "./ClassInstantiation.js";
 export * from "./PythonBlock.js";
 export * from "./Reference.js";
 export * from "./SourceFile.js";
