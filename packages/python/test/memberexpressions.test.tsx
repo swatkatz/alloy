@@ -292,7 +292,7 @@ it("throws an error when providing an empty slice", () => {
   );
 });
 
-it("throws an error when providing an empty slice", () => {
+it("throws an error when providing an empty array", () => {
   expect(() =>
     toSourceText(
       <py.MemberExpression>
