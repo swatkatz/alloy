@@ -139,7 +139,7 @@ export function GoogleStyleDocRaises(props: GoogleStyleDocRaisesProps) {
   );
 }
 
-export interface GoogleStyleDocProps {
+export interface GoogleStyleFunctionDocProps {
   description: Children[];
   parameters: ParameterDescriptor[] | string[];
   returns?: string;
@@ -147,9 +147,9 @@ export interface GoogleStyleDocProps {
 }
 
 /**
- * A component that creates a GoogleStyleDoc block for parameters.
+ * A component that creates a GoogleStyleFunctionDoc block for parameters.
  */
-export function GoogleStyleDoc(props: GoogleStyleDocProps) {
+export function GoogleStyleFunctionDoc(props: GoogleStyleFunctionDocProps) {
   return (
     <>
       <PyDoc>
@@ -172,6 +172,35 @@ export function GoogleStyleDoc(props: GoogleStyleDocProps) {
          ))}
         </Show>
       </PyDoc>
+      <hbr />
+    </>
+  );
+}
+
+export interface GoogleStyleClassDocProps {
+  description: Children[];
+  parameters: ParameterDescriptor[] | string[];
+}
+
+/**
+ * A component that creates a GoogleStyleClassDoc block for parameters.
+ */
+export function GoogleStyleClassDoc(props: GoogleStyleClassDocProps) {
+  return (
+    <>
+      <PyDoc>
+        <Show when={props.description !== undefined}>
+          <List doubleHardline>
+            {props.description.map(param => (
+                param
+            ))}
+          </List>
+        </Show>
+        <Show when={props.parameters.length > 0}>
+          <GoogleStyleDocParams parameters={props.parameters} />
+        </Show>
+      </PyDoc>
+      <hbr />
     </>
   );
 }
@@ -244,6 +273,33 @@ export function PyDoc(props: PyDocProps) {
       </align>
       <hbr />
       {'"""'}
+    </>
+  );
+}
+
+export interface SimpleCommentBlockProps {
+  children: Children;
+}
+
+export function SimpleCommentBlock(props: SimpleCommentBlockProps) {
+  return (
+    <>
+      #{" "}
+      <align string="# ">
+        <Prose>{props.children}</Prose>
+      </align>
+    </>
+  );
+}
+
+export interface SimpleInlineCommentProps {
+  children: Children;
+}
+
+export function SimpleInlineComment(props: SimpleInlineCommentProps) {
+  return (
+    <>
+      {"  "}# <Prose>{props.children}</Prose>
     </>
   );
 }

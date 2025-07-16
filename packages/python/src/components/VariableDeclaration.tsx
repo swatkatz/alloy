@@ -4,6 +4,7 @@ import {
   Name,
   OutputScope,
   OutputSymbolFlags,
+  Show,
   createSymbolSlot,
   effect,
   emitSymbol,
@@ -18,6 +19,7 @@ import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { BaseDeclarationProps } from "./Declaration.jsx";
 import { SourceFileContext } from "./SourceFile.jsx";
 import { Value } from "./Value.jsx";
+import { SimpleCommentBlock } from "./index.js";
 
 export interface VariableDeclarationProps extends BaseDeclarationProps {
   /**
@@ -158,6 +160,10 @@ export function VariableDeclaration(props: VariableDeclarationProps) {
   const [renderRightSideOperator, rightSide] = getRightSide();
   return (
     <>
+      <Show when={Boolean(props.doc)}>
+        <SimpleCommentBlock children={props.doc} />
+        <hbr />
+      </Show>
       <CoreDeclaration symbol={sym}>
         {<Name />}
         {type}

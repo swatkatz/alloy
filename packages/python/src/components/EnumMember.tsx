@@ -11,6 +11,7 @@ import { usePythonNamePolicy } from "../name-policy.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
 import { SourceFileContext } from "./SourceFile.jsx";
 import { Value } from "./Value.jsx";
+import { SimpleInlineComment } from "./index.js";
 
 export interface EnumMemberProps {
   /**
@@ -80,6 +81,9 @@ export function EnumMember(props: EnumMemberProps) {
     return (
       <>
         '{sym.name}'<Show when={valueCode !== undefined}> : {valueCode}</Show>
+        <Show when={props.doc !== undefined}>
+          <SimpleInlineComment>{props.doc}</SimpleInlineComment>
+        </Show>
       </>
     );
   }
@@ -87,6 +91,9 @@ export function EnumMember(props: EnumMemberProps) {
     <>
       {sym.name}
       <Show when={valueCode !== undefined}> = {valueCode}</Show>
+      <Show when={props.doc !== undefined}>
+        <SimpleInlineComment>{props.doc}</SimpleInlineComment>
+      </Show>
     </>
   );
 }

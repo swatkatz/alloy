@@ -5,6 +5,7 @@ import {
   MemberScope,
   OutputSymbolFlags,
   Scope,
+  Show,
   useBinder,
   useContext,
 } from "@alloy-js/core";
@@ -16,6 +17,7 @@ import { BaseDeclarationProps } from "./Declaration.js";
 import { EnumMember } from "./EnumMember.js";
 import { SourceFileContext } from "./SourceFile.jsx";
 import { PythonBlock } from "./PythonBlock.jsx";
+import { SimpleCommentBlock } from "./index.js";
 
 export interface EnumProps extends BaseDeclarationProps {
   /**
@@ -140,6 +142,7 @@ export function ClassEnumDeclaration(props: EnumProps) {
     value?: Children;
     jsValue?: string | number;
     auto?: boolean;
+    doc?: string;
   }> = (props.members ?? []).map((m) =>
     m.value === undefined ? { ...m, auto: false } : m,
   );
@@ -150,6 +153,10 @@ export function ClassEnumDeclaration(props: EnumProps) {
   }
   return (
     <CoreDeclaration symbol={sym}>
+      <Show when={Boolean(props.doc)}>
+        <SimpleCommentBlock children={props.doc} />
+        <hbr />
+      </Show>
       class {props.name}({enumModule["."][baseType]})
       <MemberScope owner={sym}>
         <Scope name={props.name} kind="enum">
@@ -161,6 +168,7 @@ export function ClassEnumDeclaration(props: EnumProps) {
                   value={member.value}
                   jsValue={member.jsValue}
                   auto={member.auto}
+                  doc={member.doc}
                 />
               )}
             </For>

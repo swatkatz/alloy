@@ -96,7 +96,7 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
         {basesPart}
         <PythonBlock opener=":">
           <Show when={Boolean(props.doc)}>
-            <PyDoc children={props.doc} />
+            {props.doc}
           </Show>
           {hasChildren ? props.children : "pass"}
         </PythonBlock>

@@ -4,6 +4,7 @@ import {
   OutputScope,
   OutputSymbolFlags,
   Scope,
+  Show,
   useContext,
   useMemberScope,
   useScope,
@@ -78,7 +79,12 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
             returnType={props.returnType}
           />
           {":"}
-          <PythonBlock>{props.children ?? "pass"}</PythonBlock>
+          <PythonBlock>
+            <Show when={Boolean(props.doc)}>
+              {props.doc}
+            </Show>
+            {props.children ?? "pass"}
+          </PythonBlock>
         </Scope>
       </Declaration>
     </>
