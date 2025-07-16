@@ -19,24 +19,30 @@ export interface MemberExpressionProps {
   children: Children;
 }
 
+const MEMBER_ACCESS_TYPES = {
+  ATTRIBUTE: "attribute",
+  SUBSCRIPTION: "subscription", 
+  CALL: "call"
+} as const;
+
 interface AttributeDescriptor extends PartDescriptorBase {
-  type: "attribute";
+  type: typeof MEMBER_ACCESS_TYPES.ATTRIBUTE;
   name: Children;
 }
 
 interface SubscriptionDescriptor extends PartDescriptorBase {
-  type: "subscription";
+  type: typeof MEMBER_ACCESS_TYPES.SUBSCRIPTION;
   expression: Children;
   quoted: boolean;
 }
 
 interface CallDescriptor extends PartDescriptorBase {
-  type: "call";
+  type: typeof MEMBER_ACCESS_TYPES.CALL;
   args: Children[];
 }
 
 interface PartDescriptorBase {
-  type: "call" | "subscription" | "attribute";
+  type: typeof MEMBER_ACCESS_TYPES.CALL | typeof MEMBER_ACCESS_TYPES.SUBSCRIPTION | typeof MEMBER_ACCESS_TYPES.ATTRIBUTE;
 }
 
 type PartDescriptor =
@@ -360,19 +366,19 @@ function isValidIdentifier(id: Children) {
   return true;
 }
 function isCallDescriptor(part: PartDescriptor): part is CallDescriptor {
-  return "type" in part && part.type === "call";
+  return "type" in part && part.type === MEMBER_ACCESS_TYPES.CALL;
 }
 
 function isAttributeDescriptor(
   part: PartDescriptor,
 ): part is AttributeDescriptor {
-  return "type" in part && part.type === "attribute";
+  return "type" in part && part.type === MEMBER_ACCESS_TYPES.ATTRIBUTE;
 }
 
 function isSubscriptionDescriptor(
   part: PartDescriptor,
 ): part is SubscriptionDescriptor {
-  return "type" in part && part.type === "subscription";
+  return "type" in part && part.type === MEMBER_ACCESS_TYPES.SUBSCRIPTION;
 }
 
 function getNameForRefkey(refkey: Children): Children {
