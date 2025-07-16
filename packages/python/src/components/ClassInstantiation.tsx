@@ -4,12 +4,12 @@ import {
   OutputSymbolFlags,
   useContext,
 } from "@alloy-js/core";
-import { PythonOutputSymbol } from "../symbols/python-output-symbol.js";
+import { createPythonSymbol } from "../symbol-creation.js";
 import {
   FunctionCallExpression,
   FunctionCallExpressionProps,
 } from "./FunctionCallExpression.jsx";
-import { SourceFileContext } from "./SourceFile.jsx";
+import { PythonSourceFileContext } from "./SourceFile.jsx";
 
 export interface ClassInstantiationProps extends FunctionCallExpressionProps {}
 
@@ -31,12 +31,17 @@ export interface ClassInstantiationProps extends FunctionCallExpressionProps {}
  * or VariableDeclarations, which will render as named arguments in the call statement.
  */
 export function ClassInstantiation(props: ClassInstantiationProps) {
-  const sfContext = useContext(SourceFileContext);
+  const sfContext = useContext(PythonSourceFileContext);
   const module = sfContext?.module;
-  const sym = new PythonOutputSymbol("", {
-    flags: OutputSymbolFlags.Transient,
-    module: module,
-  });
+  const sym = createPythonSymbol(
+    "",
+    {
+      flags: OutputSymbolFlags.Transient,
+      module: module,
+    },
+    undefined,
+    false,
+  );
   instantiateTakenSymbolsTo(sym);
   emitSymbol(sym);
   return (

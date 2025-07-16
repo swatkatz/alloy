@@ -21,8 +21,8 @@ export interface MemberExpressionProps {
 
 const MEMBER_ACCESS_TYPES = {
   ATTRIBUTE: "attribute",
-  SUBSCRIPTION: "subscription", 
-  CALL: "call"
+  SUBSCRIPTION: "subscription",
+  CALL: "call",
 } as const;
 
 interface AttributeDescriptor extends PartDescriptorBase {
@@ -42,7 +42,10 @@ interface CallDescriptor extends PartDescriptorBase {
 }
 
 interface PartDescriptorBase {
-  type: typeof MEMBER_ACCESS_TYPES.CALL | typeof MEMBER_ACCESS_TYPES.SUBSCRIPTION | typeof MEMBER_ACCESS_TYPES.ATTRIBUTE;
+  type:
+    | typeof MEMBER_ACCESS_TYPES.CALL
+    | typeof MEMBER_ACCESS_TYPES.SUBSCRIPTION
+    | typeof MEMBER_ACCESS_TYPES.ATTRIBUTE;
 }
 
 type PartDescriptor =
@@ -151,7 +154,7 @@ function createPartDescriptorFromProps(
       throw new Error("MemberExpression.Part: slice object cannot be empty");
     }
   }
-  
+
   // Validate keys array
   if (partProps.keys?.length === 0) {
     throw new Error("MemberExpression.Part: keys array cannot be empty");
@@ -426,10 +429,12 @@ export interface SubscriptionProps {
 function getSubscriptionValue(partProps: SubscriptionProps): Children {
   // Handle tuple keys: obj[a, b] → (a, b)
   if (partProps.keys?.length) {
-    const parsedKeys = partProps.keys.map(key => getNameForRefkey(key as Refkey));
+    const parsedKeys = partProps.keys.map((key) =>
+      getNameForRefkey(key as Refkey),
+    );
     return code`${parsedKeys.join(", ")}`;
   }
-  
+
   // Handle slice: obj[start:stop:step]
   if (partProps.slice && Object.keys(partProps.slice).length > 0) {
     const { start, stop, step } = partProps.slice;
@@ -438,14 +443,14 @@ function getSubscriptionValue(partProps: SubscriptionProps): Children {
       ":",
       stop ? getNameForRefkey(stop as Refkey) : "",
     ];
-    
+
     if (step) {
       parts.push(":", getNameForRefkey(step as Refkey));
     }
-    
+
     return code`${parts.join("")}`;
   }
-  
+
   // Handle single key: obj[key]
   return getNameForRefkey(partProps.key as Refkey);
 }

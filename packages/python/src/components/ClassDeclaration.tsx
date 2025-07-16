@@ -5,18 +5,15 @@ import {
   OutputSymbolFlags,
   Scope,
   childrenArray,
-  refkey,
   takeSymbols,
-  useContext,
 } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js";
-import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
+import { createPythonSymbol } from "../symbol-creation.js";
+import { PythonSymbolFlags } from "../symbols/index.js";
 import {
   BaseDeclarationProps,
   Declaration,
   DeclarationProps,
 } from "./Declaration.js";
-import { SourceFileContext } from "./SourceFile.jsx";
 import { PythonBlock } from "./PythonBlock.jsx";
 
 export interface ClassDeclarationProps extends BaseDeclarationProps {
@@ -54,23 +51,24 @@ export interface ClassDeclarationProps extends BaseDeclarationProps {
  * parameters.
  */
 export function ClassDeclaration(props: ClassDeclarationProps) {
-  const name = usePythonNamePolicy().getName(props.name!, "class");
-  const sfContext = useContext(SourceFileContext);
-  const module = sfContext?.module;
   const basesPart = props.bases && (
     <>
       (<List children={props.bases} comma space />)
     </>
   );
 
-  const sym = new PythonOutputSymbol(name, {
-    refkeys: props.refkey ?? refkey(name),
-    flags:
-      (props.flags ?? OutputSymbolFlags.None) |
-      OutputSymbolFlags.MemberContainer,
-    pythonFlags: PythonSymbolFlags.ClassSymbol,
-    module: module,
-  });
+  const sym = createPythonSymbol(
+    props.name!,
+    {
+      refkeys: props.refkey,
+      flags:
+        (props.flags ?? OutputSymbolFlags.None) |
+        OutputSymbolFlags.MemberContainer,
+      pythonFlags: PythonSymbolFlags.ClassSymbol,
+    },
+    "class",
+    true,
+  );
 
   takeSymbols((memberSymbol) => {
     // Transform emitted symbols into instance/class members
@@ -80,7 +78,7 @@ export function ClassDeclaration(props: ClassDeclarationProps) {
   // Propagate the name after the name policy was applied
   const updatedProps: DeclarationProps = {
     ...props,
-    name: name,
+    name: sym.name,
     nameKind: "class",
   };
   const hasChildren =

@@ -1,5 +1,5 @@
-import { reactive, shallowReactive, useContext } from "@alloy-js/core";
-import { SourceFileContext } from "../components/SourceFile.jsx";
+import { reactive, shallowReactive } from "@alloy-js/core";
+import { createPythonSymbol } from "../symbol-creation.js";
 import { CustomOutputScope } from "./custom-output-scope.js";
 import {
   PythonOutputSymbol,
@@ -53,8 +53,6 @@ export class PythonModuleScope extends CustomOutputScope {
   }
 
   addImport(targetSymbol: PythonOutputSymbol, targetModule: PythonModuleScope) {
-    const sfContext = useContext(SourceFileContext);
-    const module = sfContext?.module;
     const existing = this.importedSymbols.get(targetSymbol);
     if (existing) {
       return existing;
@@ -70,13 +68,18 @@ export class PythonModuleScope extends CustomOutputScope {
       });
     }
 
-    const localSymbol = new PythonOutputSymbol(targetSymbol.name, {
-      binder: this.binder,
-      scope: this,
-      aliasTarget: targetSymbol,
-      pythonFlags: PythonSymbolFlags.LocalImportSymbol,
-      module: module,
-    });
+    const localSymbol = createPythonSymbol(
+      targetSymbol.name,
+      {
+        binder: this.binder,
+        scope: this,
+        aliasTarget: targetSymbol,
+        pythonFlags: PythonSymbolFlags.LocalImportSymbol,
+      },
+      undefined,
+      false,
+      false,
+    );
 
     targetSymbol.copyTo(localSymbol);
 

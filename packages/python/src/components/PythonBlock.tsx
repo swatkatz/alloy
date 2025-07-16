@@ -2,7 +2,7 @@ import { Block, Children } from "@alloy-js/core";
 
 /**
  * A Python block component that can be used to render a block of Python code.
- * 
+ *
  * @example
  * ```tsx
  * <PythonBlock opener="def my_function()">

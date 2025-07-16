@@ -7,7 +7,7 @@ import {
   useContext,
   useMemberScope,
 } from "@alloy-js/core";
-import { SourceFileContext } from "../components/SourceFile.jsx";
+import { PythonSourceFileContext } from "../components/SourceFile.jsx";
 import {
   PythonMemberScope,
   PythonModuleScope,
@@ -18,7 +18,7 @@ import {
 export function ref(
   refkey: Refkey,
 ): () => [string, PythonOutputSymbol | undefined] {
-  const sourceFile = useContext(SourceFileContext);
+  const sourceFile = useContext(PythonSourceFileContext);
   const resolveResult = resolve<PythonOutputScope, PythonOutputSymbol>(
     refkey as Refkey,
   );

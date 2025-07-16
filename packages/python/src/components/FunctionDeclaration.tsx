@@ -4,17 +4,15 @@ import {
   OutputScope,
   OutputSymbolFlags,
   Scope,
-  useContext,
   useMemberScope,
   useScope,
 } from "@alloy-js/core";
-import { usePythonNamePolicy } from "../name-policy.js";
+import { createPythonSymbol } from "../symbol-creation.js";
 import { PythonOutputSymbol, PythonSymbolFlags } from "../symbols/index.js";
 import { getCallSignatureProps } from "../utils.js";
 import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import { BaseDeclarationProps, Declaration } from "./Declaration.js";
 import { PythonBlock } from "./PythonBlock.jsx";
-import { SourceFileContext } from "./SourceFile.js";
 
 export interface FunctionDeclarationProps
   extends BaseDeclarationProps,
@@ -45,9 +43,6 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
   const asyncKwd = props.async ? "async " : "";
   let sym: PythonOutputSymbol | undefined = undefined;
   const callSignatureProps = getCallSignatureProps(props, {});
-  const sfContext = useContext(SourceFileContext);
-  const module = sfContext?.module;
-  let name = usePythonNamePolicy().getName(props.name, "function");
   const memberScope = useMemberScope();
   let scope: OutputScope | undefined = undefined;
   if (memberScope !== undefined) {
@@ -56,23 +51,25 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
     scope = useScope();
   }
 
-  if (props.forceName) {
-    name = props.name;
-  }
-  sym = new PythonOutputSymbol(name, {
-    scope: scope,
-    refkeys: props.refkey,
-    flags: props.flags ?? OutputSymbolFlags.None,
-    pythonFlags: PythonSymbolFlags.FunctionSymbol,
-    module: module,
-  });
+  sym = createPythonSymbol(
+    props.name,
+    {
+      scope: scope,
+      refkeys: props.refkey,
+      flags: props.flags ?? OutputSymbolFlags.None,
+      pythonFlags: PythonSymbolFlags.FunctionSymbol,
+    },
+    "function",
+    false,
+    props.forceName,
+  );
   emitSymbol(sym);
 
   return (
     <>
       <Declaration {...props} nameKind="function" symbol={sym}>
         {asyncKwd}def <Name />
-        <Scope name={props.name} kind="function">
+        <Scope name={sym.name} kind="function">
           <CallSignature
             {...callSignatureProps}
             returnType={props.returnType}

@@ -1,7 +1,7 @@
 import { Output, refkey, render } from "@alloy-js/core";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 import * as py from "../src/index.js";
-import { assertFileContents, toSourceText } from "./utils.jsx";
+import { assertFileContents } from "./utils.jsx";
 
 describe("Reference", () => {
   it("Verifies that a reference is correctly resolved", () => {
@@ -12,17 +12,23 @@ describe("Reference", () => {
           <py.ClassDeclaration name="User" refkey={rk1} />
         </py.SourceFile>
         <py.SourceFile path="services.py">
-          <py.VariableDeclaration name="current_user" type={<py.Reference refkey={rk1} />} initializer={<py.ClassInstantiation target="User" args={['"Marvin"']} />} />
+          <py.VariableDeclaration
+            name="current_user"
+            type={<py.Reference refkey={rk1} />}
+            initializer={
+              <py.ClassInstantiation target="User" args={['"Marvin"']} />
+            }
+          />
         </py.SourceFile>
       </Output>,
     );
     assertFileContents(res, {
-        "models.py": `
+      "models.py": `
         class User:
           pass
 
         `,
-        "services.py": `
+      "services.py": `
         from models import User
 
         current_user: User = User("Marvin")
