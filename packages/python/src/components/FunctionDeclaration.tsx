@@ -77,8 +77,7 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
             {...callSignatureProps}
             returnType={props.returnType}
           />
-          {":"}
-          <PythonBlock>{props.children ?? "pass"}</PythonBlock>
+          <PythonBlock opener=":">{props.children ?? "pass"}</PythonBlock>
         </Scope>
       </Declaration>
     </>
