@@ -39,7 +39,7 @@ export interface SourceFileProps {
  *
  * @example
  * ```tsx
- * <SourceFile path="test.py" export>
+ * <SourceFile path="test.py">
  *   <FunctionDeclaration name="test" />
  * </SourceFile>
  * ```
