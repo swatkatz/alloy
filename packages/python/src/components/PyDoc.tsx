@@ -232,7 +232,6 @@ export function GoogleStyleClassDoc(props: GoogleStyleClassDocProps) {
   );
 }
 
-
 export interface PyDocExampleProps {
   children: Children;
 }
