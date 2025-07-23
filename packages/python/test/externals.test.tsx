@@ -96,7 +96,7 @@ it("uses import from external library in multiple class methods", () => {
   const functionDeclarations = [
     <py.ClassDeclaration name="UserClient">
       <py.StatementList>
-        <py.VariableDeclaration name="some_var" initializer={12} />
+        <py.VariableDeclaration name="some_var" initializer={12} instanceVariable/>
         <py.FunctionDeclaration
           name={"getUser"}
           parameters={[{ name: "userId", type: "int" }]}

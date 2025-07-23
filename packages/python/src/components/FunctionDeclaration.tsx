@@ -64,8 +64,6 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
   );
   emitSymbol(sym);
 
-  takeSymbols();
-
   return (
     <>
       <Declaration {...props} nameKind="function" symbol={sym}>
