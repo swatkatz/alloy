@@ -3,7 +3,7 @@ import { expect, it } from "vitest";
 import * as py from "../src/index.js";
 import { createModule } from "../src/index.js";
 import { toSourceText } from "./utils.js";
-import { code } from "@alloy-js/core";
+import { code, refkey } from "@alloy-js/core";
 
 it("uses import from external library", () => {
   const requestsLib = createModule({
@@ -96,6 +96,7 @@ it("uses import from external library in multiple class methods", () => {
   const functionDeclarations = [
     <py.ClassDeclaration name="UserClient">
       <py.StatementList>
+        <py.VariableDeclaration name="some_var" initializer={12} />
         <py.FunctionDeclaration
           name={"getUser"}
           parameters={[{ name: "userId", type: "int" }]}
@@ -103,7 +104,7 @@ it("uses import from external library in multiple class methods", () => {
           instanceFunction={true}
         >
           <py.StatementList>
-            <py.VariableDeclaration name="response" initializer={<py.FunctionCallExpression target={py.requestsModule["."]["get"]} args={[1]} />} />
+            <py.VariableDeclaration name="response" initializer={<py.FunctionCallExpression target={py.requestsModule["."]["get"]} args={[refkey("some_var")]} />} />
             {code`
               return response.json()
             `}
@@ -116,7 +117,7 @@ it("uses import from external library in multiple class methods", () => {
           instanceFunction={true}
         >
           <py.StatementList>
-            <py.VariableDeclaration name="response" initializer={<py.FunctionCallExpression target={py.requestsModule["."]["post"]} args={[1]} />} />
+            <py.VariableDeclaration name="response" initializer={<py.FunctionCallExpression target={py.requestsModule["."]["post"]} args={[refkey("some_var")]} />} />
             {code`
               return response.json()
             `}
@@ -133,13 +134,15 @@ it("uses import from external library in multiple class methods", () => {
     from requests.models import Response
 
     class UserClient:
+        some_var = 12
         def get_user(self, user_id: int) -> Response:
-            response = get(1)
+            response = get(self.some_var)
             return response.json()
 
         def create_user(self, user_name: string) -> Response:
-            response = post(1)
+            response = post(self.some_var)
             return response.json()
+
 
 
   `;

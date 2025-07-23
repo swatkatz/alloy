@@ -5,6 +5,7 @@ import {
   OutputSymbolFlags,
   Scope,
   Show,
+  takeSymbols,
   useMemberScope,
   useScope,
 } from "@alloy-js/core";
@@ -42,7 +43,6 @@ export interface FunctionDeclarationProps
  */
 export function FunctionDeclaration(props: FunctionDeclarationProps) {
   const asyncKwd = props.async ? "async " : "";
-  let sym: PythonOutputSymbol | undefined = undefined;
   const callSignatureProps = getCallSignatureProps(props, {});
   const memberScope = useMemberScope();
   let scope: OutputScope | undefined = undefined;
@@ -52,7 +52,7 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
     scope = useScope();
   }
 
-  sym = createPythonSymbol(
+  const sym = createPythonSymbol(
     props.name,
     {
       scope: scope,
@@ -63,6 +63,8 @@ export function FunctionDeclaration(props: FunctionDeclarationProps) {
     false,
   );
   emitSymbol(sym);
+
+  takeSymbols();
 
   return (
     <>
