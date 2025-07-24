@@ -1,9 +1,9 @@
+import { code, refkey } from "@alloy-js/core";
 import { d } from "@alloy-js/core/testing";
 import { expect, it } from "vitest";
 import * as py from "../src/index.js";
 import { createModule } from "../src/index.js";
 import { toSourceText } from "./utils.js";
-import { code, refkey } from "@alloy-js/core";
 
 it("uses import from external library", () => {
   const requestsLib = createModule({
@@ -51,7 +51,15 @@ it("uses import from external library in multiple functions", () => {
       instanceFunction={true}
     >
       <py.StatementList>
-        <py.VariableDeclaration name="response" initializer={<py.FunctionCallExpression target={py.requestsModule["."]["get"]} args={[1]} />} />
+        <py.VariableDeclaration
+          name="response"
+          initializer={
+            <py.FunctionCallExpression
+              target={py.requestsModule["."]["get"]}
+              args={[1]}
+            />
+          }
+        />
         {code`
           return response.json()
         `}
@@ -64,7 +72,15 @@ it("uses import from external library in multiple functions", () => {
       instanceFunction={true}
     >
       <py.StatementList>
-        <py.VariableDeclaration name="response" initializer={<py.FunctionCallExpression target={py.requestsModule["."]["post"]} args={[1]} />} />
+        <py.VariableDeclaration
+          name="response"
+          initializer={
+            <py.FunctionCallExpression
+              target={py.requestsModule["."]["post"]}
+              args={[1]}
+            />
+          }
+        />
         {code`
           return response.json()
         `}
@@ -72,7 +88,9 @@ it("uses import from external library in multiple functions", () => {
     </py.FunctionDeclaration>,
   ];
 
-  const result = toSourceText(functionDeclarations, { externals: [py.requestsModule] });
+  const result = toSourceText(functionDeclarations, {
+    externals: [py.requestsModule],
+  });
   const expected = d`
     from requests import get
     from requests import post
@@ -96,7 +114,11 @@ it("uses import from external library in multiple class methods", () => {
   const functionDeclarations = [
     <py.ClassDeclaration name="UserClient">
       <py.StatementList>
-        <py.VariableDeclaration name="some_var" initializer={12} instanceVariable/>
+        <py.VariableDeclaration
+          name="some_var"
+          initializer={12}
+          instanceVariable
+        />
         <py.FunctionDeclaration
           name={"getUser"}
           parameters={[{ name: "userId", type: "int" }]}
@@ -104,7 +126,15 @@ it("uses import from external library in multiple class methods", () => {
           instanceFunction={true}
         >
           <py.StatementList>
-            <py.VariableDeclaration name="response" initializer={<py.FunctionCallExpression target={py.requestsModule["."]["get"]} args={[refkey("some_var")]} />} />
+            <py.VariableDeclaration
+              name="response"
+              initializer={
+                <py.FunctionCallExpression
+                  target={py.requestsModule["."]["get"]}
+                  args={[refkey("some_var")]}
+                />
+              }
+            />
             {code`
               return response.json()
             `}
@@ -117,7 +147,15 @@ it("uses import from external library in multiple class methods", () => {
           instanceFunction={true}
         >
           <py.StatementList>
-            <py.VariableDeclaration name="response" initializer={<py.FunctionCallExpression target={py.requestsModule["."]["post"]} args={[refkey("some_var")]} />} />
+            <py.VariableDeclaration
+              name="response"
+              initializer={
+                <py.FunctionCallExpression
+                  target={py.requestsModule["."]["post"]}
+                  args={[refkey("some_var")]}
+                />
+              }
+            />
             {code`
               return response.json()
             `}
@@ -127,7 +165,9 @@ it("uses import from external library in multiple class methods", () => {
     </py.ClassDeclaration>,
   ];
 
-  const result = toSourceText(functionDeclarations, { externals: [py.requestsModule] });
+  const result = toSourceText(functionDeclarations, {
+    externals: [py.requestsModule],
+  });
   const expected = d`
     from requests import get
     from requests import post

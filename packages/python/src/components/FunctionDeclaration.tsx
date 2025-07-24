@@ -5,12 +5,10 @@ import {
   OutputSymbolFlags,
   Scope,
   Show,
-  takeSymbols,
   useMemberScope,
   useScope,
 } from "@alloy-js/core";
 import { createPythonSymbol } from "../symbol-creation.js";
-import { PythonOutputSymbol } from "../symbols/index.js";
 import { getCallSignatureProps } from "../utils.js";
 import { CallSignature, CallSignatureProps } from "./CallSignature.jsx";
 import { BaseDeclarationProps, Declaration } from "./Declaration.js";
