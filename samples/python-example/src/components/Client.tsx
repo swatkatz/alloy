@@ -8,7 +8,7 @@ export function Client() {
   const name = `${schema.name}Client`;
 
   return <py.ClassDeclaration name={name} refkey={refkey(schema)}>
-    <For each={schema.operations} doubleHardline>
+    <For each={schema.operations}>
       {(op) => <ClientMethod operation={op} />}
     </For>
   </py.ClassDeclaration>;
