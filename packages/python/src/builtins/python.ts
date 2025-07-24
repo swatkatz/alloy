@@ -14,7 +14,7 @@ export const enumModule = createModule({
 export const requestsModule = createModule({
   name: "requests",
   descriptor: {
-    ".": ["get", "post"],
+    ".": ["get", "post", "put", "delete", "patch", "head", "options"],
     models: ["Response", "Request"],
   },
 });
