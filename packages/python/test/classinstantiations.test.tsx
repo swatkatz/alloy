@@ -14,9 +14,9 @@ it("declaration of class instance with variables", () => {
       <py.ClassInstantiation
         target={classRef}
         args={[
-          <py.Value jsValue={"A name"} />,
-          <py.Value jsValue={42} />,
-          <py.Value jsValue={true} />,
+          <py.Atom jsValue={"A name"} />,
+          <py.Atom jsValue={42} />,
+          <py.Atom jsValue={true} />,
         ]}
       />
     </py.StatementList>,
@@ -59,9 +59,9 @@ it("Class instantiation without a reference", () => {
       <py.ClassInstantiation
         target={"ExampleClass"}
         args={[
-          <py.Value jsValue={"A name"} />,
-          <py.Value jsValue={42} />,
-          <py.Value jsValue={true} />,
+          <py.Atom jsValue={"A name"} />,
+          <py.Atom jsValue={42} />,
+          <py.Atom jsValue={true} />,
         ]}
       />
     </py.StatementList>,
@@ -109,7 +109,7 @@ it("Class instantiation without a reference mixing unnamed and named vars", () =
       <py.ClassInstantiation
         target={"ExampleClass"}
         args={[
-          <py.Value jsValue={"A name"} />,
+          <py.Atom jsValue={"A name"} />,
           <py.VariableDeclaration
             name="number"
             initializer={42}
@@ -126,6 +126,34 @@ it("Class instantiation without a reference mixing unnamed and named vars", () =
   ]);
   const expected = d`
     ExampleClass("A name", number=42, flag=True)
+  `;
+  expect(result).toRenderTo(expected);
+});
+
+it("incorrect Class instantiation works", () => {
+  const result = toSourceText([
+    <py.ClassInstantiation
+      target="MyClass"
+      args={[
+        <py.ClassDeclaration name="NestedClass" />,
+        <py.FunctionDeclaration name="myFunc" />,
+        <py.StatementList>
+          <py.VariableDeclaration name="x" />
+        </py.StatementList>,
+      ]}
+    />,
+  ]);
+
+  const expected = d`
+    MyClass(
+        class NestedClass:
+            pass
+        ,
+        def my_func():
+            pass
+        ,
+        x = None
+    )
   `;
   expect(result).toRenderTo(expected);
 });

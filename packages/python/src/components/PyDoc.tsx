@@ -1,7 +1,7 @@
 import { For, Indent, List, Prose, Show, childrenArray } from "@alloy-js/core";
 import { Children } from "@alloy-js/core/jsx-runtime";
 import { ParameterDescriptor } from "../parameter-descriptor.js";
-import { Value } from "./index.js";
+import { Atom } from "./index.js";
 
 interface GoogleStyleDocParamTypeProps {
   type?: Children;
@@ -44,7 +44,7 @@ function GoogleStyleDocParamDescription(
         <Prose>{props.children}</Prose>
         <Show when={Boolean(props.defaultValue)}>
           {" "}
-          Defaults to <Value jsValue={props.defaultValue}></Value>.
+          Defaults to <Atom jsValue={props.defaultValue}></Atom>.
         </Show>
       </align>
     </Show>
@@ -136,12 +136,8 @@ export function GoogleStyleDocRaises(props: GoogleStyleDocRaisesProps) {
   );
 }
 
-export interface GoogleStyleFunctionDocProps {
-  description: Children[];
-  parameters: ParameterDescriptor[] | string[];
-  returns?: string;
-  raises: string[];
-}
+export interface GoogleStyleFunctionDocProps
+  extends Omit<FunctionDocProps, "style"> {}
 
 /**
  * A component that creates a GoogleStyleFunctionDoc block for parameters.
@@ -170,10 +166,54 @@ export function GoogleStyleFunctionDoc(props: GoogleStyleFunctionDocProps) {
   );
 }
 
-export interface GoogleStyleClassDocProps {
+export interface FunctionDocProps {
   description: Children[];
   parameters: ParameterDescriptor[] | string[];
+  returns?: string;
+  raises: string[];
+  style?: "google";
 }
+
+/**
+ * A component that creates a FunctionDoc block for parameters.
+ */
+export function FunctionDoc(props: FunctionDocProps) {
+  const style = props.style ?? "google";
+  if (style === "google") {
+    return (
+      <GoogleStyleFunctionDoc
+        description={props.description}
+        parameters={props.parameters}
+        returns={props.returns}
+        raises={props.raises}
+      />
+    );
+  }
+}
+
+export interface ClassDocProps {
+  description: Children[];
+  parameters: ParameterDescriptor[] | string[];
+  style?: "google";
+}
+
+/**
+ * A component that creates a ClassDoc block for parameters.
+ */
+export function ClassDoc(props: ClassDocProps) {
+  const style = props.style ?? "google";
+  if (style === "google") {
+    return (
+      <GoogleStyleClassDoc
+        description={props.description}
+        parameters={props.parameters}
+      />
+    );
+  }
+}
+
+export interface GoogleStyleClassDocProps
+  extends Omit<ClassDocProps, "style"> {}
 
 /**
  * A component that creates a GoogleStyleClassDoc block for parameters.
@@ -202,7 +242,7 @@ export interface PyDocExampleProps {
  * Create a PyDoc example, which is prepended by \>\>.
  */
 export function PyDocExample(props: PyDocExampleProps) {
-  let children = childrenArray(() => props.children);
+  const children = childrenArray(() => props.children);
   let lines: string[] = [];
 
   if (children.length === 1 && typeof children[0] === "string") {
@@ -255,10 +295,8 @@ export function PyDoc(props: PyDocProps) {
   return (
     <>
       {'"""'}
-      <align string="">
-        <hbr />
-        <List doubleHardline>{childrenArray(() => props.children)}</List>
-      </align>
+      <hbr />
+      <List doubleHardline>{childrenArray(() => props.children)}</List>
       <hbr />
       {'"""'}
     </>

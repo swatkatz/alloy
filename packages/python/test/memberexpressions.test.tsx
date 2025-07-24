@@ -43,7 +43,6 @@ it("renders basic member expression with key", () => {
 
 it("renders basic member expression with key with reference", () => {
   const rk1 = refkey();
-  const rk2 = refkey();
   expect(
     toSourceText([
       <py.StatementList>
@@ -367,6 +366,7 @@ describe("with refkeys", () => {
             refkey={classMethod1Ref}
             type="str"
             omitNone={true}
+            instanceVariable={true}
           />
         </ClassDeclaration>
         <ClassDeclaration name="Model2" refkey={model2Ref}>
@@ -375,6 +375,7 @@ describe("with refkeys", () => {
             refkey={classMethod2Ref}
             type="str"
             omitNone={true}
+            instanceVariable={true}
           />
         </ClassDeclaration>
         <py.VariableDeclaration

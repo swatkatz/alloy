@@ -39,17 +39,28 @@ describe("Python Variable", () => {
     const res = toSourceText([
       <py.VariableDeclaration
         name="myVar"
-        initializer={<py.Value jsValue={null} />}
+        initializer={<py.Atom jsValue={null} />}
       />,
     ]);
     expect(res).toBe(`my_var = None`);
+  });
+
+  it("declares a python variable that's an array", () => {
+    const res = toSourceText([
+      <py.VariableDeclaration
+        name="numbers"
+        type="list[int]"
+        initializer={<py.Value jsValue={[1, 2, 3]} />}
+      />,
+    ]);
+    expect(res).toBe(`numbers: list[int] = [1, 2, 3]`);
   });
 
   it("declares a python variable with a python value", () => {
     const res = toSourceText([
       <py.VariableDeclaration
         name="nameIdPairs"
-        initializer={<py.Value jsValue={{ John: 123, Doe: 234 }} />}
+        initializer={<py.Atom jsValue={{ John: 123, Doe: 234 }} />}
       />,
     ]);
     expect(res).toBe(`name_id_pairs = {"John": 123, "Doe": 234}`);

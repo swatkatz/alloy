@@ -2,7 +2,7 @@ import { Children, OutputSymbolFlags, Refkey, Show } from "@alloy-js/core";
 import { enumModule } from "../builtins/python.js";
 import { createPythonSymbol } from "../symbol-creation.js";
 import { PythonOutputSymbol } from "../symbols/index.js";
-import { Value } from "./Value.jsx";
+import { Atom } from "./Atom.jsx";
 import { SimpleInlineComment } from "./index.js";
 
 export interface EnumMemberProps {
@@ -58,7 +58,7 @@ export interface EnumMemberProps {
 export function EnumMember(props: EnumMemberProps) {
   const autoReference = props.auto === true ? enumModule["."].auto : undefined;
   const value = props.auto === true ? <>{autoReference}()</> : props.value;
-  let sym: PythonOutputSymbol = createPythonSymbol(
+  const sym: PythonOutputSymbol = createPythonSymbol(
     props.name,
     {
       refkeys: props.refkey,
@@ -68,7 +68,7 @@ export function EnumMember(props: EnumMemberProps) {
     true,
   );
   const valueCode =
-    props.jsValue !== undefined ? <Value jsValue={props.jsValue} /> : value;
+    props.jsValue !== undefined ? <Atom jsValue={props.jsValue} /> : value;
 
   if (props.functional) {
     return (
