@@ -10,6 +10,7 @@ export interface RestApiOperation {
   verb: "get" | "post" | "put" | "delete";
   requestBody?: RestApiModelReference;
   responseBody?: RestApiModelReference | RestApiNonModelReference;
+  doc?: string;
 }
 
 export interface RestApiNonModelReference {
@@ -47,6 +48,7 @@ export const api: RestApi = {
       responseBody: {
         ref: "Pet",
       },
+      doc: "Create a new pet in the store.",
     },
     {
       name: "list_pets",
@@ -56,6 +58,7 @@ export const api: RestApi = {
         ref: "Pet",
         array: true,
       },
+      doc: "List all pets in the store.",
     },
     {
       name: "get_pet",
@@ -64,6 +67,7 @@ export const api: RestApi = {
       responseBody: {
         ref: "Pet",
       },
+      doc: "Get a pet by its ID.",
     },
     {
       name: "update_pet",
@@ -75,6 +79,7 @@ export const api: RestApi = {
       responseBody: {
         ref: "Pet",
       },
+      doc: "Update an existing pet.",
     },
     {
       name: "delete_pet",
@@ -83,6 +88,7 @@ export const api: RestApi = {
       responseBody: {
         type: "boolean",
       },
+      doc: "Delete a pet by its ID.",
     },
     {
       name: "add_toy_to_pet",
@@ -94,6 +100,7 @@ export const api: RestApi = {
       responseBody: {
         ref: "Pet",
       },
+      doc: "Add a toy to a pet.",
     },
     {
       name: "get_amt_pets",
@@ -102,6 +109,7 @@ export const api: RestApi = {
       responseBody: {
         type: "number",
       },
+      doc: "Get the total number of pets in the store.",
     },
   ],
   models: [
