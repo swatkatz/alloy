@@ -65,7 +65,7 @@ class PetstoreClient:
         Delete a pet by its ID.
 
         Returns:
-            bool: True if the pet was deleted, false otherwise.
+            bool: True if the pet was deleted, False otherwise.
         """
         response = delete("/pets/:id/delete")
         return response.json()

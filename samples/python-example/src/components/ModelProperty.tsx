@@ -32,5 +32,5 @@ export function ModelProperty(props: ModelPropertyProps) {
     memberType = code`${memberType} | None`;
   }
 
-  return <py.VariableDeclaration name={props.property.name} type={memberType} omitNone instanceVariable />;
+  return <py.VariableDeclaration name={props.property.name} type={memberType} omitNone instanceVariable doc={props.property.doc} />;
 }

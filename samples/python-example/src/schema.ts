@@ -35,6 +35,7 @@ export interface RestApiModelProperty {
   type: RestApiModel | RestApiModelReference | "string" | "number" | "boolean";
   array?: boolean;
   optional?: boolean;
+  doc?: string;
 }
 
 export const api: RestApi = {
@@ -129,7 +130,7 @@ export const api: RestApi = {
         { name: "id", type: "string" },
         { name: "name", type: "string" },
         { name: "age", type: "number" },
-        { name: "favoriteToys", type: { ref: "Toy" }, array: true },
+        { name: "favoriteToys", type: { ref: "Toy" }, array: true, doc: "List of favorite toys" },
         { name: "breed", type: "string", optional: true },
       ],
     },
