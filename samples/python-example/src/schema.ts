@@ -2,6 +2,7 @@ export interface RestApi {
   name: string;
   operations: RestApiOperation[];
   models: RestApiModel[];
+  doc?: string;
 }
 
 export interface RestApiOperation {
@@ -11,6 +12,7 @@ export interface RestApiOperation {
   requestBody?: RestApiModelReference;
   responseBody?: RestApiModelReference | RestApiNonModelReference;
   doc?: string;
+  responseDoc?: string;
 }
 
 export interface RestApiNonModelReference {
@@ -37,6 +39,7 @@ export interface RestApiModelProperty {
 
 export const api: RestApi = {
   name: "Petstore",
+  doc: "A simple API for managing a pet store.",
   operations: [
     {
       name: "create_pet",
@@ -49,6 +52,7 @@ export const api: RestApi = {
         ref: "Pet",
       },
       doc: "Create a new pet in the store.",
+      responseDoc: "The created pet.",
     },
     {
       name: "list_pets",
@@ -59,6 +63,7 @@ export const api: RestApi = {
         array: true,
       },
       doc: "List all pets in the store.",
+      responseDoc: "A list of pets.",
     },
     {
       name: "get_pet",
@@ -68,6 +73,7 @@ export const api: RestApi = {
         ref: "Pet",
       },
       doc: "Get a pet by its ID.",
+      responseDoc: "The pet with the specified ID.",
     },
     {
       name: "update_pet",
@@ -80,6 +86,7 @@ export const api: RestApi = {
         ref: "Pet",
       },
       doc: "Update an existing pet.",
+      responseDoc: "The updated pet.",
     },
     {
       name: "delete_pet",
@@ -89,6 +96,7 @@ export const api: RestApi = {
         type: "boolean",
       },
       doc: "Delete a pet by its ID.",
+      responseDoc: "True if the pet was deleted, False otherwise.",
     },
     {
       name: "add_toy_to_pet",
@@ -101,6 +109,7 @@ export const api: RestApi = {
         ref: "Pet",
       },
       doc: "Add a toy to a pet.",
+      responseDoc: "The pet with the added toy.",
     },
     {
       name: "get_amt_pets",
@@ -110,6 +119,7 @@ export const api: RestApi = {
         type: "number",
       },
       doc: "Get the total number of pets in the store.",
+      responseDoc: "The total number of pets.",
     },
   ],
   models: [

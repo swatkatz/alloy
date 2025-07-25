@@ -2,7 +2,7 @@ import { Children, code, Prose, refkey } from "@alloy-js/core";
 import * as py from "@alloy-js/python";
 import { useApi } from "../context/api.js";
 import { RestApiOperation } from "../schema.js";
-import { castOpenAPITypeToPython, resolveRestAPIReference } from "../utils.js";
+import { castOpenAPITypeToPython, resolveRestAPIReference, resolveRestAPIReferenceToString } from "../utils.js";
 
 export interface ClientMethodProps {
   operation: RestApiOperation;
@@ -36,6 +36,7 @@ export function ClientMethod(props: ClientMethodProps) {
 
   // get the return type based on the spec's responseBody.
   let responseReturnType: Children = resolveRestAPIReference(op.responseBody, apiContext);
+  let responseReturnTypeString: string = `${resolveRestAPIReferenceToString(op.responseBody, apiContext)}: ${op.responseDoc}`;
 
   // get the url endpoint, constructed from possible path parameters
   let endpoint: Children;
@@ -80,7 +81,7 @@ export function ClientMethod(props: ClientMethodProps) {
     args={requestsCallArgs}
   />
 
-  const classDoc = (<py.ClassDoc
+  const functionDoc = (<py.FunctionDoc
     description={[
       <Prose>
         {op.doc}
@@ -90,6 +91,7 @@ export function ClientMethod(props: ClientMethodProps) {
       name: param.name,
       type: param.type,
     }))}
+    returns={responseReturnTypeString}
     style="google"
   />);
 
@@ -99,7 +101,7 @@ export function ClientMethod(props: ClientMethodProps) {
       parameters={parameters}
       returnType={responseReturnType}
       instanceFunction={true}
-      doc={classDoc}
+      doc={functionDoc}
     >
       <py.StatementList>
         <py.VariableDeclaration name="response" initializer={requestsCall} />
