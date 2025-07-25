@@ -143,6 +143,8 @@ export interface GoogleStyleFunctionDocProps
  * A component that creates a GoogleStyleFunctionDoc block for parameters.
  */
 export function GoogleStyleFunctionDoc(props: GoogleStyleFunctionDocProps) {
+  // We are creating a list instead of relying on <Show> because otherwise
+  // <List> would render spaces between the elements even if <Show> evaluates to false.
   const children = [];
   if (props.description !== undefined) {
     children.push(
@@ -216,6 +218,8 @@ export interface GoogleStyleClassDocProps
  * A component that creates a GoogleStyleClassDoc block for parameters.
  */
 export function GoogleStyleClassDoc(props: GoogleStyleClassDocProps) {
+  // We are creating a list instead of relying on <Show> because otherwise
+  // <List> would render spaces between the elements even if <Show> evaluates to false.
   const children = [];
   if (props.description !== undefined) {
     children.push(
