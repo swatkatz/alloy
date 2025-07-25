@@ -88,19 +88,17 @@ export function GoogleStyleDocParams(props: GoogleStyleDocParamsProps) {
     <>
       {"Args:"}
       <Indent>
-        <Show when={parameters.length > 0}>
-          <List doubleHardline>
-            {parameters.map((param) => (
-              <GoogleStyleDocParam
-                name={param.name}
-                type={param.type}
-                optional={param.optional}
-              >
-                {param.doc}
-              </GoogleStyleDocParam>
-            ))}
-          </List>
-        </Show>
+        <List doubleHardline>
+          {parameters.map((param) => (
+            <GoogleStyleDocParam
+              name={param.name}
+              type={param.type}
+              optional={param.optional}
+            >
+              {param.doc}
+            </GoogleStyleDocParam>
+          ))}
+        </List>
       </Indent>
     </>
   );
