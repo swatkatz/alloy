@@ -4,6 +4,7 @@ import * as py from "@alloy-js/python";
 import { api, RestApiModel } from "./schema.js";
 import { Client } from "./components/Client.jsx";
 import { Model } from "./components/Model.jsx";
+import { Usage } from "./components/Usage.jsx";
 import { castOpenAPITypeToPython } from "./utils.jsx";
 
 let apiContext = createApiContext(api);
@@ -74,6 +75,9 @@ const output = render(
       </py.SourceFile>
       <py.SourceFile path="client.py">
         <Client />
+      </py.SourceFile>
+      <py.SourceFile path="usage.py">
+        <Usage />
       </py.SourceFile>
     </ApiContext.Provider>
   </Output>,

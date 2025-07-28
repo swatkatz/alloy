@@ -1,4 +1,4 @@
-import { Children, code, Prose, refkey } from "@alloy-js/core";
+import { Children, code, Prose, Refkey, refkey } from "@alloy-js/core";
 import * as py from "@alloy-js/python";
 import { useApi } from "../context/api.js";
 import { RestApiOperation } from "../schema.js";
@@ -102,6 +102,7 @@ export function ClientMethod(props: ClientMethodProps) {
       returnType={responseReturnType}
       instanceFunction={true}
       doc={functionDoc}
+      refkey={refkey(op.name)}
     >
       <py.StatementList>
         <py.VariableDeclaration name="response" initializer={requestsCall} />

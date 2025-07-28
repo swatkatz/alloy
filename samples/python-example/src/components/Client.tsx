@@ -16,7 +16,7 @@ export function Client() {
     style="google"
   />);
 
-  return <py.ClassDeclaration name={name} refkey={refkey(schema)} doc={classDoc}>
+  return <py.ClassDeclaration name={name} refkey={refkey(name)} doc={classDoc}>
     <For each={schema.operations}>
       {(op) => <ClientMethod operation={op} />}
     </For>
