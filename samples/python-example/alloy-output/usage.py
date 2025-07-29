@@ -1,4 +1,5 @@
 from client import PetstoreClient
 
+body = {"name": "Bidu"}
 client: PetstoreClient = PetstoreClient()
-<Unresolved Symbol>
+client.create_pet(body)

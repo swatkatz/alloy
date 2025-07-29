@@ -1,5 +1,4 @@
 from models import Pet
-from models import Toy
 from requests import delete
 from requests import get
 from requests import post
@@ -9,12 +8,12 @@ class PetstoreClient:
     """
     A simple API for managing a pet store.
     """
-    def create_pet(self, body: Pet) -> Pet:
+    def create_pet(self, body: dict) -> Pet:
         """
         Create a new pet in the store.
 
         Args:
-            body (Pet)
+            body (dict)
 
         Returns:
             Pet: The created pet.
@@ -45,14 +44,14 @@ class PetstoreClient:
         response = get("/pets/" + id)
         return response.json()
 
-    def update_pet(self, id: str, body: Pet) -> Pet:
+    def update_pet(self, id: str, body: dict) -> Pet:
         """
         Update an existing pet.
 
         Args:
             id (str)
 
-            body (Pet)
+            body (dict)
 
         Returns:
             Pet: The updated pet.
@@ -70,12 +69,12 @@ class PetstoreClient:
         response = delete("/pets/:id/delete")
         return response.json()
 
-    def add_toy_to_pet(self, body: Toy) -> Pet:
+    def add_toy_to_pet(self, body: dict) -> Pet:
         """
         Add a toy to a pet.
 
         Args:
-            body (Toy)
+            body (dict)
 
         Returns:
             Pet: The pet with the added toy.

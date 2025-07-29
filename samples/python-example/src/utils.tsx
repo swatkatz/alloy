@@ -55,6 +55,8 @@ export function castOpenAPITypeToPython(type: Children): string {
       return "int";
     case "boolean":
       return "bool";
+    case "dict":
+      return "dict";
     default:
       return typeof type === "string" ? type : "";
   }

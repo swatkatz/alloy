@@ -9,14 +9,14 @@ export interface RestApiOperation {
   name: string;
   endpoint: string;
   verb: "get" | "post" | "put" | "delete";
-  requestBody?: RestApiModelReference;
+  requestBody?: RestApiModelReference | RestApiNonModelReference;
   responseBody?: RestApiModelReference | RestApiNonModelReference;
   doc?: string;
   responseDoc?: string;
 }
 
 export interface RestApiNonModelReference {
-  type: "string" | "number" | "boolean";
+  type: "string" | "number" | "boolean" | "dict";
   array?: boolean;
 }
 
@@ -47,7 +47,7 @@ export const api: RestApi = {
       verb: "post",
       endpoint: "/pets",
       requestBody: {
-        ref: "Pet",
+        type: "dict",
       },
       responseBody: {
         ref: "Pet",
@@ -81,7 +81,7 @@ export const api: RestApi = {
       verb: "put",
       endpoint: "/pets/:id",
       requestBody: {
-        ref: "Pet",
+        type: "dict",
       },
       responseBody: {
         ref: "Pet",
@@ -104,7 +104,7 @@ export const api: RestApi = {
       verb: "post",
       endpoint: "/pets/:id/toys",
       requestBody: {
-        ref: "Toy",
+        type: "dict",
       },
       responseBody: {
         ref: "Pet",
